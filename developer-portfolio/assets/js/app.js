@@ -26,3 +26,8 @@ scrollUp.addEventListener('click', () => {
         behavior: 'smooth'
     });
 });
+
+function loadContent() {
+    document.querySelector('#loader').style.display = 'none';
+    document.querySelector('#container').style.display = 'block';
+}

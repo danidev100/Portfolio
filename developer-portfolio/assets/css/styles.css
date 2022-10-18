@@ -22,6 +22,24 @@ html {
     scroll-behavior: smooth;
 }
 
+html::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html::-webkit-scrollbar-track {
+    background: white;
+}
+
+html::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
 /* CSS Resets */
 * {
     margin: 0;
@@ -29,6 +47,51 @@ html {
     box-sizing: border-box;
 }
 
+/* Loader */
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    margin: -76px 0 0 -76px;
+    border: 10px solid #F3F3F3;
+    border-radius: 50%;
+    border-top: 10px solid var(--primary-color);
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+.container {
+    position: relative;
+    -webkit-animation-name: animatebody;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebody;
+    animation-duration: 1s;
+}
+
+@-webkit-keyframes animatebody {
+    from { bottom: -100px; opacity: 0; }
+    to { bottom: 0; opacity: 1; }
+}
+
+@keyframes animatebody {
+    from { bottom: -100px; opacity: 0; }
+    to { bottom: 0; opacity: 1; }
+}
+
+/* Styles */
 ul {
     list-style-type: none;
 }
