@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="w-full">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- CSS Styles -->
     <link rel="stylesheet" href="css/styles.css" />
@@ -23,26 +24,51 @@
     <section id="loader"></section>
     <!-- Navbar -->
     <section class="container" id="container" style="display: none;">
+        <!-- Header -->
+        <header>
+            <!-- Hamburguer Menu -->
+            <nav>
+                <div class="navbar">
+                    <div class="nav-container">
+                        <input type="checkbox" class="checkbox">
+    
+                        <div class="hamburger-lines">
+                            <span class="line line1"></span>
+                            <span class="line line2"></span>
+                            <span class="line line3"></span>
+                        </div>
+    
+                        <!-- Logo -->
+                        <div class="logo">
+                            <h1>DANIEL JARAMILLO</h1>
+                        </div>
+                        <div class="menu-items">
+                            <li><a href="#about" class="nav-link">About</a>
+                            </li>
+                            <li><a href="#skills" class="nav-link">Skills</a>
+                            </li>
+                            <li><a href="#projects" class="nav-link">Projects</a>
+                            </li>
+                            <li><a href="#contact" class="nav-link">Contact</a>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-        <nav>
-            <h1>DANIEL JARAMILLO</h1>
-            <ul class="navigation">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <button class="burguer-menu" id="burguer-menu">
-                <ion-icon class="bars" name="menu-outline"></ion-icon>
-            </button>
-        </nav>
+            <!-- Toggle Dark Mode -->
+            <!-- <input type="checkbox" id="toggle-button" class="absolute contents" />
+            <label for="toggle-button" id="label-toggle" class="bg-light-2 cursor-pointer h-6 relative w-6">
+                <div class="sun-moon bg-light-1 h-6 w-6"></div>
+            </label> -->
+        </header>
 
         <!-- Hero Section -->
-        <section class="hero" id="about">
+        <section class="hero flex justify-center" id="about">
             <img src="images/Portfolioimg.png" alt="Principal Image" loading="lazy" class="hero-img" />
-            <div class="bio animate__animated animate__shakeX">
+            <div class="bio animate__animated animate__shakeX m-5 p-5 hover:scale-105">
                 <h2 class="bio-title">¿Quien Soy?</h2>
-                <p class="bio-text">
+                <p class="bio-text leading-7 p-1">
                     Hola, ¿qué tal? ¡Es un placer saber de ti! Soy Daniel Jaramillo, y mi pasión es crear la mejor
                     experiencia de usuario a través de sitios web y aplicaciones que te hagan decir ¡WOW! He realizado
                     algunos proyectos interesantes que puedes encontrar haciendo click <a href="#projects">aquí</a>.
@@ -57,9 +83,9 @@
         </section>
 
         <!-- More About -->
-        <section class="more-about">
-            <h2>Quizas te pueda interesar..</h2>
-            <p>
+        <section class="more-about m-3 p-4">
+            <h2 class="mb-2 text-center">Quizas te pueda interesar..</h2>
+            <p class="leading-7 p-2">
                 Bueno, para que sepas más sobre mí, tengo alrededor de 5+ años trabajando con diferentes empleadores, y
                 en
                 cada
@@ -82,47 +108,54 @@
 
         <!-- Skills section -->
         <section class="skills" id="skills">
-            <h2 class="skill-header">¿Como lo hago?</h2>
+            <h2 class="skill-header m-8">¿Como lo hago?</h2>
 
-            <div class="skills-wrapper">
+            <div class="skills-wrapper text-center">
                 <div class="first-set animate__animated animate__pulse">
-                    <img src="icons/icons8-angularjs.svg" alt="Angular" class="icon icon-card">
-                    <img src="icons/icons8-git.svg" alt="Git" class="icon icon-card">
-                    <img src="icons/icons8-typescript.svg" alt="TypeScript" class="icon icon-card">
+                    <img src="icons/icons8-angularjs.svg" alt="Angular"
+                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
+                    <img src="icons/icons8-git.svg" alt="Git" class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
+                    <img src="icons/icons8-typescript.svg" alt="TypeScript"
+                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
                 </div>
 
                 <div class="second-set animate__animated animate__pulse">
-                    <img src="icons/icons8-html-5.svg" alt="HTML5" class="icon icon-card">
-                    <img src="icons/icons8-bootstrap.svg" alt="Bootstrap" class="icon icon-card">
-                    <img src="icons/icons8-javascript.svg" alt="JavaScript" class="icon icon-card">
+                    <img src="icons/icons8-html-5.svg" alt="HTML5"
+                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
+                    <img src="icons/icons8-bootstrap.svg" alt="Bootstrap"
+                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
+                    <img src="icons/icons8-javascript.svg" alt="JavaScript"
+                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
                 </div>
             </div>
         </section>
 
         <!-- Projects section -->
-        <section class="projects" id="projects">
-            <h2 class="projects-title">Aquí puedes ver algo de mi trabajo</h2>
-            <div class="projects-container">
-                <div class="project-container project-card">
-                    <img src="images/todo.PNG" alt="TODO" loading="lazy" class="project-pic">
-                    <h3 class="project-title">To Do</h3>
-                    <p class="project-details">
+        <section class="projects py-8 px-0 mt-8" id="projects">
+            <h2 class="projects-title text-center mb-4">Aquí puedes ver algo de mi trabajo</h2>
+            <div class="projects-container flex self-center justify-center">
+                <div class="project-container hover:scale-110 text-center w-80 p-2 project-card m-3">
+                    <img src="images/todo.PNG" alt="TODO" loading="lazy" class="project-pic object-cover w-3/5 h-3/5">
+                    <h3 class="project-title mb-2">To Do</h3>
+                    <p class="project-details mb-2">
                         Sitio para ordenar actividades tanto personales como profesionales.
                     </p>
                     <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
                 </div>
-                <div class="project-container project-card">
-                    <img src="images/netflix.jpg" alt="Netflix Clone" loading="lazy" class="project-pic">
-                    <h3 class="project-title">Clon de Netflix</h3>
-                    <p class="project-details">
+                <div class="project-container hover:scale-110 text-center w-80 p-2 project-card m-3">
+                    <img src="images/netflix.jpg" alt="Netflix Clone" loading="lazy"
+                        class="project-pic object-cover w-3/5 h-3/5">
+                    <h3 class="project-title mb-2">Clon de Netflix</h3>
+                    <p class="project-details mb-2">
                         Proyecto mas interesante con mas animaciones y vistas mas interesantes.
                     </p>
                     <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
                 </div>
-                <div class="project-container project-card">
-                    <img src="images/shopping.jpg" alt="Shop Online" loading="lazy" class="project-pic">
-                    <h3 class="project-title">Shop Online</h3>
-                    <p class="project-details">
+                <div class="project-container hover:scale-110 text-center w-80 p-2 project-card m-3">
+                    <img src="images/shopping.jpg" alt="Shop Online" loading="lazy"
+                        class="project-pic object-cover w-3/5 h-3/5">
+                    <h3 class="project-title mb-2">Shop Online</h3>
+                    <p class="project-details mb-2">
                         Tienda Online con simulación de conexión a pasarela de pagos para tus productos.
                     </p>
                     <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
@@ -132,49 +165,53 @@
 
         <!-- Contact section -->
         <section class="contact" id="contact">
-            <h2>¿Interesado? Hablemos..</h2>
-            <div class="contact-form-container">
+            <h2 class="text-center mb-4">¿Interesado? Hablemos..</h2>
+            <div class="contact-form-container max-w-2xl my-auto mx-4 p-4 hover:scale-105">
                 <div class="contact-form">
                     <form action="https://formspree.io/xyylngw" method="POST">
                         <div class="form-control">
-                            <label for="name">Nombre</label>
+                            <label class="leading-10 font-bold text-primary-color" for="name">Nombre</label>
                             <input type="text" id="name" name="sender-name" placeholder="¿Como te llamas?"
-                                class="input-field" required>
+                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                                required>
                         </div>
                         <div class="form-control">
-                            <label for="email">Email</label>
+                            <label class="leading-10 font-bold text-primary-color" for="email">Email</label>
                             <input type="email" id="email" name="sender-email" placeholder="¿Donde puedo contactarte?"
-                                class="input-field" required>
+                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                                required>
                         </div>
                         <div class="form-control">
-                            <label for="message">Message</label>
+                            <label class="leading-10 font-bold text-primary-color" for="message">Message</label>
                             <textarea name="message" id="message" cols="60" rows="10"
-                                placeholder="Hablame un poco sobre lo que tienes en mente.." class="input-field"
-                                required></textarea>
+                                placeholder="Hablame un poco sobre lo que tienes en mente.."
+                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                                required class="text-sm"></textarea>
                         </div>
-                        <input type="submit" value="Ponerme en Contacto" id="submit-btn" class="submit-btn" />
+                        <input type="submit" value="Ponerme en Contacto" id="submit-btn"
+                            class="submit-btn w-full p-2 my-2 mx-0 bg-light-0 text-base font-bold hover:bg-primary-color cursor-pointer" />
                     </form>
                 </div>
             </div>
         </section>
 
         <!-- Social accounts - Fixed to the right -->
-        <div class="socials">
+        <div class="socials flex flex-col fixed right-4 bottom-1/2">
             <a href="https://www.linkedin.com/in/daniel-jaramillo-bustamante" target="_blank">
-                <img src="gifts/icons8-linkedin-circled.gif" alt="LinkedIn" loading="lazy" class="socicon">
+                <img src="gifts/icons8-linkedin-circled.gif" alt="LinkedIn" loading="lazy" class="socicon w-8 h-8">
             </a>
             <a href="https://github.com/danidev100" target="_blank">
-                <img src="gifts/icons8-github.gif" alt="GitHub" loading="lazy" class="socicon">
+                <img src="gifts/icons8-github.gif" alt="GitHub" loading="lazy" class="socicon w-8 h-8">
             </a>
         </div>
 
         <!-- Scroll to top -->
-        <i class="scroll-up" id="scroll-up">
-            <img src="gifts/icons8-scroll-up.gif" alt="Scroll Up" class="socicon up-arrow">
+        <i class="scroll-up fixed right-1 bottom-4 cursor-pointer" id="scroll-up">
+            <img src="gifts/icons8-scroll-up.gif" alt="Scroll Up" class="socicon w-8 h-8 up-arrow">
         </i>
 
         <!-- Footer section -->
-        <footer>
+        <footer class="p-5 text-center my-8 m-0">
             <p class="copy">&copy; Copyright 2022</p>
             <p class="copy">
                 Hecho con &#x2661; por <a href="https://linkedin.com/daniel-jaramillo-bustamante" target="_blank">Daniel
@@ -184,6 +221,7 @@
     </section>
 
     <!-- Website scripts -->
+    <script src="js/tailwind-config.js"></script>
     <script src="js/app.js"></script>
 
     <!-- Ion icons scripts -->
