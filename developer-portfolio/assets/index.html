@@ -27,40 +27,47 @@
         <!-- Header -->
         <header>
             <!-- Hamburguer Menu -->
-            <nav>
-                <div class="navbar">
-                    <div class="nav-container">
-                        <input type="checkbox" class="checkbox">
-    
-                        <div class="hamburger-lines">
-                            <span class="line line1"></span>
-                            <span class="line line2"></span>
-                            <span class="line line3"></span>
-                        </div>
-    
-                        <!-- Logo -->
-                        <div class="logo">
-                            <h1>DANIEL JARAMILLO</h1>
-                        </div>
-                        <div class="menu-items">
-                            <li><a href="#about" class="nav-link">About</a>
-                            </li>
-                            <li><a href="#skills" class="nav-link">Skills</a>
-                            </li>
-                            <li><a href="#projects" class="nav-link">Projects</a>
-                            </li>
-                            <li><a href="#contact" class="nav-link">Contact</a>
-                            </li>
-                        </div>
+            <nav class="flex items-center justify-between flex-wrap bg-dark-2 p-6">
+                <div class="flex items-center flex-shrink-0 text-dark-2 mr-6">
+                    <span class="font-semibold text-xl tracking-tight">Daniel Jaramillo</span>
+                </div>
+                <div class="hamburger block lg:hidden">
+                    <button class="button-menu flex items-center px-3 py-2 rounded hover:border-dark-2">
+                        <svg class="fill-current menu h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <title>Menu</title>
+                            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                        </svg>
+                        <svg class="fill-current close h-3 w-3 hidden" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Capa_1"
+                            viewBox="0 0 460.775 460.775" xml:space="preserve">
+                            <title>Close</title>
+                            <path
+                                d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Toggle Dark Mode -->
+                <img class="mode-type-theme cursor-pointer h-6 relative w-6" src="./icons/moon.png"
+                    alt="Icon for Mode Type" onclick="toggleDarkModeStyles()">
+
+                <div class="list-options w-full hidden flex-grow lg:flex lg:items-center lg:w-auto text-center">
+                    <div class="text-sm lg:flex-grow">
+                        <a href="#about" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white mr-4">
+                            About
+                        </a>
+                        <a href="#skills" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white mr-4">
+                            Skills
+                        </a>
+                        <a href="#projects" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white">
+                            Projects
+                        </a>
+                        <a href="#contact" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white">
+                            Contact
+                        </a>
                     </div>
                 </div>
             </nav>
-
-            <!-- Toggle Dark Mode -->
-            <!-- <input type="checkbox" id="toggle-button" class="absolute contents" />
-            <label for="toggle-button" id="label-toggle" class="bg-light-2 cursor-pointer h-6 relative w-6">
-                <div class="sun-moon bg-light-1 h-6 w-6"></div>
-            </label> -->
         </header>
 
         <!-- Hero Section -->
@@ -110,23 +117,18 @@
         <section class="skills" id="skills">
             <h2 class="skill-header m-8">¿Como lo hago?</h2>
 
-            <div class="skills-wrapper text-center">
-                <div class="first-set animate__animated animate__pulse">
-                    <img src="icons/icons8-angularjs.svg" alt="Angular"
-                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                    <img src="icons/icons8-git.svg" alt="Git" class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                    <img src="icons/icons8-typescript.svg" alt="TypeScript"
-                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                </div>
+            <div class="skills-wrapper flex flex-wrap justify-center">
+                <img src="icons/icons8-angularjs.svg" alt="Angular"
+                    class="icon icon-card p-3 hover:scale-110 w-32 h-32 m-3">
+                <img src="icons/icons8-git.svg" alt="Git" class="icon icon-card p-5 hover:scale-110 w-32 h-32 m-3">
+                <img src="icons/icons8-typescript.svg" alt="TypeScript"
+                    class="icon icon-card p-5 hover:scale-110 w-32 h-32 m-3">
 
-                <div class="second-set animate__animated animate__pulse">
-                    <img src="icons/icons8-html-5.svg" alt="HTML5"
-                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                    <img src="icons/icons8-bootstrap.svg" alt="Bootstrap"
-                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                    <img src="icons/icons8-javascript.svg" alt="JavaScript"
-                        class="icon icon-card p-5 hover:scale-110 w-64 h-60 m-3">
-                </div>
+                <img src="icons/icons8-html-5.svg" alt="HTML5" class="icon icon-card p-5 hover:scale-110 w-32 h-32 m-3">
+                <img src="icons/icons8-bootstrap.svg" alt="Bootstrap"
+                    class="icon icon-card p-5 hover:scale-110 w-32 h-32 m-3">
+                <img src="icons/icons8-javascript.svg" alt="JavaScript"
+                    class="icon icon-card p-5 hover:scale-110 w-32 h-32 m-3">
             </div>
         </section>
 
@@ -166,7 +168,7 @@
         <!-- Contact section -->
         <section class="contact" id="contact">
             <h2 class="text-center mb-4">¿Interesado? Hablemos..</h2>
-            <div class="contact-form-container max-w-2xl my-auto mx-4 p-4 hover:scale-105">
+            <div class="contact-form-container my-auto p-4 hover:scale-105">
                 <div class="contact-form">
                     <form action="https://formspree.io/xyylngw" method="POST">
                         <div class="form-control">
