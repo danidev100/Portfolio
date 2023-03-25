@@ -47,13 +47,6 @@ burguer.addEventListener('click', () => {
     }
 });
 
-// toggleButton.addEventListener('change', () => {
-//     document.body.classList.toggle('dark');
-
-//     const isInDarkMode = document.body.classList.contains('dark');
-//     toggleDarkModeStyles(isInDarkMode);
-// });
-
 function loadContent() {
     document.querySelector('#loader').style.display = 'none';
     document.querySelector('#container').style.display = 'block';

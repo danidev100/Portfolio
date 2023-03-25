@@ -2,6 +2,13 @@
 module.exports = {
   content: ['./assets/*.{html}'],
   theme: {
+    screens: {
+      'sm': '375px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     colors: {
       'bg-color': '#FCFCFC',
       'primary-color': '#4756DF',
