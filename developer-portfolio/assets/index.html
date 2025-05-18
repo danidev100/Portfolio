@@ -1,234 +1,385 @@
 <!DOCTYPE html>
 <html lang="es" class="w-full">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- CSS Styles -->
     <link rel="stylesheet" href="css/styles.css" />
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/favicon-32x32.png"
+    />
 
     <!-- Animate CSS CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <title>Daniel Jaramillo | Web Developer</title>
-</head>
+  </head>
 
-<body class="flex justify-center" onload="loadContent()">
+  <body class="flex justify-center" onload="loadContent()">
     <!-- Initial loading -->
     <section id="loader"></section>
     <!-- Navbar -->
-    <section class="container" id="container" style="display: none;">
-        <!-- Header -->
-        <header>
-            <!-- Hamburguer Menu -->
-            <nav class="flex items-center justify-between flex-wrap bg-dark-2 pl-6 pr-6">
-                <div class="flex items-center flex-shrink-0 text-dark-2 mr-6">
-                    <span class="font-semibold text-xl tracking-tight">Daniel Jaramillo</span>
-                </div>
-                <div class="hamburger block lg:hidden">
-                    <button class="button-menu flex items-center px-3 py-2 rounded hover:border-dark-2">
-                        <svg class="fill-current menu h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <title>Menu</title>
-                            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-                        </svg>
-                        <svg class="fill-current close h-3 w-3 hidden" xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Capa_1"
-                            viewBox="0 0 460.775 460.775" xml:space="preserve">
-                            <title>Close</title>
-                            <path
-                                d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="list-options hidden w-full flex-grow text-center lg:flex lg:items-center lg:w-auto">
-                    <div class="text-sm lg:flex-grow">
-                        <a href="#about" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white mr-4">
-                            About
-                        </a>
-                        <a href="#skills" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white mr-4">
-                            Skills
-                        </a>
-                        <a href="#projects" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white">
-                            Projects
-                        </a>
-                        <a href="#contact" class="block mt-4 lg:inline-block lg:mt-0 text-dark-2 hover:text-white">
-                            Contact
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Toggle Dark Mode -->
-                <img class="mode-type-theme cursor-pointer h-6 relative w-6 m-6" src="./icons/moon.png"
-                alt="Icon for Mode Type" onclick="toggleDarkModeStyles()">
-            </nav>
-
-        </header>
-
-        <!-- Hero Section -->
-        <section class="hero flex justify-center" id="about">
-            <img src="images/Portfolioimg.png" alt="Principal Image" loading="lazy" class="hero-img" />
-            <div class="bio animate__animated animate__shakeX m-5 p-5 hover:scale-105">
-                <h2 class="bio-title text-center font-bold">¿Quien Soy?</h2>
-                <p class="bio-text leading-7 p-1">
-                    Hola, ¿qué tal? ¡Es un placer saber de ti! Soy Daniel Jaramillo, y mi pasión es crear la mejor
-                    experiencia de usuario a través de sitios web y aplicaciones que te hagan decir ¡WOW! He realizado
-                    algunos proyectos interesantes que puedes encontrar haciendo click <a href="#projects">aquí</a>.
-                    Espero
-                    que disfrutes de tu
-                    visita, y si tienes una idea que compartir conmigo, <a href="#contact">hazmela saber</a>, y juntos
-                    la
-                    crearemos. ¡Si no,
-                    compartir un café también estará fantástico!
-                </p>
+    <section class="container" id="container" style="display: none">
+      <!-- Header -->
+      <header>
+        <nav class="bg-gray-900 py-6 relative rounded-b-xl">
+          <div class="nav-container mx-auto flex px-8 xl:px-0">
+            <div class="flex lg:hidden">
+              <img
+                src="icons/icon-menu.png"
+                alt="Menu Icon"
+                onclick="openMenu()"
+              />
             </div>
-        </section>
+            <div
+              id="menu"
+              class="lg:flex hidden flex-grow justify-between absolute lg:relative lg:top-0 top-20 left-0 bg-gray-900 w-full items-center py-14 lg:py-0 px-8 lg:w-auto z-10 sm:px-24 lg:px-0"
+            >
+              <div class="flex flex-col lg:flex-row mb-8 lg:mb-0 text-center">
+                <a
+                  href="#about"
+                  class="text-black text-white lg:mr-7 mb-6 lg:mb-0"
+                >
+                  <!-- About -->
+                  About
+                </a>
+                <a
+                  href="#skills"
+                  class="text-black text-white lg:mr-7 mb-6 lg:mb-0"
+                >
+                  <!-- Skills -->
+                  Skills
+                </a>
+                <a
+                  href="#projects"
+                  class="text-black text-white lg:mr-7 mb-6 lg:mb-0"
+                >
+                  <!-- Projects -->
+                  Projects
+                </a>
+                <a href="#contact" class="text-black text-white">
+                  <!-- Contact -->
+                  Contact
+                </a>
+              </div>
 
-        <!-- More About -->
-        <section class="more-about m-5 p-5">
-            <h2 class="mb-2 text-center font-bold">Quizas te pueda interesar..</h2>
-            <p class="leading-7 p-2">
-                Bueno, para que sepas más sobre mí, tengo alrededor de 5+ años trabajando con diferentes empleadores, y
-                en
-                cada
-                uno, tuve la oportunidad de crear increíbles sitios web corporativos y plataformas que dan no sólo un
-                buen
-                rendimiento
-                sino también una gran interfaz, intuitiva y amigable, con la capacidad de ver su contenido tanto desde
-                un
-                teléfono móvil, tableta u ordenador.
-            </p>
-            <p>
-                Te cuento también que mi gran motivador para entregar grandes experiencias es ver como a través de la
-                tecnología, podemos hacer realidad nuestras ideas mas locas, y es por esto también que dedico gran parte
-                de
-                mi tiempo a entregar este tipo de experiencias a una calidad superior. Lo que quiero decir, es que amo
-                hacer
-                esto, y estoy seguro que lo veremos reflejado en nuestro próximo proyecto juntos.
-            </p>
-        </section>
-
-        <!-- Skills section -->
-        <section class="skills" id="skills">
-            <h2 class="skill-header m-8 text-center font-bold">¿Que podría usar tu próximo sitio?</h2>
-
-            <div class="skills-wrapper flex flex-wrap justify-center">
-                <img src="icons/icons8-angularjs.svg" alt="Angular"
-                    class="icon icon-card p-3 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
-                <img src="icons/icons8-git.svg" alt="Git"
-                    class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
-                <img src="icons/icons8-typescript.svg" alt="TypeScript"
-                    class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
-
-                <img src="icons/icons8-html-5.svg" alt="HTML5"
-                    class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
-                <img src="icons/icons8-bootstrap.svg" alt="Bootstrap"
-                    class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
-                <img src="icons/icons8-javascript.svg" alt="JavaScript"
-                    class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3">
+              <!-- Toggle Dark Mode -->
+              <div class="flex flex-col lg:flex-row items-center">
+                <img
+                  class="cursor-pointer h-6 w-6 lg:mr-4"
+                  src="./icons/moon.png"
+                  alt="Icon for Mode Type"
+                  onclick="toggleDarkModeStyles()"
+                />
+              </div>
             </div>
-        </section>
+          </div>
+        </nav>
+      </header>
 
-        <!-- Projects section -->
-        <section class="projects py-8 px-0 mt-8" id="projects">
-            <h2 class="projects-title text-center mb-4 font-bold">¿Que podría hacer por ti?</h2>
-            <div class="projects-container flex self-center justify-center">
-                <div class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card">
-                    <img src="images/todo.PNG" alt="TODO" loading="lazy" class="project-pic object-contain w-full md:h-52">
-                    <div class="content-description">
-                        <h3 class="project-title mb-2 font-bold">To Do</h3>
-                        <p class="project-details mb-2">
-                            Sitio para ordenar actividades tanto personales como profesionales.
-                        </p>
-                        <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
-                    </div>
-                </div>
-                <div class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card">
-                    <img src="images/netflix.jfif" alt="Netflix Clone" loading="lazy"
-                        class="project-pic object-contain w-full md:h-52">
-                    <div class="content-description">
-                        <h3 class="project-title mb-2 font-bold">Clon de Netflix</h3>
-                        <p class="project-details mb-2">
-                            Proyecto mas interesante con mas animaciones y vistas mas interesantes.
-                        </p>
-                        <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
-                    </div>
-                </div>
-                <div class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card">
-                    <img src="images/shopping.jpg" alt="Shop Online" loading="lazy"
-                        class="project-pic object-contain w-full md:h-52">
-                    <div class="content-description">
-                        <h3 class="project-title mb-2 font-bold">Shop Online</h3>
-                        <p class="project-details mb-2">
-                            Tienda Online con simulación de conexión a pasarela de pagos para tus productos.
-                        </p>
-                        <a href="#" target="_blank" class="project-link">Echale un vistazo</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact section -->
-        <section class="contact" id="contact">
-            <h2 class="text-center mb-4 font-bold">¿Interesado? Hablemos..</h2>
-            <div class="contact-form-container my-auto p-4 hover:scale-105 m-6">
-                <div class="contact-form">
-                    <form action="https://formspree.io/xyylngw" method="POST">
-                        <div class="form-control">
-                            <label class="leading-10 font-bold text-primary-color" for="name">Nombre</label>
-                            <input type="text" id="name" name="sender-name" placeholder="¿Como te llamas?"
-                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
-                                required>
-                        </div>
-                        <div class="form-control">
-                            <label class="leading-10 font-bold text-primary-color" for="email">Email</label>
-                            <input type="email" id="email" name="sender-email" placeholder="¿Donde puedo contactarte?"
-                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
-                                required>
-                        </div>
-                        <div class="form-control">
-                            <label class="leading-10 font-bold text-primary-color" for="message">Message</label>
-                            <textarea name="message" id="message" cols="60" rows="10"
-                                placeholder="Hablame un poco sobre lo que tienes en mente.."
-                                class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
-                                required class="text-sm"></textarea>
-                        </div>
-                        <input type="submit" value="Ponerme en Contacto" id="submit-btn"
-                            class="submit-btn w-full p-2 my-2 mx-0 bg-light-0 text-base font-bold hover:bg-primary-color cursor-pointer" />
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- Social accounts - Fixed to the right -->
-        <div class="socials flex flex-col fixed right-4 bottom-1/2">
-            <a href="https://www.linkedin.com/in/daniel-jaramillo-bustamante" target="_blank">
-                <img src="gifts/icons8-linkedin-circled.gif" alt="LinkedIn" loading="lazy" class="socicon w-8 h-8">
-            </a>
-            <a href="https://github.com/danidev100" target="_blank">
-                <img src="gifts/icons8-github.gif" alt="GitHub" loading="lazy" class="socicon w-8 h-8">
-            </a>
+      <!-- Hero Section -->
+      <section
+        class="hero flex justify-center flex-col items-center pt-28"
+        id="about"
+      >
+        <div class="flex items-center flex-shrink-0 text-dark-2 mr-6">
+          <span class="font-semibold text-xl tracking-tight"
+            >Daniel Jaramillo</span
+          >
         </div>
+        <img
+          src="images/Portfolioimg.png"
+          alt="Principal Image"
+          loading="lazy"
+          class="hero-img"
+        />
+        <div
+          class="bio animate__animated animate__shakeX m-5 p-5 hover:scale-105"
+        >
+          <h2 class="bio-title text-center font-bold">¿Quien Soy?</h2>
+          <p class="bio-text leading-7 p-1">
+            Hola, ¿qué tal? ¡Es un placer saber de ti! Soy Daniel Jaramillo, y
+            mi pasión es crear la mejor experiencia de usuario a través de
+            sitios web y aplicaciones que te hagan decir ¡WOW! He realizado
+            algunos proyectos interesantes que puedes encontrar haciendo click
+            <a href="#projects">aquí</a>. Espero que disfrutes de tu visita, y
+            si tienes una idea que compartir conmigo,
+            <a href="#contact">hazmela saber</a>, y juntos la crearemos. ¡Si no,
+            compartir un café también estará fantástico!
+          </p>
+        </div>
+      </section>
 
-        <!-- Scroll to top -->
-        <i class="scroll-up fixed right-1 bottom-4 cursor-pointer" id="scroll-up">
-            <img src="gifts/icons8-scroll-up.gif" alt="Scroll Up" class="socicon w-8 h-8 up-arrow">
-        </i>
+      <!-- More About -->
+      <section class="more-about m-5 p-5">
+        <h2 class="mb-2 text-center font-bold">Quizas te pueda interesar..</h2>
+        <p class="leading-7 p-2">
+          Bueno, para que sepas más sobre mí, tengo alrededor de 5+ años
+          trabajando con diferentes empleadores, y en cada uno, tuve la
+          oportunidad de crear increíbles sitios web corporativos y plataformas
+          que dan no sólo un buen rendimiento sino también una gran interfaz,
+          intuitiva y amigable, con la capacidad de ver su contenido tanto desde
+          un teléfono móvil, tableta u ordenador.
+        </p>
+        <p>
+          Te cuento también que mi gran motivador para entregar grandes
+          experiencias es ver como a través de la tecnología, podemos hacer
+          realidad nuestras ideas mas locas, y es por esto también que dedico
+          gran parte de mi tiempo a entregar este tipo de experiencias a una
+          calidad superior. Lo que quiero decir, es que amo hacer esto, y estoy
+          seguro que lo veremos reflejado en nuestro próximo proyecto juntos.
+        </p>
+      </section>
 
-        <!-- Footer section -->
-        <footer class="p-5 text-center my-8 m-0">
-            <p class="copy">&copy; Copyright 2022</p>
-            <p class="copy">
-                Hecho con &#x2661; por <a href="https://linkedin.com/daniel-jaramillo-bustamante" target="_blank">Daniel
-                    Jaramillo</a>
-            </p>
-        </footer>
+      <!-- Skills section -->
+      <section class="skills" id="skills">
+        <h2 class="skill-header m-8 text-center font-bold">
+          ¿Que podría usar tu próximo sitio?
+        </h2>
+
+        <div class="skills-wrapper flex flex-wrap justify-center">
+          <img
+            src="icons/icons8-angularjs.svg"
+            alt="Angular"
+            class="icon icon-card p-3 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-git.svg"
+            alt="Git"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-typescript.svg"
+            alt="TypeScript"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+
+          <img
+            src="icons/icons8-html-5.svg"
+            alt="HTML5"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-bootstrap.svg"
+            alt="Bootstrap"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-javascript.svg"
+            alt="JavaScript"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+
+          <img
+            src="icons/icons8-tailwind-css.svg"
+            alt="HTML5"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-node-js.svg"
+            alt="Bootstrap"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+          <img
+            src="icons/icons8-express-js.svg"
+            alt="JavaScript"
+            class="icon icon-card p-5 hover:scale-105 w-32 h-32 m-3 md:w-1/4 md:h-1/3"
+          />
+        </div>
+      </section>
+
+      <!-- Projects section -->
+      <section class="projects py-8 px-0 mt-8" id="projects">
+        <h2 class="projects-title text-center mb-4 font-bold">
+          ¿Que podría hacer por ti?
+        </h2>
+        <div class="projects-container flex self-center justify-center">
+          <div
+            class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card"
+          >
+            <img
+              src="images/todo.PNG"
+              alt="TODO"
+              loading="lazy"
+              class="project-pic object-contain w-full md:h-52"
+            />
+            <div class="content-description">
+              <h3 class="project-title mb-2 font-bold">To Do</h3>
+              <p class="project-details mb-2">
+                Sitio para ordenar actividades tanto personales como
+                profesionales.
+              </p>
+              <a href="#" target="_blank" class="project-link"
+                >Echale un vistazo</a
+              >
+            </div>
+          </div>
+          <div
+            class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card"
+          >
+            <img
+              src="images/netflix.jfif"
+              alt="Netflix Clone"
+              loading="lazy"
+              class="project-pic object-contain w-full md:h-52"
+            />
+            <div class="content-description">
+              <h3 class="project-title mb-2 font-bold">Clon de Netflix</h3>
+              <p class="project-details mb-2">
+                Proyecto mas interesante con mas animaciones y vistas mas
+                interesantes.
+              </p>
+              <a href="#" target="_blank" class="project-link"
+                >Echale un vistazo</a
+              >
+            </div>
+          </div>
+          <div
+            class="project-container hover:scale-105 text-center w-80 p-5 m-5 project-card"
+          >
+            <img
+              src="images/shopping.jpg"
+              alt="Shop Online"
+              loading="lazy"
+              class="project-pic object-contain w-full md:h-52"
+            />
+            <div class="content-description">
+              <h3 class="project-title mb-2 font-bold">Shop Online</h3>
+              <p class="project-details mb-2">
+                Tienda Online con simulación de conexión a pasarela de pagos
+                para tus productos.
+              </p>
+              <a href="#" target="_blank" class="project-link"
+                >Echale un vistazo</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact section -->
+      <section class="contact" id="contact">
+        <h2 class="text-center mb-4 font-bold">¿Interesado? Hablemos..</h2>
+        <div class="contact-form-container my-auto p-4 hover:scale-105 m-6">
+          <div class="contact-form">
+            <form action="https://formspree.io/xyylngw" method="POST">
+              <div class="form-control">
+                <label
+                  class="leading-10 font-bold text-primary-color"
+                  for="name"
+                  >Nombre</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  name="sender-name"
+                  placeholder="¿Como te llamas?"
+                  class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                  required
+                />
+              </div>
+              <div class="form-control">
+                <label
+                  class="leading-10 font-bold text-primary-color"
+                  for="email"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="sender-email"
+                  placeholder="¿Donde puedo contactarte?"
+                  class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                  required
+                />
+              </div>
+              <div class="form-control">
+                <label
+                  class="leading-10 font-bold text-primary-color"
+                  for="message"
+                  >Message</label
+                >
+                <textarea
+                  name="message"
+                  id="message"
+                  cols="60"
+                  rows="10"
+                  placeholder="Hablame un poco sobre lo que tienes en mente.."
+                  class="input-field placeholder:p-2 text-primary-color w-full p-2 text-sm outline-none"
+                  required
+                  class="text-sm"
+                ></textarea>
+              </div>
+              <input
+                type="submit"
+                value="Ponerme en Contacto"
+                id="submit-btn"
+                class="submit-btn w-full p-2 my-2 mx-0 bg-light-0 text-base font-bold hover:bg-primary-color cursor-pointer"
+              />
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Social accounts - Fixed to the right -->
+      <div class="socials flex flex-col fixed right-4 bottom-1/2">
+        <a
+          href="https://www.linkedin.com/in/daniel-jaramillo-bustamante"
+          target="_blank"
+        >
+          <img
+            src="gifts/icons8-linkedin-circled.gif"
+            alt="LinkedIn"
+            loading="lazy"
+            class="socicon w-8 h-8"
+          />
+        </a>
+        <a href="https://github.com/danidev100" target="_blank">
+          <img
+            src="gifts/icons8-github.gif"
+            alt="GitHub"
+            loading="lazy"
+            class="socicon w-8 h-8"
+          />
+        </a>
+      </div>
+
+      <!-- Scroll to top -->
+      <i class="scroll-up fixed right-1 bottom-4 cursor-pointer" id="scroll-up">
+        <img
+          src="gifts/icons8-scroll-up.gif"
+          alt="Scroll Up"
+          class="socicon w-8 h-8 up-arrow"
+        />
+      </i>
+
+      <!-- Footer section -->
+      <footer class="p-5 text-center my-8 m-0">
+        <p class="copy">&copy; Copyright 2022</p>
+        <p class="copy">
+          Hecho con &#x2661; por
+          <a
+            href="https://linkedin.com/daniel-jaramillo-bustamante"
+            target="_blank"
+            >Daniel Jaramillo</a
+          >
+        </p>
+      </footer>
     </section>
 
     <!-- Website scripts -->
@@ -236,8 +387,13 @@
     <script src="js/app.js"></script>
 
     <!-- Ion icons scripts -->
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
-
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
 </html>
