@@ -23,6 +23,23 @@
   --color-positive: #7fe0c2;
   --color-on-positive: #0c0f14;
 
+  /* Categorical palette: tells apart items of one kind, such as projects. */
+  --color-series-1: #ffb877;
+  --color-series-2: #ffd36e;
+  --color-series-3: #8fb3ff;
+  --color-series-4: #7fe0c2;
+  --color-series-5: #c9a7ff;
+  --color-series-6: #6fd3ff;
+  --color-series-7: #ff9db8;
+  --color-series-8: #a6e37f;
+  --color-on-series: #0c0f14;
+
+  /*
+   * Width of a card in the projects orbit, relative to its container. The ring
+   * radius and the perspective derive from it, so the whole orbit scales as one.
+   */
+  --spacing-orbit-card: clamp(12.5rem, 30cqi, 16rem);
+
   /* Nothing is square: controls are pills (`rounded-full`), the rest uses these. */
   --radius-*: initial;
   --radius-control: 14px;

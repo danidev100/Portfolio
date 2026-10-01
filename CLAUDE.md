@@ -48,7 +48,11 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Nada tiene esquinas rectas: `rounded-control`, `rounded-card`, `rounded-window` o `rounded-full`.
 - Sin shadcn: componentes `ui` propios con `cva` + `tailwind-merge`.
 - ESLint se queda en v9 y TypeScript en v6 hasta que `eslint-config-next` y `typescript-eslint` soporten las versiones siguientes.
-- El texto va en DOM; el 3D se renderiza en un Canvas persistente con `View` de drei.
+- El texto va en DOM. El fondo 3D del escritorio es un Canvas WebGL persistente detrás del shell.
+- No se usa `View` de drei para dibujar dentro de las ventanas (cambia la decisión 1 de `HANDOFF.md`): un canvas ocupa una sola capa y las ventanas se solapan. El contenido 3D de una ventana vive en el DOM de esa ventana.
+- La órbita de proyectos es CSS 3D sobre DOM, sin WebGL: las tarjetas son botones reales y la página directa se renderiza en servidor. Toda su geometría deriva de `--spacing-orbit-card`.
+- Dentro de un contexto 3D de CSS no se usa `layoutId` de Motion: no puede corregir rotaciones ni perspectiva y deforma el contenido. El caso de un proyecto se revela con `clip-path` desde el rectángulo de su tarjeta.
+- Duraciones, curvas y radios que Motion necesita como números están en `shared/util/motion.ts`. `MotionProvider` (en el layout raíz) aplica "reducir movimiento" a toda la app.
 - El Canvas usa `frameloop="demand"`: quien anime algo llama a `invalidate()` mientras se mueve y deja de hacerlo al llegar. En reposo no se dibuja ningún frame.
 - Todo `@/scene` se carga con `next/dynamic` y `ssr: false`; nada fuera de ese dominio importa `three` de forma estática, para que no entre en la carga inicial.
 - Los materiales leen los colores de los tokens CSS con `readThemeColor`; no hay hex en la escena.
