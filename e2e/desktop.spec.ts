@@ -1,5 +1,26 @@
 import { expect, test } from '@playwright/test';
 
+test.describe('3d backdrop', () => {
+  test('renders behind the shell, hidden from assistive technology', async ({ page }) => {
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error));
+
+    await page.goto('/');
+
+    await expect(page.locator('[aria-hidden="true"] canvas')).toBeVisible();
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('does not get in the way of the dock', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('canvas')).toBeVisible();
+
+    await page.getByRole('link', { name: 'Contacto' }).click();
+
+    await expect(page.getByRole('dialog', { name: 'Contacto' })).toBeVisible();
+  });
+});
+
 test.describe('desktop shell', () => {
   test('opens an app in a window with its own URL', async ({ page }) => {
     await page.goto('/');

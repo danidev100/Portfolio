@@ -49,6 +49,10 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Sin shadcn: componentes `ui` propios con `cva` + `tailwind-merge`.
 - ESLint se queda en v9 y TypeScript en v6 hasta que `eslint-config-next` y `typescript-eslint` soporten las versiones siguientes.
 - El texto va en DOM; el 3D se renderiza en un Canvas persistente con `View` de drei.
+- El Canvas usa `frameloop="demand"`: quien anime algo llama a `invalidate()` mientras se mueve y deja de hacerlo al llegar. En reposo no se dibuja ningún frame.
+- Todo `@/scene` se carga con `next/dynamic` y `ssr: false`; nada fuera de ese dominio importa `three` de forma estática, para que no entre en la carga inicial.
+- Los materiales leen los colores de los tokens CSS con `readThemeColor`; no hay hex en la escena.
+- La matemática de cámara y layout vive en `scene/util` como funciones puras con tests; lo que necesita WebGL se verifica en e2e.
 
 ## No tocar
 

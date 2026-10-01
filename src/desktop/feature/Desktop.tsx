@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, MotionConfig } from 'motion/react';
+import dynamic from 'next/dynamic';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 
 import { ActivitiesOverview } from '../ui/ActivitiesOverview';
@@ -9,7 +10,16 @@ import { Dock } from '../ui/Dock';
 import { TopBar } from '../ui/TopBar';
 import { Window } from '../ui/Window';
 import { APP_IDS, APPS, type AppId } from '../util/apps';
+import { APP_SCENE_PANELS } from './appScenePanels';
 import { useDesktopWindows } from './useDesktopWindows';
+
+/**
+ * Loaded after the shell is interactive and never on the server: three.js
+ * stays out of the first load and the CSS wallpaper covers until it arrives.
+ */
+const DesktopScene = dynamic(() => import('@/scene').then((scene) => scene.DesktopScene), {
+  ssr: false,
+});
 
 const OVERVIEW_ID = 'activities-overview';
 
@@ -55,9 +65,14 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
   return (
     <MotionConfig reducedMotion="user">
       <div
-        className="grid h-dvh grid-rows-[auto_1fr_auto] gap-3 bg-wallpaper p-3"
+        className="relative isolate grid h-dvh grid-rows-[auto_1fr_auto] gap-3 bg-wallpaper p-3"
         onKeyDown={closeOverviewOnEscape}
       >
+        <DesktopScene
+          panels={APP_SCENE_PANELS}
+          activePanelId={focusedId}
+          isPulledBack={isOverviewOpen}
+        />
         <TopBar
           isOverviewOpen={isOverviewOpen}
           overviewId={OVERVIEW_ID}
