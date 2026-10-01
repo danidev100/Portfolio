@@ -3,8 +3,10 @@
 /*
  * Design tokens. The default color, radius and font scales are reset so that
  * only semantic tokens exist: `bg-blue-500` or `rounded-sm` do not compile.
+ * `static` emits every token as a CSS variable, used or not, because the 3D
+ * scene reads its colors from them at runtime.
  */
-@theme {
+@theme static {
   --color-*: initial;
   --color-canvas: #0c0f14;
   --color-surface: #141922;
