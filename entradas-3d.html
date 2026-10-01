@@ -1,0 +1,663 @@
+<title>Entradas 3D del Portafolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: escenario 3D protagonista + panel lateral del concepto; todo con radios generosos, nada de esquinas rectas */
+:root{
+  --bg:#0C0F14; --surface:#141922; --surface-2:#1B2230; --line:#283143;
+  --fg:#E8EBF2; --muted:#949DB0; --accent:#8FB3FF; --warm:#FFB877; --mint:#7FE0C2; --violet:#C9A7FF;
+  --display:'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --body:'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --r-xl:28px; --r-lg:20px; --r-md:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:20px;padding-block:40px 72px;display:flex;flex-direction:column;gap:28px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,4.6vw,52px);line-height:1.04;letter-spacing:-.02em;margin:8px 0 12px;text-wrap:balance;max-width:18ch}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch;margin:0;font-size:16px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:500;font-size:19px;margin:0}
+
+/* Tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;width:fit-content;max-width:100%}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);font:500 14px var(--body);padding:10px 18px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .3s,color .3s}
+.tab .k{font-family:var(--mono);font-size:11px;opacity:.7}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{background:var(--surface-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,.stage:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Stage + panel */
+.grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:920px){.grid{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative;height:clamp(420px,52vw,600px);border-radius:var(--r-xl);overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 10%,#1B2333 0%,#10141C 55%,#0A0D12 100%);
+  border:1px solid var(--line);touch-action:pan-y;user-select:none}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.stage canvas.hot{cursor:pointer}
+.stage canvas.drag{cursor:grabbing}
+.veil{position:absolute;inset:0;background:#0A0D12;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.veil.on{opacity:1}
+.pill{border-radius:999px}
+.hint{position:absolute;left:16px;bottom:16px;padding:8px 14px;background:rgba(12,15,20,.72);backdrop-filter:blur(10px);border:1px solid var(--line);font-size:12.5px;color:var(--muted);pointer-events:none;max-width:calc(100% - 32px)}
+.chip-focus{position:absolute;right:16px;top:16px;padding:8px 14px;background:rgba(143,179,255,.14);border:1px solid rgba(143,179,255,.4);color:var(--fg);font-size:13px;backdrop-filter:blur(10px);max-width:calc(100% - 200px)}
+.chip-focus b{color:var(--accent);font-weight:600}
+.back{position:absolute;left:16px;top:16px;appearance:none;border:1px solid var(--line);background:rgba(12,15,20,.78);backdrop-filter:blur(10px);color:var(--fg);font:500 13px var(--body);padding:8px 14px;cursor:pointer}
+.back:hover{border-color:var(--accent)}
+
+/* Overlay: grafo IA */
+.ask{position:absolute;left:16px;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.answer{align-self:flex-start;max-width:min(560px,100%);max-height:132px;overflow:auto;padding:12px 16px;border-radius:var(--r-lg);background:rgba(20,25,34,.88);backdrop-filter:blur(12px);border:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.answer .who{font-family:var(--mono);font-size:11px;color:var(--violet);letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px}
+.answer .caret{display:inline-block;width:7px;height:14px;background:var(--violet);vertical-align:-2px;margin-left:2px;border-radius:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{appearance:none;border:1px solid var(--line);background:rgba(20,25,34,.8);color:var(--fg);font:500 12.5px var(--body);padding:7px 12px;border-radius:999px;cursor:pointer;backdrop-filter:blur(8px)}
+.chips button:hover{border-color:var(--violet)}
+.askform{display:flex;gap:8px;padding:6px;border-radius:999px;background:rgba(20,25,34,.9);border:1px solid var(--line);backdrop-filter:blur(12px)}
+.askform input{flex:1;min-width:0;background:transparent;border:0;color:var(--fg);font:15px var(--body);padding:8px 12px;outline:none}
+.askform input::placeholder{color:var(--muted)}
+.askform button{appearance:none;border:0;border-radius:999px;background:var(--violet);color:#1A1226;font:600 13px var(--body);padding:8px 16px;cursor:pointer}
+
+/* Overlay: órbita */
+.orbit-nav{position:absolute;right:16px;bottom:16px;display:flex;gap:8px}
+.orbit-nav button{appearance:none;width:42px;height:42px;border-radius:999px;border:1px solid var(--line);background:rgba(20,25,34,.85);color:var(--fg);font-size:18px;cursor:pointer;backdrop-filter:blur(8px)}
+.orbit-nav button:hover{border-color:var(--accent)}
+.detail{position:absolute;right:16px;top:64px;bottom:72px;width:min(340px,40%);overflow:auto;padding:18px 20px;border-radius:var(--r-lg);background:rgba(20,25,34,.9);backdrop-filter:blur(14px);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:13.5px;animation:rise .45s cubic-bezier(.2,.8,.2,1)}
+.detail h3{font-size:22px}
+.detail dl{margin:0;display:grid;gap:8px}
+.detail dt{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.detail dd{margin:0}
+@keyframes rise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media (max-width:640px){
+  .detail{left:16px;right:16px;width:auto;top:auto;bottom:72px;max-height:46%}
+  .chip-focus{display:none}
+}
+
+/* Panel */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel .tagline{color:var(--muted);margin:6px 0 0}
+.facts{display:grid;gap:14px;margin:0}
+.facts dt{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.facts dd{margin:0}
+.facts dd.ai{color:var(--fg)}
+.facts dd.ai::before{content:"";display:inline-block;width:8px;height:8px;border-radius:999px;background:var(--violet);margin-right:8px;vertical-align:1px}
+.meters{display:flex;flex-wrap:wrap;gap:8px}
+.meter{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--surface-2);font-size:12.5px;color:var(--muted)}
+.meter b{color:var(--fg);font-weight:600}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:7px;height:7px;border-radius:99px;background:var(--line)}
+.dots i.on{background:var(--accent)}
+.ref{font-size:13px;color:var(--muted)}
+.ref a{color:var(--accent)}
+
+/* Recomendación */
+.reco{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px}
+@media (max-width:860px){.reco{grid-template-columns:minmax(0,1fr)}}
+.reco p{color:var(--muted);margin:10px 0 0;max-width:60ch}
+.layers{display:flex;flex-direction:column;gap:10px}
+.layer{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--r-lg);background:var(--surface-2)}
+.layer .sw{flex:none;width:12px;height:12px;border-radius:99px;margin-top:6px}
+.layer div{min-width:0}
+.layer b{display:block;font-weight:600}
+.layer span{color:var(--muted);font-size:13.5px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.rule{padding:18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line)}
+.rule b{display:block;margin-bottom:4px;font-weight:600}
+.rule span{color:var(--muted);font-size:13.5px}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted)}
+footer{color:var(--muted);font-size:12.5px;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){.veil,.tab{transition:none}.detail{animation:none}.answer .caret{animation:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Exploración · Portafolio de Daniel Jaramillo</div>
+    <h1>Cuatro formas de <em>entrar</em> a tu portafolio en 3D</h1>
+    <p class="lead">Cada escena es un prototipo funcional del patrón de navegación. Arrastra, haz clic en los objetos y prueba las transiciones de cámara. Elige una dirección o una mezcla, y la pulimos.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Conceptos de entrada" id="tabs"></div>
+
+  <section class="grid">
+    <div class="stage" id="stage" tabindex="0" aria-label="Escena 3D interactiva">
+      <canvas id="gl"></canvas>
+      <div class="veil on" id="veil"></div>
+      <div class="hint pill" id="hint"></div>
+      <div class="chip-focus pill" id="focusChip" hidden></div>
+      <button class="back pill" id="backBtn" hidden>← Vista general</button>
+
+      <div class="ask" id="ovAsk" hidden>
+        <div class="answer" id="answer" aria-live="polite"><span class="who">Asistente del portafolio</span><span id="answerText">Pregúntame por la experiencia de Dani. El grafo se reorganiza según la respuesta.</span></div>
+        <div class="chips" id="chips"></div>
+        <form class="askform" id="askForm" autocomplete="off">
+          <input id="askInput" type="text" placeholder="Ej.: ¿qué experiencia tiene en móvil?" aria-label="Pregunta al portafolio">
+          <button type="submit">Preguntar</button>
+        </form>
+      </div>
+
+      <div id="ovOrbit" hidden>
+        <div class="orbit-nav">
+          <button id="prevCard" aria-label="Proyecto anterior">‹</button>
+          <button id="nextCard" aria-label="Proyecto siguiente">›</button>
+        </div>
+        <div class="detail" id="detail" hidden></div>
+      </div>
+
+      <div class="fallback" id="fallback" hidden>Tu navegador no pudo iniciar WebGL. En el sitio real esta escena tendría una versión 2D con las mismas transiciones.</div>
+    </div>
+
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </section>
+
+  <section class="reco">
+    <div>
+      <div class="eyebrow">Mi recomendación</div>
+      <h2 style="margin-top:8px">Un escritorio como shell, el grafo IA como protagonista</h2>
+      <p>Para un rol de AI App Developer, el 3D abre la puerta pero la IA funcionando es lo que cierra la entrevista. Propongo combinar tres de las escenas en capas, con el estudio como versión 2 o como guiño escondido.</p>
+      <p>El 3D se carga de forma diferida: la primera pintura es HTML liviano con las mismas formas redondeadas, y la escena entra encima con un dolly de cámara. Así no castigas el LCP ni a quien entra desde el celular.</p>
+    </div>
+    <div class="layers">
+      <div class="layer"><span class="sw" style="background:var(--accent)"></span><div><b>Shell · Dani OS</b><span>Navegación tipo GNOME: ventanas que se expanden con transición compartida, dock y vista de Actividades.</span></div></div>
+      <div class="layer"><span class="sw" style="background:var(--violet)"></span><div><b>Ventana Terminal · Grafo IA</b><span>RAG sobre tu CV con streaming SSE y tool-calling que mueve la cámara a los nodos relevantes.</span></div></div>
+      <div class="layer"><span class="sw" style="background:var(--warm)"></span><div><b>Ventana Proyectos · Órbita</b><span>Las ideas de valor como tarjetas en órbita; cada una abre su caso con demo en vivo.</span></div></div>
+      <div class="layer"><span class="sw" style="background:var(--mint)"></span><div><b>Extra · Estudio isla</b><span>Easter egg al pulsar el fondo de pantalla, o la portada de una versión 2.</span></div></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <h2>Reglas que aplican a cualquier dirección</h2>
+    <div class="rules">
+      <div class="rule"><b>Cero saltos</b><span>Cámara con amortiguación exponencial, View Transitions API entre rutas y scroll suavizado. Ninguna sección aparece de golpe.</span></div>
+      <div class="rule"><b>Todo redondeado</b><span>Ventanas, tarjetas, botones y la propia isla. Radios de 14 a 28 px y píldoras para controles.</span></div>
+      <div class="rule"><b>Presupuesto de rendimiento</b><span>Menos de 1,5 MB en la primera carga, modelos GLB con Draco, render solo cuando la escena está visible.</span></div>
+      <div class="rule"><b>Accesible y con salida 2D</b><span>Teclado completo, respeto a reducir movimiento y una versión plana con el mismo contenido para equipos lentos.</span></div>
+    </div>
+  </section>
+
+  <footer>Prototipos hechos con Three.js r128 · la versión final usaría la pila que elijamos</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (id)=>document.getElementById(id);
+const stage=$('stage'), canvas=$('gl'), veil=$('veil'), hint=$('hint'), focusChip=$('focusChip'), backBtn=$('backBtn');
+
+/* ---------- Información de cada concepto ---------- */
+const INFO = [
+  { key:'os', tab:'Dani OS', name:'Dani OS · escritorio espacial',
+    tagline:'El portafolio arranca como un escritorio GNOME flotando en 3D. Cada ventana es una sección y al abrirla la cámara entra y la ventana se expande a pantalla completa.',
+    nav:'Clic en una ventana, en el dock o con atajos de teclado. La tecla Super abre Actividades con todas las ventanas en vista panorámica.',
+    ai:'La Terminal acepta lenguaje natural ("muéstrame proyectos con streaming") y un agente abre ventanas mediante tool-calling.',
+    why:'Muestra lo que mejor haces: arquitectura de frontend. Un gestor de ventanas exige estado, routing y composición bien resueltos.',
+    effort:3, perf:1, weeks:'3–4 semanas', hint:'Clic en una ventana para entrar · arrastra para orbitar',
+    ref:['kevinbarrios.dev','https://www.kevinbarrios.dev/'] },
+  { key:'studio', tab:'Estudio isla', name:'Estudio isla · tu escritorio low-poly',
+    tagline:'Una escena de tu puesto de trabajo sobre una isla redonda. Los objetos son las secciones: el monitor, la libreta, el teléfono y la planta.',
+    nav:'La cámara hace dolly al objeto y su pantalla se convierte en la interfaz HTML real (Html de drei o CSS3DRenderer).',
+    ai:'El teléfono abre un agente de contacto que entiende qué buscas y agenda una llamada; el monitor muestra demos IA en vivo.',
+    why:'Es la más memorable y cuenta una historia personal. Se recuerda días después de verla.',
+    effort:3, perf:3, weeks:'4–5 semanas (incluye Blender)', hint:'Clic en un objeto con marcador · arrastra para girar',
+    ref:['david-hckh.com','https://david-hckh.com'] },
+  { key:'graph', tab:'Grafo IA', name:'Grafo IA · tu experiencia como red',
+    tagline:'Tu trayectoria como un grafo 3D de empresas, habilidades y logros. Preguntas en lenguaje natural y el grafo se reorganiza alrededor de la respuesta.',
+    nav:'Escribes o eliges una pregunta; los nodos relevantes se iluminan y la cámara vuela hacia ellos. Clic en un nodo para ver sus conexiones.',
+    ai:'Es la protagonista: RAG sobre CV y proyectos, respuesta por SSE, salida validada con Zod y una tool focusNodes(ids) que controla la cámara.',
+    why:'Demuestra en 10 segundos el perfil AI App Developer: streaming, tool-calling y una UX pensada para respuestas asíncronas.',
+    effort:2, perf:1, weeks:'2–3 semanas', hint:'Pregunta o haz clic en un nodo · arrastra para girar',
+    ref:null },
+  { key:'orbit', tab:'Órbita', name:'Órbita · proyectos en carrusel 3D',
+    tagline:'Tus proyectos como tarjetas redondeadas en un anillo. Arrastras con inercia, la tarjeta frontal se ajusta sola y al abrirla se convierte en su página de caso.',
+    nav:'Arrastre con inercia y snap, flechas del teclado, y clic para abrir con transición de elemento compartido.',
+    ai:'Cada tarjeta trae su demo IA embebida. Abajo hay ocho ideas de proyecto con valor real para empresas.',
+    why:'Va directo al grano para un reclutador con dos minutos: proyectos, impacto y demo.',
+    effort:1, perf:1, weeks:'1–2 semanas', hint:'Arrastra o usa ‹ › · clic en la tarjeta frontal para abrirla',
+    ref:null }
+];
+
+/* ---------- Ideas de proyecto con valor ---------- */
+const IDEAS = [
+  { name:'Factura Lens', hue:'#FFB877', line:'Convierte fotos de facturas en datos contables validados.',
+    for:'PYMES y contadores que aún digitan facturas a mano.', ai:'Visión + salida estructurada validada con Zod, cola de reintentos con BullMQ.', stack:'Angular · NestJS · BullMQ · Postgres', sells:'Ahorro medible: de minutos a segundos por factura.' },
+  { name:'Solar Scout', hue:'#FFD36E', line:'Estima el ahorro solar desde una factura de energía.',
+    for:'Empresas de energía residencial y su equipo comercial.', ai:'Extrae consumo de la factura, calcula el sistema y explica el resultado en lenguaje claro.', stack:'React Native · Node · AI SDK', sells:'Conecta con tu experiencia en energía renovable.' },
+  { name:'DS Copilot', hue:'#8FB3FF', line:'Genera pantallas Angular usando solo tu design system.',
+    for:'Equipos con librería de componentes propia.', ai:'Servidor MCP que expone el catálogo de componentes al modelo; valida el código generado.', stack:'Angular · Nx · MCP · Storybook', sells:'Es tu caso real de 60% de adopción, convertido en producto.' },
+  { name:'Release Radar', hue:'#7FE0C2', line:'Convierte PRs en notas de versión para negocio.',
+    for:'Tech leads y product managers.', ai:'Resume por audiencia (QA, negocio, soporte) desde GitHub, con caché por commit.', stack:'GitHub App · Node · SSE', sells:'Resuelve un dolor que todo equipo tiene cada sprint.' },
+  { name:'A11y Pilot', hue:'#C9A7FF', line:'Audita accesibilidad y propone el arreglo en código.',
+    for:'Equipos frontend que deben cumplir WCAG.', ai:'Axe + modelo que explica cada hallazgo y genera el diff sugerido.', stack:'Chrome Extension · TypeScript', sells:'Accesibilidad es una exigencia legal creciente.' },
+  { name:'MFE Atlas', hue:'#6FD3FF', line:'Mapa 3D vivo de microfrontends y dependencias.',
+    for:'Arquitectos con monorepos Nx grandes.', ai:'Pregunta "¿qué se rompe si cambio X?" y el grafo responde.', stack:'Nx graph · Three.js · Node', sells:'Une tu experiencia en Native Federation con visualización 3D.' },
+  { name:'Ask Dani', hue:'#FF9DB8', line:'Tu CV como asistente conversacional con citas.',
+    for:'Reclutadores que quieren respuestas rápidas.', ai:'RAG con embeddings, streaming SSE y rate limiting por IP.', stack:'Next.js · pgvector · AI SDK', sells:'Es el portafolio mismo funcionando como demo.' },
+  { name:'Interview Forge', hue:'#A6E37F', line:'Simulador de entrevista técnica con rúbrica.',
+    for:'Desarrolladores que preparan procesos de selección.', ai:'Agente entrevistador con preguntas adaptativas y feedback estructurado.', stack:'Angular · Signals · Node', sells:'Producto con usuarios reales y posible monetización.' }
+];
+
+/* ---------- Tabs + panel ---------- */
+const tabsEl=$('tabs'), panel=$('panel');
+INFO.forEach((c,i)=>{
+  const b=document.createElement('button');
+  b.className='tab'; b.role='tab'; b.id='tab-'+c.key; b.setAttribute('aria-selected','false'); b.tabIndex=-1;
+  b.innerHTML='<span class="k">0'+(i+1)+'</span>'+c.tab;
+  b.addEventListener('click',()=>select(i));
+  b.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const n=(i+(e.key==='ArrowRight'?1:-1)+INFO.length)%INFO.length;select(n);tabsEl.children[n].focus();}
+  });
+  tabsEl.appendChild(b);
+});
+function dots(n){let s='<span class="dots">';for(let i=1;i<=3;i++)s+='<i class="'+(i<=n?'on':'')+'"></i>';return s+'</span>';}
+function renderPanel(c){
+  panel.innerHTML=
+    '<div><div class="eyebrow">Concepto</div><h2 style="margin-top:6px">'+c.name+'</h2><p class="tagline">'+c.tagline+'</p></div>'+
+    '<dl class="facts"><div><dt>Cómo se navega</dt><dd>'+c.nav+'</dd></div>'+
+    '<div><dt>Dónde entra la IA</dt><dd class="ai">'+c.ai+'</dd></div>'+
+    '<div><dt>Por qué impacta</dt><dd>'+c.why+'</dd></div></dl>'+
+    '<div class="meters"><span class="meter">Esfuerzo '+dots(c.effort)+' <b>'+c.weeks+'</b></span><span class="meter">Riesgo de rendimiento '+dots(c.perf)+'</span></div>'+
+    (c.ref?'<div class="ref">Referencia: <a href="'+c.ref[1]+'" target="_blank" rel="noopener">'+c.ref[0]+'</a></div>':'');
+}
+
+/* ---------- Helpers de canvas ---------- */
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return [c,c.getContext('2d')];}
+function wrap(ctx,text,x,y,maxW,lh){const words=text.split(' ');let line='';for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>maxW&&line){ctx.fillText(line,x,y);line=w;y+=lh;}else line=t;}if(line)ctx.fillText(line,x,y);return y+lh;}
+function texOf(c){const t=new THREE.CanvasTexture(c);t.anisotropy=4;t.minFilter=THREE.LinearMipmapLinearFilter;return t;}
+const F={d:"'Bricolage Grotesque', system-ui, sans-serif",b:"'Instrument Sans', system-ui, sans-serif",m:"'JetBrains Mono', ui-monospace, monospace"};
+
+/* ---------- Three base ---------- */
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); }
+catch(e){ $('fallback').hidden=false; veil.classList.remove('on'); }
+if(!renderer){ select0(); return; }
+function select0(){ renderPanel(INFO[0]); }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x000000,0);
+const camera=new THREE.PerspectiveCamera(45,1,.1,200);
+const cam={pos:new THREE.Vector3(0,0,10),look:new THREE.Vector3(),tPos:new THREE.Vector3(0,0,10),tLook:new THREE.Vector3()};
+let fitK=1;
+function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();fitK=Math.max(1,1.5/camera.aspect);}
+new ResizeObserver(resize).observe(stage); resize();
+function goCam(pos,look,instant){
+  const l=look.clone(); const p=l.clone().add(pos.clone().sub(look).multiplyScalar(fitK));
+  cam.tPos.copy(p); cam.tLook.copy(l);
+  if(instant){cam.pos.copy(p);cam.look.copy(l);}
+}
+function dollyIn(pos,look){ // entrada: arranca lejos y entra
+  const far=look.clone().add(pos.clone().sub(look).multiplyScalar(fitK*1.9)).add(new THREE.Vector3(0,2.2,0));
+  cam.pos.copy(far); cam.look.copy(look); goCam(pos,look);
+}
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function showFocus(label,verb){ if(!label){focusChip.hidden=true;backBtn.hidden=true;return;} focusChip.innerHTML=(verb||'Abriría')+' · <b>'+label+'</b>'; focusChip.hidden=false; backBtn.hidden=false; }
+
+/* ================= Escena 1: Dani OS ================= */
+function buildOS(){
+  const scene=new THREE.Scene(); const pick=[]; const wins=[];
+  function winTex(title,kind){
+    const [c,x]=mk(1024,704); const p=36,w=1024-p*2,h=704-p*2;
+    x.save();x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=40;x.shadowOffsetY=14;rr(x,p,p,w,h,30);x.fillStyle='#1D212A';x.fill();x.restore();
+    x.save();rr(x,p,p,w,h,30);x.clip();
+    x.fillStyle='#262B36';x.fillRect(p,p,w,66);
+    x.fillStyle='#E8EBF2';x.font='600 26px '+F.b;x.textAlign='center';x.fillText(title,512,p+42);
+    x.fillStyle='#363C4A';x.beginPath();x.arc(p+w-42,p+33,15,0,7);x.fill();
+    x.strokeStyle='#C9CEDA';x.lineWidth=3;x.beginPath();x.moveTo(p+w-48,p+27);x.lineTo(p+w-36,p+39);x.moveTo(p+w-36,p+27);x.lineTo(p+w-48,p+39);x.stroke();
+    x.textAlign='left';
+    const cx=p+36, cy=p+100, cw=w-72;
+    if(kind==='projects'){
+      const cols=3,gw=(cw-40)/cols,gh=200;
+      IDEAS.slice(0,6).forEach((it,i)=>{const gx=cx+(i%cols)*(gw+20),gy=cy+Math.floor(i/cols)*(gh+22);
+        const g=x.createLinearGradient(gx,gy,gx+gw,gy+gh);g.addColorStop(0,it.hue);g.addColorStop(1,'#2A3142');
+        rr(x,gx,gy,gw,gh,22);x.fillStyle=g;x.globalAlpha=.9;x.fill();x.globalAlpha=1;
+        x.fillStyle='#0C0F14';x.font='700 26px '+F.d;x.fillText(it.name,gx+20,gy+gh-50);
+        x.font='500 17px '+F.b;x.fillStyle='rgba(12,15,20,.75)';x.fillText('Ver caso →',gx+20,gy+gh-22);});
+    } else if(kind==='term'){
+      x.fillStyle='#12151B';x.fillRect(p,p+66,w,h-66);x.font='24px '+F.m;
+      const L=[['#7FE0C2','dani@fedora ~ $ ','portfolio --about'],['#949DB0','','Frontend Tech Lead · 9+ años'],['#949DB0','','Angular · React Native · AI-native'],['#7FE0C2','dani@fedora ~ $ ','ask "proyectos con IA"'],['#C9A7FF','','▸ abriendo 3 ventanas…'],['#7FE0C2','dani@fedora ~ $ ','▍']];
+      L.forEach((l,i)=>{let xx=cx;const yy=cy+i*44+10;if(l[1]){x.fillStyle=l[0];x.fillText(l[1],xx,yy);xx+=x.measureText(l[1]).width;}x.fillStyle=l[1]?'#E8EBF2':l[0];x.fillText(l[2],xx,yy);});
+    } else if(kind==='about'){
+      const g=x.createLinearGradient(cx,cy,cx+150,cy+150);g.addColorStop(0,'#8FB3FF');g.addColorStop(1,'#C9A7FF');
+      x.fillStyle=g;x.beginPath();x.arc(cx+75,cy+80,75,0,7);x.fill();
+      x.fillStyle='#0C0F14';x.font='700 54px '+F.d;x.textAlign='center';x.fillText('DJ',cx+75,cy+98);x.textAlign='left';
+      x.fillStyle='#E8EBF2';x.font='700 40px '+F.d;x.fillText('Daniel Jaramillo',cx+190,cy+62);
+      x.fillStyle='#949DB0';x.font='24px '+F.b;x.fillText('Frontend Tech Lead · AI-Native',cx+190,cy+102);
+      ['Angular','React Native','MCP','Nx'].forEach((t,i)=>{x.font='500 21px '+F.b;const tw=x.measureText(t).width+36;const tx=cx+[0,150,330,440][i];rr(x,tx,cy+210,tw,46,23);x.fillStyle='#2A3142';x.fill();x.fillStyle='#E8EBF2';x.fillText(t,tx+18,cy+240);});
+      x.fillStyle='#2A3142';[0,1,2].forEach(i=>{rr(x,cx,cy+300+i*44,cw-(i*120),20,10);x.fill();});
+    } else if(kind==='ai'){
+      x.font='22px '+F.b;
+      rr(x,cx+cw-420,cy,420,64,32);x.fillStyle='#8FB3FF';x.fill();x.fillStyle='#0C0F14';x.fillText('¿Has liderado equipos?',cx+cw-394,cy+40);
+      rr(x,cx,cy+90,cw-120,150,28);x.fillStyle='#2A3142';x.fill();x.fillStyle='#E8EBF2';
+      wrap(x,'Sí. Lideré 7 desarrolladores en Home Power y construí un design system con 60% de adopción.',cx+26,cy+134,cw-170,32);
+      x.fillStyle='#C9A7FF';[0,1,2].forEach(i=>{x.beginPath();x.arc(cx+30+i*22,cy+280,7,0,7);x.fill();});
+      rr(x,cx,cy+330,cw,64,32);x.fillStyle='#14181F';x.fill();x.strokeStyle='#363C4A';x.lineWidth=2;x.stroke();x.fillStyle='#6F778A';x.fillText('Pregunta lo que quieras…',cx+28,cy+370);
+    } else {
+      x.font='22px '+F.b;
+      ['jaramillob93@gmail.com','linkedin.com/in/daniel-jaramillobustamante','Medellín · UTC−5'].forEach((t,i)=>{rr(x,cx,cy+i*78,cw,60,30);x.fillStyle='#262B36';x.fill();x.fillStyle='#E8EBF2';x.fillText(t,cx+28,cy+38+i*78);});
+      rr(x,cx,cy+250,260,62,31);x.fillStyle='#8FB3FF';x.fill();x.fillStyle='#0C0F14';x.font='600 22px '+F.b;x.fillText('Agendar llamada',cx+40,cy+289);
+    }
+    x.restore(); return texOf(c);
+  }
+  const layout=[
+    ['Proyectos','projects',V(0,.25,0),1.25,0],
+    ['Terminal','term',V(-3.45,.95,-.9),.82,.36],
+    ['Sobre mí','about',V(-3.15,-1.15,-.6),.74,.32],
+    ['Laboratorio IA','ai',V(3.45,.9,-.9),.86,-.36],
+    ['Contacto','contact',V(3.15,-1.2,-.6),.7,-.32]
+  ];
+  layout.forEach((l,i)=>{
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(3,3*704/1024),new THREE.MeshBasicMaterial({map:winTex(l[0],l[1]),transparent:true,depthWrite:false}));
+    m.position.copy(l[2]);m.rotation.y=l[4];m.scale.setScalar(l[3]);m.renderOrder=i===0?2:1;
+    m.userData={pick:true,label:l[0],base:l[2].clone(),s:l[3],ry:l[4],i};
+    scene.add(m);pick.push(m);wins.push(m);
+  });
+  // barra superior
+  { const [c,x]=mk(2048,96); rr(x,8,8,2032,80,40); x.fillStyle='rgba(8,10,14,.85)'; x.fill();
+    x.fillStyle='#E8EBF2'; x.font='600 34px '+F.b; x.fillText('Actividades',60,60);
+    x.textAlign='center'; x.fillText('jue 1 oct  16:39',1024,60);
+    x.fillStyle='#949DB0';[0,1,2].forEach(i=>{x.beginPath();x.arc(1880+i*50,48,12,0,7);x.fill();});
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(9.6,.45),new THREE.MeshBasicMaterial({map:texOf(c),transparent:true,depthWrite:false}));
+    m.position.set(0,2.95,-1.2); scene.add(m); }
+  // dock
+  const dockCols=['#8FB3FF','#FFB877','#C9A7FF','#7FE0C2','#FF9DB8','#E8EBF2'];
+  { const [c,x]=mk(1024,180); rr(x,10,10,1004,160,80); x.fillStyle='rgba(20,25,34,.9)'; x.fill(); x.strokeStyle='#283143'; x.lineWidth=3; x.stroke();
+    dockCols.forEach((col,i)=>{rr(x,92+i*146,40,100,100,30);x.fillStyle=col;x.globalAlpha=.9;x.fill();x.globalAlpha=1;});
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(4.4,.77),new THREE.MeshBasicMaterial({map:texOf(c),transparent:true,depthWrite:false}));
+    m.position.set(0,-2.75,.4); scene.add(m); }
+  // partículas suaves de fondo
+  { const g=new THREE.BufferGeometry(),n=220,a=new Float32Array(n*3);for(let i=0;i<n;i++){a[i*3]=(Math.random()-.5)*26;a[i*3+1]=(Math.random()-.5)*14;a[i*3+2]=-4-Math.random()*10;}
+    g.setAttribute('position',new THREE.BufferAttribute(a,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x8FB3FF,size:.05,transparent:true,opacity:.5}))); }
+  let focus=null, hover=null, yaw=0;
+  const home=()=>{goCam(V(Math.sin(yaw)*8.6,.2,Math.cos(yaw)*8.6),V(0,0,0));};
+  return { scene, pick,
+    enter(){focus=null;yaw=0;dollyIn(V(0,.2,8.6),V(0,0,0));},
+    update(t){ wins.forEach(m=>{const d=m.userData;const f=reduce?0:Math.sin(t*.8+d.i*1.3)*.06;m.position.y=d.base.y+f;
+        const target=(m===hover&&!focus?1.04:1)*d.s;m.scale.x+= (target-m.scale.x)*.15;m.scale.y=m.scale.x;}); },
+    hover(o){hover=o;},
+    click(o){ if(!o){focus=null;showFocus(null);home();return;}
+      focus=o;const d=o.userData;const n=V(Math.sin(d.ry),0,Math.cos(d.ry));const dist=3.3*d.s;
+      goCam(d.base.clone().add(n.multiplyScalar(dist)),d.base.clone());showFocus(d.label,'Abriendo ventana');},
+    drag(dx){ if(focus)return; yaw=Math.max(-.6,Math.min(.6,yaw-dx*.004)); home(); },
+    back(){this.click(null);}
+  };
+}
+
+/* ================= Escena 2: Estudio isla ================= */
+function buildStudio(){
+  const scene=new THREE.Scene(); const pick=[]; const markers=[];
+  scene.add(new THREE.HemisphereLight(0xC7D6FF,0x1A140F,.85));
+  const sun=new THREE.DirectionalLight(0xFFE2C4,.9); sun.position.set(4,7,5); scene.add(sun);
+  const lampLight=new THREE.PointLight(0xFFB877,1.1,6,2); lampLight.position.set(1.35,2.45,-.3); scene.add(lampLight);
+  const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:0,flatShading:true},o||{}));
+  function rshape(w,h,r){const s=new THREE.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;}
+  function rbox(w,h,d,r,mat){const g=new THREE.ExtrudeGeometry(rshape(w,h,r),{depth:d,bevelEnabled:true,bevelSize:.025,bevelThickness:.025,bevelSegments:3,curveSegments:10});g.center();return new THREE.Mesh(g,mat);}
+  const island=new THREE.Mesh(new THREE.CylinderGeometry(4.3,3.9,.5,64),M(0x2A3142,{flatShading:false})); island.position.y=-.25; scene.add(island);
+  const rug=new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,.02,64),M(0x3A4560,{flatShading:false})); rug.position.y=.01; scene.add(rug);
+  // escritorio
+  const top=rbox(3.8,1.7,.1,.25,M(0xC9A27E)); top.rotation.x=-Math.PI/2; top.position.y=1.1; scene.add(top);
+  [[-1.7,-.65],[1.7,-.65],[-1.7,.65],[1.7,.65]].forEach(p=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1.05,10),M(0x1B2230));l.position.set(p[0],.55,p[1]);scene.add(l);});
+  // monitor
+  const mon=new THREE.Group(); mon.position.set(0,0,-.4);
+  const frame=rbox(2.05,1.25,.07,.12,M(0x1B2230)); frame.position.y=2.05; mon.add(frame);
+  { const [c,x]=mk(1024,620); const g=x.createLinearGradient(0,0,1024,620);g.addColorStop(0,'#1F2A44');g.addColorStop(1,'#141922');x.fillStyle=g;x.fillRect(0,0,1024,620);
+    x.fillStyle='#E8EBF2';x.font='700 64px '+F.d;x.fillText('Proyectos',60,120);
+    IDEAS.slice(0,4).forEach((it,i)=>{const gx=60+(i%2)*460,gy=170+Math.floor(i/2)*210;rr(x,gx,gy,430,180,28);x.fillStyle=it.hue;x.globalAlpha=.85;x.fill();x.globalAlpha=1;x.fillStyle='#0C0F14';x.font='700 34px '+F.d;x.fillText(it.name,gx+28,gy+110);});
+    const s=new THREE.Mesh(new THREE.PlaneGeometry(1.9,1.1),new THREE.MeshBasicMaterial({map:texOf(c)})); s.position.set(0,2.05,.045); mon.add(s); }
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.05,.07,.45,12),M(0x1B2230)); neck.position.y=1.35; mon.add(neck);
+  const foot=rbox(.6,.3,.04,.12,M(0x1B2230)); foot.rotation.x=-Math.PI/2; foot.position.y=1.17; mon.add(foot);
+  mon.userData={pick:true,label:'Proyectos',view:[V(0,2.05,2.3),V(0,2.0,-.4)],mark:V(0,2.95,-.4)}; scene.add(mon);
+  // libreta
+  const nb=new THREE.Group(); nb.position.set(1.15,1.18,.35); nb.rotation.y=-.35;
+  const cover=rbox(.62,.85,.05,.06,M(0xFFB877)); cover.rotation.x=-Math.PI/2; nb.add(cover);
+  const band=new THREE.Mesh(new THREE.BoxGeometry(.04,.055,.86),M(0x1B2230)); band.position.x=.2; nb.add(band);
+  nb.userData={pick:true,label:'Sobre mí',view:[V(1.55,2.5,1.75),V(1.15,1.18,.35)],mark:V(1.15,1.6,.35)}; scene.add(nb);
+  // teléfono
+  const ph=new THREE.Group(); ph.position.set(-1.15,1.17,.4); ph.rotation.y=.25;
+  const body=rbox(.36,.72,.04,.07,M(0x0E1218)); body.rotation.x=-Math.PI/2; ph.add(body);
+  { const [c,x]=mk(256,512); x.fillStyle='#141922';x.fillRect(0,0,256,512); rr(x,30,360,196,70,35);x.fillStyle='#7FE0C2';x.fill(); x.fillStyle='#E8EBF2';x.font='600 30px '+F.b;x.fillText('Hablemos',60,90);
+    const s=new THREE.Mesh(new THREE.PlaneGeometry(.31,.64),new THREE.MeshBasicMaterial({map:texOf(c)})); s.rotation.x=-Math.PI/2; s.position.y=.026; ph.add(s); }
+  ph.userData={pick:true,label:'Contacto',view:[V(-1.35,2.35,1.55),V(-1.15,1.17,.4)],mark:V(-1.15,1.6,.4)}; scene.add(ph);
+  // taza
+  const mug=new THREE.Mesh(new THREE.CylinderGeometry(.13,.12,.26,20),M(0xE8EBF2)); mug.position.set(-.75,1.28,-.35); scene.add(mug);
+  const hdl=new THREE.Mesh(new THREE.TorusGeometry(.07,.02,8,16),M(0xE8EBF2)); hdl.position.set(-.6,1.28,-.35); scene.add(hdl);
+  // lámpara
+  const lb=new THREE.Mesh(new THREE.CylinderGeometry(.18,.2,.05,24),M(0x1B2230)); lb.position.set(1.5,1.18,-.55); scene.add(lb);
+  const arm=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,1.2,8),M(0x1B2230)); arm.position.set(1.45,1.75,-.5); arm.rotation.z=.15; scene.add(arm);
+  const head=new THREE.Mesh(new THREE.ConeGeometry(.2,.3,20,1,true),M(0xFFB877,{side:THREE.DoubleSide,emissive:0x5a3410})); head.position.set(1.32,2.4,-.35); head.rotation.z=.7; scene.add(head);
+  // planta
+  const pl=new THREE.Group(); pl.position.set(-2.7,0,1.1);
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.42,.32,.7,20),M(0xE8EBF2)); pot.position.y=.35; pl.add(pot);
+  [[0,1.05,0,.5],[.3,1.35,.1,.35],[-.25,1.4,-.1,.38],[.05,1.7,.05,.3]].forEach(l=>{const m=new THREE.Mesh(new THREE.IcosahedronGeometry(l[3],0),M(0x6FBF8E));m.position.set(l[0],l[1],l[2]);pl.add(m);});
+  pl.userData={pick:true,label:'Habilidades',view:[V(-1.4,1.9,3.6),V(-2.7,.9,1.1)],mark:V(-2.7,2.25,1.1)}; scene.add(pl);
+  // banco de sillas
+  const seat=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.1,28),M(0x8FB3FF,{flatShading:false})); seat.position.set(0,.72,1.35); scene.add(seat);
+  const sl=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.7,10),M(0x1B2230)); sl.position.set(0,.36,1.35); scene.add(sl);
+  pick.push(mon,nb,ph,pl);
+  // marcadores
+  const [mc,mx]=mk(128,128); mx.strokeStyle='#E8EBF2';mx.lineWidth=10;mx.beginPath();mx.arc(64,64,46,0,7);mx.stroke();mx.fillStyle='#8FB3FF';mx.beginPath();mx.arc(64,64,24,0,7);mx.fill();
+  const mt=texOf(mc);
+  pick.forEach((o,i)=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map:mt,transparent:true,depthTest:false}));s.position.copy(o.userData.mark);s.scale.setScalar(.22);s.userData={i};scene.add(s);markers.push(s);});
+  let focus=null, hover=null, yaw=.55, auto=true;
+  const home=()=>goCam(V(Math.sin(yaw)*8.2,4.6,Math.cos(yaw)*8.2),V(0,1,0));
+  return { scene, pick,
+    enter(){focus=null;yaw=.55;auto=true;dollyIn(V(Math.sin(yaw)*8.2,4.6,Math.cos(yaw)*8.2),V(0,1,0));},
+    update(t,dt){
+      if(!focus&&auto&&!reduce){yaw+=Math.sin(t*.25)*dt*.06;home();}
+      markers.forEach((s,i)=>{const k=reduce?1:1+Math.sin(t*2.4+i)*.18;s.scale.setScalar(.22*k);s.material.opacity=focus?0:1;});
+      pick.forEach(o=>{const target=(o===hover&&!focus)?1.05:1;o.scale.x+=(target-o.scale.x)*.15;o.scale.y=o.scale.z=o.scale.x;});
+    },
+    hover(o){hover=o;},
+    click(o){ if(!o){focus=null;showFocus(null);home();return;} focus=o;goCam(o.userData.view[0],o.userData.view[1]);showFocus(o.userData.label,'Abriría la sección'); },
+    drag(dx){ if(focus)return; auto=false; yaw-=dx*.006; home(); },
+    back(){this.click(null);}
+  };
+}
+
+/* ================= Escena 3: Grafo IA ================= */
+const NODES=[
+ {id:'dani',label:'Dani',type:'core',tags:'dani'},
+ {id:'hp',label:'Home Power · Tech Lead',type:'exp',tags:'equipo lider lead liderazgo angular react native movil energia'},
+ {id:'glb',label:'Globant · Web UI',type:'exp',tags:'angular kendo legacy enterprise'},
+ {id:'arus',label:'ARUS · Automatización',type:'exp',tags:'ia electron automatizacion algoritmos'},
+ {id:'ng',label:'Angular',type:'skill',tags:'angular frontend'},
+ {id:'rn',label:'React Native',type:'skill',tags:'react native movil mobile app'},
+ {id:'ts',label:'TypeScript',type:'skill',tags:'typescript javascript'},
+ {id:'node',label:'Node · Express',type:'skill',tags:'node express backend api'},
+ {id:'rx',label:'RxJS · Signals',type:'skill',tags:'rxjs signals estado reactivo'},
+ {id:'mfe',label:'Nx · Native Federation',type:'skill',tags:'microfrontends microfrontend nx federation arquitectura'},
+ {id:'ds',label:'Design System',type:'skill',tags:'design system componentes ui libreria'},
+ {id:'ci',label:'CI/CD · GitHub Actions',type:'skill',tags:'ci cd github actions sonarqube husky calidad'},
+ {id:'aws',label:'AWS Lambda · S3',type:'skill',tags:'aws cloud lambda s3 backend'},
+ {id:'mcp',label:'Claude CLI · MCP',type:'ai',tags:'ia ai claude mcp agentes'},
+ {id:'sdk',label:'AI SDK · streaming',type:'ai',tags:'ia ai streaming tool calling sse'},
+ {id:'a11y',label:'Accesibilidad',type:'skill',tags:'accesibilidad a11y'},
+ {id:'k7',label:'Equipo de 7 devs',type:'win',tags:'equipo lider liderazgo'},
+ {id:'k60',label:'60% adopción del DS',type:'win',tags:'design system adopcion'},
+ {id:'k90',label:'−90% handoff a QA',type:'win',tags:'ci cd testflight movil qa'},
+ {id:'k50',label:'50% de algoritmos IA en UI',type:'win',tags:'ia algoritmos'},
+ {id:'ask',label:'Proyecto · Ask Dani',type:'ai',tags:'ia rag proyecto'}
+];
+const EDGES='dani-hp dani-glb dani-arus hp-ng hp-rn hp-mfe hp-ds hp-ci hp-mcp hp-k7 hp-k60 hp-k90 hp-aws glb-ng glb-node glb-aws arus-node arus-k50 arus-ng ds-k60 ci-k90 mcp-sdk sdk-ask mcp-ask ng-rx ng-ts rn-ts node-ts ng-a11y ds-a11y dani-ask'.split(' ').map(s=>s.split('-'));
+const TYPECOL={core:'#FFFFFF',exp:'#FFB877',skill:'#8FB3FF',ai:'#C9A7FF',win:'#7FE0C2'};
+const QA=[
+ {q:'¿Has liderado equipos?',ids:['hp','k7','ds','k60','ci'],a:'Sí. En Home Power Colombia lideré un equipo frontend de 7 desarrolladores como Tech Lead: definí estándares de arquitectura Angular, construí un design system con 60% de adopción en producción y automaticé quality gates con SonarQube y Husky.'},
+ {q:'¿Qué haces con IA?',ids:['mcp','sdk','arus','k50','ask'],a:'Introduje flujos AI-native en mi equipo con Claude CLI, Claude Design y MCP para acotar MVPs. Antes, en ARUS, llevé el 50% de los algoritmos de IA de la organización a interfaces web. Hoy profundizo en AI SDKs con streaming y tool-calling.'},
+ {q:'¿Sabes de microfrontends?',ids:['mfe','ng','rx','hp'],a:'Sí. He entregado arquitecturas de microfrontends en producción con Nx y Native Federation sobre Angular, usando Signals y RxJS para el estado compartido.'}
+];
+function buildGraph(){
+  const scene=new THREE.Scene(); const pick=[]; const group=new THREE.Group(); scene.add(group);
+  const byId={}; const n=NODES.length; const golden=Math.PI*(3-Math.sqrt(5));
+  NODES.forEach((nd,i)=>{
+    let p; if(nd.type==='core') p=V(0,0,0); else { const k=i/(n-1); const y=1-k*2; const r=Math.sqrt(1-y*y); const th=golden*i*1.7; const R=nd.type==='exp'?1.9:3.3; p=V(Math.cos(th)*r*R,y*R*.78,Math.sin(th)*r*R); }
+    const col=new THREE.Color(TYPECOL[nd.type]);
+    const size=nd.type==='core'?.32:nd.type==='exp'?.2:.13;
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(size,24,16),new THREE.MeshBasicMaterial({color:col,transparent:true}));
+    mesh.position.copy(p); group.add(mesh);
+    const halo=new THREE.Mesh(new THREE.SphereGeometry(size*2.2,16,12),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.08,depthWrite:false})); halo.position.copy(p); group.add(halo);
+    const hit=new THREE.Mesh(new THREE.SphereGeometry(.4,8,6),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false})); hit.position.copy(p); hit.userData={pick:true,id:nd.id,label:nd.label}; group.add(hit); pick.push(hit);
+    const [c,x]=mk(10,10); x.font='500 40px '+F.b; const tw=Math.ceil(x.measureText(nd.label).width);
+    c.width=tw+64; c.height=84; const x2=c.getContext('2d'); rr(x2,2,2,c.width-4,80,40); x2.fillStyle='rgba(20,25,34,.88)'; x2.fill(); x2.strokeStyle=TYPECOL[nd.type]; x2.globalAlpha=.6; x2.lineWidth=3; x2.stroke(); x2.globalAlpha=1;
+    x2.fillStyle='#E8EBF2'; x2.font='500 40px '+F.b; x2.textBaseline='middle'; x2.fillText(nd.label,32,44);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:texOf(c),transparent:true,depthWrite:false})); const h=.24; sp.scale.set(h*c.width/c.height,h,1); sp.position.copy(p).add(V(0,size+.2,0)); group.add(sp);
+    byId[nd.id]={nd,mesh,halo,sp,p,state:1};
+  });
+  const edges=EDGES.map(([a,b])=>{const g=new THREE.BufferGeometry().setFromPoints([byId[a].p,byId[b].p]);const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x8FB3FF,transparent:true,opacity:.22}));group.add(l);return {a,b,l};});
+  // polvo
+  { const g=new THREE.BufferGeometry(),m=300,a=new Float32Array(m*3);for(let i=0;i<m;i++){const r=5+Math.random()*8,t=Math.random()*6.28,u=Math.random()*2-1;a[i*3]=Math.cos(t)*Math.sqrt(1-u*u)*r;a[i*3+1]=u*r;a[i*3+2]=Math.sin(t)*Math.sqrt(1-u*u)*r;}
+    g.setAttribute('position',new THREE.BufferAttribute(a,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xC9A7FF,size:.04,transparent:true,opacity:.45}))); }
+  let active=null, rotY=0, spin=true, hover=null;
+  function setActive(ids){
+    active=ids?new Set(ids):null;
+    if(!ids){spin=true;goCam(V(0,.4,10.5),V(0,0,0));return;}
+    spin=false; const c=V(0,0,0); ids.forEach(id=>{c.add(byId[id].p.clone().applyMatrix4(group.matrixWorld));}); c.multiplyScalar(1/ids.length);
+    const dir=c.clone().setY(0); if(dir.length()<.3) dir.set(0,0,1); dir.normalize();
+    goCam(c.clone().multiplyScalar(.5).add(dir.multiplyScalar(6.4)).add(V(0,.7,0)),c.clone().multiplyScalar(.6));
+  }
+  let typer=null;
+  function stream(text){ const el=$('answerText'); clearInterval(typer); el.textContent=''; const caret=document.createElement('span'); caret.className='caret'; let i=0;
+    if(reduce){el.textContent=text;return;}
+    el.appendChild(caret);
+    typer=setInterval(()=>{ i+=2; el.textContent=text.slice(0,i); el.appendChild(caret); if(i>=text.length){clearInterval(typer);caret.remove();} },16); }
+  function ask(q){
+    const qa=QA.find(x=>x.q===q);
+    if(qa){setActive(qa.ids);stream(qa.a);showFocus('Respuesta con '+qa.ids.length+' nodos','Grafo');return;}
+    const words=q.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').split(/[^a-z0-9]+/).filter(w=>w.length>2);
+    const ids=NODES.filter(nd=>words.some(w=>(nd.tags+' '+nd.label.toLowerCase()).includes(w))).map(nd=>nd.id);
+    if(!ids.length){setActive(null);stream('No encontré nodos para esa pregunta. Prueba con: equipo, IA, Angular, móvil o AWS.');showFocus(null);return;}
+    setActive(ids); stream('Encontré relación con: '+ids.map(id=>byId[id].nd.label).join(', ')+'. En producción esta respuesta llegaría por streaming desde un RAG sobre el CV.'); showFocus('Respuesta con '+ids.length+' nodos','Grafo');
+  }
+  // UI
+  const chips=$('chips'); chips.innerHTML=''; QA.forEach(x=>{const b=document.createElement('button');b.type='button';b.textContent=x.q;b.onclick=()=>ask(x.q);chips.appendChild(b);});
+  $('askForm').onsubmit=(e)=>{e.preventDefault();const v=$('askInput').value.trim();if(v){ask(v);$('askInput').value='';}};
+  return { scene, pick,
+    enter(){ setActive(null); dollyIn(V(0,.4,10.5),V(0,0,0)); $('answerText').textContent='Pregúntame por la experiencia de Dani. El grafo se reorganiza según la respuesta.'; },
+    update(t,dt){
+      if(spin&&!reduce) rotY+=dt*.08; group.rotation.y+= (rotY-group.rotation.y)*.1; group.updateMatrixWorld();
+      for(const id in byId){const o=byId[id];const on=!active||active.has(id);const tgt=on?1:.15;o.state+=(tgt-o.state)*.08;
+        o.mesh.material.opacity=o.state;o.halo.material.opacity=o.state*(active&&on?.22:.08);o.sp.material.opacity=Math.max(.12,o.state);
+        const pulse=(active&&on&&!reduce)?1+Math.sin(t*3)*.12:1; const hv=hover&&hover.userData.id===id?1.3:1; o.mesh.scale.setScalar(pulse*hv);}
+      edges.forEach(e=>{const on=!active||(active.has(e.a)&&active.has(e.b));const tgt=on?(active?.75:.22):.04;e.l.material.opacity+=(tgt-e.l.material.opacity)*.08;e.l.material.color.set(active&&on?0xC9A7FF:0x8FB3FF);});
+    },
+    hover(o){hover=o;},
+    click(o){ if(!o){setActive(null);showFocus(null);return;} const id=o.userData.id; const ids=[id]; EDGES.forEach(([a,b])=>{if(a===id)ids.push(b);if(b===id)ids.push(a);});
+      setActive(ids); stream(byId[id].nd.label+' se conecta con: '+ids.slice(1).map(x=>byId[x].nd.label).join(', ')+'.'); showFocus(byId[id].nd.label,'Nodo'); },
+    drag(dx){ spin=false; rotY+=dx*.008; },
+    back(){this.click(null);}
+  };
+}
+
+/* ================= Escena 4: Órbita ================= */
+function buildOrbit(){
+  const scene=new THREE.Scene(); const pick=[]; const ring=new THREE.Group(); scene.add(ring);
+  const N=IDEAS.length, R=5.4, step=Math.PI*2/N;
+  function cardTex(it,i){
+    const [c,x]=mk(640,840); const p=30,w=580,h=780;
+    x.save();x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=36;x.shadowOffsetY=14;rr(x,p,p,w,h,40);x.fillStyle='#1B2230';x.fill();x.restore();
+    x.save();rr(x,p,p,w,h,40);x.clip();
+    const g=x.createLinearGradient(p,p,p+w,p+380);g.addColorStop(0,it.hue);g.addColorStop(1,'#1B2230');x.fillStyle=g;x.fillRect(p,p,w,380);
+    // forma abstracta
+    x.globalAlpha=.25;x.fillStyle='#FFFFFF';x.beginPath();x.arc(p+w-90,p+120,120,0,7);x.fill();x.beginPath();x.arc(p+w-200,p+230,60,0,7);x.fill();x.globalAlpha=1;
+    x.fillStyle='rgba(12,15,20,.75)';x.font='500 22px '+F.m;x.fillText('IDEA 0'+(i+1),p+40,p+64);
+    x.fillStyle='#E8EBF2';x.font='700 56px '+F.d;x.fillText(it.name,p+40,p+460);
+    x.fillStyle='#B8C0D0';x.font='28px '+F.b;let y=wrap(x,it.line,p+40,p+512,w-80,38);
+    let tx=p+40;y+=24;x.font='500 21px '+F.b;it.stack.split(' · ').slice(0,3).forEach(t=>{const tw=x.measureText(t).width+32;if(tx+tw>p+w-40){tx=p+40;y+=54;}rr(x,tx,y-30,tw,44,22);x.fillStyle='#2A3142';x.fill();x.fillStyle='#E8EBF2';x.fillText(t,tx+16,y);tx+=tw+10;});
+    x.restore(); return texOf(c);
+  }
+  IDEAS.forEach((it,i)=>{ const a=i*step;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3*840/640),new THREE.MeshBasicMaterial({map:cardTex(it,i),transparent:true,depthWrite:false}));
+    m.position.set(Math.sin(a)*R,0,Math.cos(a)*R); m.rotation.y=a; m.userData={pick:true,i,label:it.name}; ring.add(m); pick.push(m); });
+  // anillo guía
+  const guide=new THREE.Mesh(new THREE.TorusGeometry(R,.008,8,160),new THREE.MeshBasicMaterial({color:0x8FB3FF,transparent:true,opacity:.25})); guide.rotation.x=Math.PI/2; guide.position.y=-1.75; scene.add(guide);
+  let rot=0, vel=0, dragging=false, focus=null, hover=null, snapT=null;
+  const front=()=>((Math.round(-rot/step)%N)+N)%N;
+  const home=()=>goCam(V(0,1.5,11.6),V(0,-.1,0));
+  function openCard(i){
+    const tgt=-i*step; let d=tgt-rot; d=((d+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI; snapT=rot+d; vel=0;
+    focus=i; const it=IDEAS[i];
+    const narrow=camera.aspect<1.05;
+    if(narrow) goCam(V(0,-1.2,9.4),V(0,-1.1,0)); else goCam(V(1.55,.15,8.75),V(1.55,.05,0));
+    const det=$('detail'); det.hidden=false;
+    det.innerHTML='<div class="eyebrow" style="color:'+it.hue+'">Idea 0'+(i+1)+'</div><h3>'+it.name+'</h3><p style="margin:0;color:var(--muted)">'+it.line+'</p><dl><div><dt>Para quién</dt><dd>'+it.for+'</dd></div><div><dt>Dónde entra la IA</dt><dd>'+it.ai+'</dd></div><div><dt>Stack</dt><dd>'+it.stack+'</dd></div><div><dt>Por qué vende</dt><dd>'+it.sells+'</dd></div></dl>';
+    showFocus(it.name,'Caso');
+  }
+  function close(){focus=null;$('detail').hidden=true;showFocus(null);home();}
+  function nudge(dir){ if(focus!==null){ openCard(((focus+dir)%N+N)%N); return;} snapT=(Math.round(rot/step)-dir)*step; }
+  $('prevCard').onclick=()=>nudge(-1); $('nextCard').onclick=()=>nudge(1);
+  return { scene, pick,
+    enter(){focus=null;$('detail').hidden=true;rot=0;vel=0;snapT=null;dollyIn(V(0,1.5,11.6),V(0,-.1,0));},
+    update(t,dt){
+      if(!dragging){ if(snapT!==null){rot+=(snapT-rot)*(reduce?.4:.12); if(Math.abs(snapT-rot)<.0005){rot=snapT;}} else { rot+=vel; vel*=.92; if(Math.abs(vel)<.002){ vel=0; snapT=Math.round(rot/step)*step; } } }
+      ring.rotation.y=rot;
+      pick.forEach((m,i)=>{const face=Math.cos(i*step+rot);const op=focus!==null?(i===focus?1:.12):(.25+.75*Math.max(0,face));m.material.opacity+=(op-m.material.opacity)*.12;
+        const s=(m===hover&&focus===null&&face>.9)?1.04:1;m.scale.x+=(s-m.scale.x)*.15;m.scale.y=m.scale.x;
+        m.position.y=reduce?0:Math.sin(t*.9+i)*.05;});
+    },
+    hover(o){hover=o;},
+    click(o){ if(!o){close();return;} const i=o.userData.i; if(focus===null&&i!==front()){snapT=null;openCard(i);return;} openCard(i); },
+    dragStart(){ if(focus!==null) return false; dragging=true; snapT=null; vel=0; return true; },
+    drag(dx){ if(focus!==null)return; rot+=dx*.006; vel=dx*.006; },
+    dragEnd(){ dragging=false; },
+    key(k){ if(k==='ArrowRight'){nudge(1);return true;} if(k==='ArrowLeft'){nudge(-1);return true;} return false; },
+    back(){close();}
+  };
+}
+
+/* ---------- Orquestación ---------- */
+const builders=[buildOS,buildStudio,buildGraph,buildOrbit];
+const built=[]; let cur=null, curIdx=-1, switching=false;
+function select(i){
+  if(i===curIdx||switching) return;
+  [...tabsEl.children].forEach((b,j)=>{b.setAttribute('aria-selected',j===i?'true':'false');b.tabIndex=j===i?0:-1;});
+  renderPanel(INFO[i]); hint.textContent=INFO[i].hint;
+  switching=true; veil.classList.add('on');
+  setTimeout(()=>{
+    if(!built[i]) built[i]=builders[i]();
+    cur=built[i]; curIdx=i; showFocus(null);
+    $('ovAsk').hidden=INFO[i].key!=='graph'; $('ovOrbit').hidden=INFO[i].key!=='orbit';
+    cur.enter(); veil.classList.remove('on'); switching=false;
+    try{localStorage.setItem('entradas3d.tab',String(i));}catch(e){}
+  }, reduce?0:340);
+}
+backBtn.addEventListener('click',()=>cur&&cur.back());
+
+/* Puntero */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(); let px=0,py=0,down=null,moved=0,dragOk=false,mx=0,my=0;
+function setNdc(e){const r=canvas.getBoundingClientRect();ndc.x=((e.clientX-r.left)/r.width)*2-1;ndc.y=-((e.clientY-r.top)/r.height)*2+1;mx=ndc.x;my=ndc.y;}
+function hit(){ if(!cur) return null; ray.setFromCamera(ndc,camera); const h=ray.intersectObjects(cur.pick,true); for(const x of h){let o=x.object;while(o&&!(o.userData&&o.userData.pick))o=o.parent;if(o)return o;} return null; }
+canvas.addEventListener('pointerdown',e=>{setNdc(e);down={x:e.clientX,y:e.clientY};px=e.clientX;moved=0;dragOk=cur&&cur.dragStart?cur.dragStart()!==false:true;canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{ setNdc(e);
+  if(down){const dx=e.clientX-px;px=e.clientX;moved+=Math.abs(dx)+Math.abs(e.clientY-down.y)*0;if(moved>5){canvas.classList.add('drag');if(dragOk&&cur)cur.drag(dx);}return;}
+  if(!cur) return; const o=hit(); cur.hover(o); canvas.classList.toggle('hot',!!o); });
+canvas.addEventListener('pointerup',e=>{ setNdc(e); canvas.classList.remove('drag'); if(cur&&cur.dragEnd)cur.dragEnd(); if(down&&moved<=5&&cur){cur.click(hit());} down=null; });
+canvas.addEventListener('pointercancel',()=>{down=null;canvas.classList.remove('drag');if(cur&&cur.dragEnd)cur.dragEnd();});
+canvas.addEventListener('pointerleave',()=>{if(cur)cur.hover(null);canvas.classList.remove('hot');mx=0;my=0;});
+stage.addEventListener('keydown',e=>{ if(!cur||e.target.tagName==='INPUT')return; if(e.key==='Escape'){cur.back();e.preventDefault();return;} if(cur.key&&cur.key(e.key))e.preventDefault(); });
+
+/* Bucle */
+let visible=true; new IntersectionObserver(es=>{visible=es[0].isIntersecting;},{threshold:0}).observe(stage);
+let last=performance.now(); const tmp=new THREE.Vector3();
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min(.05,(now-last)/1000); last=now; if(!visible||!cur) return;
+  const t=now/1000; cur.update(t,dt);
+  const k=reduce?1:1-Math.exp(-dt*3.2);
+  cam.pos.lerp(cam.tPos,k); cam.look.lerp(cam.tLook,k);
+  const par=reduce?0:.18; camera.position.copy(cam.pos).add(tmp.set(mx*par,my*par*.6,0));
+  camera.lookAt(cam.look);
+  renderer.render(cur.scene,camera);
+}
+
+/* Arranque cuando cargan las fuentes (las texturas usan las tipografías) */
+let start=0; try{const s=parseInt(localStorage.getItem('entradas3d.tab'),10);if(s>=0&&s<INFO.length)start=s;}catch(e){}
+renderPanel(INFO[start]);
+const go=()=>{select(start);requestAnimationFrame(loop);};
+let started=false; const once=()=>{if(!started){started=true;go();}};
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(once); setTimeout(once,2500);
+})();
+</script>
