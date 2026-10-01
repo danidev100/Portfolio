@@ -18,6 +18,10 @@ const allowFrom = (from, to) => ({
   allow: { to: { element: { types: { anyOf: to } } } },
 });
 
+// Inside a domain, files import each other with relative paths. The `@/` alias
+// is reserved for crossing domains, and only through the domain's `index.ts`.
+const DOMAIN_INTERNALS = [...DOMAIN_TYPES.map((type) => `@/*/${type}/**`), '!@/shared/**'];
+
 export default defineConfig([
   globalIgnores([
     '.next/**',
@@ -52,14 +56,34 @@ export default defineConfig([
         { type: 'types', pattern: 'src/shared/types' },
         ...domainElements,
       ],
+      'boundaries/files': [{ category: 'domain-api', pattern: 'src/*/index.ts' }],
     },
     rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: DOMAIN_INTERNALS,
+              message: "Import other domains through their public API ('@/<domain>').",
+            },
+          ],
+        },
+      ],
       'boundaries/dependencies': [
         'error',
         {
           default: 'disallow',
           policies: [
-            allowFrom('app', ['app', 'core', 'types', ...DOMAIN_TYPES]),
+            {
+              from: { file: { categories: 'domain-api' } },
+              allow: { to: { element: { types: { anyOf: DOMAIN_TYPES } } } },
+            },
+            {
+              from: { element: { types: { anyOf: ['app', 'core', 'feature'] } } },
+              allow: { to: { file: { categories: 'domain-api' } } },
+            },
+            allowFrom('app', ['app', 'core', 'types', 'ui', 'util']),
             allowFrom('core', ['core', 'types', 'ui', 'data-access', 'util']),
             allowFrom('feature', ['types', ...DOMAIN_TYPES]),
             allowFrom('ui', ['types', 'ui', 'util']),
