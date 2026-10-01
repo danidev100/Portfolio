@@ -17,14 +17,13 @@ export const viewport: Viewport = {
   colorScheme: 'dark',
 };
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps): ReactNode {
+export default function RootLayout({ children, window }: LayoutProps<'/'>): ReactNode {
   return (
     <html lang="es" className={fontVariables}>
-      <body className="min-h-dvh bg-canvas font-sans text-foreground antialiased">{children}</body>
+      <body className="min-h-dvh bg-canvas font-sans text-foreground antialiased">
+        {children}
+        {window}
+      </body>
     </html>
   );
 }
