@@ -17,7 +17,9 @@
   --color-ai: #c9a7ff;
   --color-on-ai: #1a1226;
   --color-highlight: #ffb877;
+  --color-on-highlight: #0c0f14;
   --color-positive: #7fe0c2;
+  --color-on-positive: #0c0f14;
 
   /* Nothing is square: controls are pills (`rounded-full`), the rest uses these. */
   --radius-*: initial;
@@ -38,6 +40,15 @@
   --font-display: var(--font-bricolage), 'Segoe UI', system-ui, sans-serif;
   --font-sans: var(--font-instrument), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+@utility bg-wallpaper {
+  background-image: radial-gradient(
+    120% 90% at 50% 10%,
+    var(--color-surface-raised) 0%,
+    var(--color-surface) 55%,
+    var(--color-canvas) 100%
+  );
 }
 
 @layer base {
