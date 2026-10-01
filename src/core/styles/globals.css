@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. The default color, radius and font scales are reset so that
+ * only semantic tokens exist: `bg-blue-500` or `rounded-sm` do not compile.
+ */
+@theme {
+  --color-*: initial;
+  --color-canvas: #0c0f14;
+  --color-surface: #141922;
+  --color-surface-raised: #1b2230;
+  --color-border: #283143;
+  --color-foreground: #e8ebf2;
+  --color-muted: #949db0;
+  --color-primary: #8fb3ff;
+  --color-on-primary: #0c0f14;
+  --color-ai: #c9a7ff;
+  --color-on-ai: #1a1226;
+  --color-highlight: #ffb877;
+  --color-positive: #7fe0c2;
+
+  /* Nothing is square: controls are pills (`rounded-full`), the rest uses these. */
+  --radius-*: initial;
+  --radius-control: 14px;
+  --radius-card: 20px;
+  --radius-window: 28px;
+
+  --shadow-*: initial;
+  --shadow-window: 0 14px 40px rgb(0 0 0 / 0.55);
+
+  --ease-*: initial;
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* `inline` because these resolve to variables that next/font sets on <html>. */
+@theme inline {
+  --font-*: initial;
+  --font-display: var(--font-bricolage), 'Segoe UI', system-ui, sans-serif;
+  --font-sans: var(--font-instrument), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# build and caches
+dist/
+*.tsbuildinfo
+.eslintcache
+
+# tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# local copy of ~/.claude (settings, session transcripts); never versioned
+/claude/
+
+# editor and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+*.log
+
+# claude code local settings
+.claude/settings.local.json
