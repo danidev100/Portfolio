@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, MotionConfig } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 
@@ -63,60 +63,58 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
   });
 
   return (
-    <MotionConfig reducedMotion="user">
-      <div
-        className="relative isolate grid h-dvh grid-rows-[auto_1fr_auto] gap-3 bg-wallpaper p-3"
-        onKeyDown={closeOverviewOnEscape}
-      >
-        <DesktopScene
-          panels={APP_SCENE_PANELS}
-          activePanelId={focusedId}
-          isPulledBack={isOverviewOpen}
-        />
-        <TopBar
-          isOverviewOpen={isOverviewOpen}
-          overviewId={OVERVIEW_ID}
-          onToggleOverview={() => {
-            setIsOverviewOpen((isOpen) => !isOpen);
-          }}
-        />
-        <main className="relative isolate min-h-0">
-          <div inert={isOverviewOpen} className="absolute inset-0">
-            <DesktopGreeting />
-            <AnimatePresence>
-              {windows.map(({ id, isMinimized }, stackIndex) =>
-                isMinimized ? null : (
-                  <Window
-                    key={id}
-                    appId={id}
-                    title={APPS[id].title}
-                    isFocused={focusedId === id}
-                    zIndex={stackIndex}
-                    className={`md:inset-x-12 md:inset-y-3 lg:inset-x-28 ${WINDOW_PLACEMENT[id]}`}
-                    onFocus={() => {
-                      focus(id);
-                    }}
-                    onMinimize={() => {
-                      minimize(id);
-                    }}
-                    onClose={() => {
-                      close(id);
-                    }}
-                  >
-                    {appContent[id]}
-                  </Window>
-                ),
-              )}
-            </AnimatePresence>
-          </div>
+    <div
+      className="relative isolate grid h-dvh grid-rows-[auto_1fr_auto] gap-3 bg-wallpaper p-3"
+      onKeyDown={closeOverviewOnEscape}
+    >
+      <DesktopScene
+        panels={APP_SCENE_PANELS}
+        activePanelId={focusedId}
+        isPulledBack={isOverviewOpen}
+      />
+      <TopBar
+        isOverviewOpen={isOverviewOpen}
+        overviewId={OVERVIEW_ID}
+        onToggleOverview={() => {
+          setIsOverviewOpen((isOpen) => !isOpen);
+        }}
+      />
+      <main className="relative isolate min-h-0">
+        <div inert={isOverviewOpen} className="absolute inset-0">
+          <DesktopGreeting />
           <AnimatePresence>
-            {isOverviewOpen ? (
-              <ActivitiesOverview id={OVERVIEW_ID} windows={overviewWindows} onSelect={activate} />
-            ) : null}
+            {windows.map(({ id, isMinimized }, stackIndex) =>
+              isMinimized ? null : (
+                <Window
+                  key={id}
+                  appId={id}
+                  title={APPS[id].title}
+                  isFocused={focusedId === id}
+                  zIndex={stackIndex}
+                  className={`md:inset-x-12 md:inset-y-3 lg:inset-x-28 ${WINDOW_PLACEMENT[id]}`}
+                  onFocus={() => {
+                    focus(id);
+                  }}
+                  onMinimize={() => {
+                    minimize(id);
+                  }}
+                  onClose={() => {
+                    close(id);
+                  }}
+                >
+                  {appContent[id]}
+                </Window>
+              ),
+            )}
           </AnimatePresence>
-        </main>
-        <Dock items={dockItems} onActivate={activate} />
-      </div>
-    </MotionConfig>
+        </div>
+        <AnimatePresence>
+          {isOverviewOpen ? (
+            <ActivitiesOverview id={OVERVIEW_ID} windows={overviewWindows} onSelect={activate} />
+          ) : null}
+        </AnimatePresence>
+      </main>
+      <Dock items={dockItems} onActivate={activate} />
+    </div>
   );
 }

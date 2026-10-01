@@ -5,9 +5,10 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
+import { RADIUS_PX } from '@/shared/util/motion';
 
 import type { AppDefinition, AppId } from '../util/apps';
-import { DOCK_ICON_RADIUS_PX, getWindowLayoutId } from '../util/windowLayout';
+import { getWindowLayoutId } from '../util/windowLayout';
 import { AppIcon } from './AppIcon';
 
 export interface DockItem {
@@ -31,7 +32,7 @@ export function Dock({ items, onActivate }: DockProps): ReactNode {
             <motion.span
               aria-hidden="true"
               layoutId={getWindowLayoutId(app.id)}
-              style={{ borderRadius: DOCK_ICON_RADIUS_PX }}
+              style={{ borderRadius: RADIUS_PX.control }}
               className="absolute inset-0 bg-surface-raised"
             />
             <Link

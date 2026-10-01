@@ -4,15 +4,15 @@ import { motion } from 'motion/react';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
+import {
+  FADE_TRANSITION,
+  MORPH_TRANSITION,
+  RADIUS_PX,
+  REVEAL_TRANSITION,
+} from '@/shared/util/motion';
 
 import type { AppId } from '../util/apps';
-import {
-  getWindowLayoutId,
-  WINDOW_CONTENT_REVEAL_TRANSITION,
-  WINDOW_CONTENT_TRANSITION,
-  WINDOW_RADIUS_PX,
-  WINDOW_TRANSITION,
-} from '../util/windowLayout';
+import { getWindowLayoutId } from '../util/windowLayout';
 
 interface WindowControlProps {
   label: string;
@@ -86,8 +86,8 @@ export function Window({
       aria-labelledby={titleId}
       tabIndex={-1}
       layoutId={getWindowLayoutId(appId)}
-      transition={WINDOW_TRANSITION}
-      style={{ zIndex, borderRadius: WINDOW_RADIUS_PX }}
+      transition={MORPH_TRANSITION}
+      style={{ zIndex, borderRadius: RADIUS_PX.window }}
       onPointerDown={onFocus}
       className={cn(
         'absolute inset-0 overflow-hidden border border-border bg-surface shadow-window',
@@ -97,9 +97,9 @@ export function Window({
       {/* Waits for most of the morph so the content is never seen stretched. */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: WINDOW_CONTENT_REVEAL_TRANSITION }}
+        animate={{ opacity: 1, transition: REVEAL_TRANSITION }}
         exit={{ opacity: 0 }}
-        transition={WINDOW_CONTENT_TRANSITION}
+        transition={FADE_TRANSITION}
         className="flex h-full flex-col"
       >
         <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 bg-surface-raised px-3 py-2">

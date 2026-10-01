@@ -4,8 +4,9 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useId, type ReactNode } from 'react';
 
+import { FADE_TRANSITION } from '@/shared/util/motion';
+
 import type { AppDefinition, AppId } from '../util/apps';
-import { WINDOW_CONTENT_TRANSITION } from '../util/windowLayout';
 import { AppIcon } from './AppIcon';
 
 export interface OverviewWindow {
@@ -29,7 +30,7 @@ export function ActivitiesOverview({ id, windows, onSelect }: ActivitiesOverview
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={WINDOW_CONTENT_TRANSITION}
+      transition={FADE_TRANSITION}
       className="absolute inset-0 z-10 flex flex-col gap-6 overflow-auto rounded-window bg-canvas/80 p-6 backdrop-blur-md sm:p-8"
     >
       <h2 id={headingId} className="font-display text-2xl font-bold">

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 import { fontVariables } from '@/core/fonts';
+import { MotionProvider } from '@/core/providers/MotionProvider';
 import '@/core/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -21,8 +22,10 @@ export default function RootLayout({ children, window }: LayoutProps<'/'>): Reac
   return (
     <html lang="es" className={fontVariables}>
       <body className="min-h-dvh bg-canvas font-sans text-foreground antialiased">
-        {children}
-        {window}
+        <MotionProvider>
+          {children}
+          {window}
+        </MotionProvider>
       </body>
     </html>
   );
