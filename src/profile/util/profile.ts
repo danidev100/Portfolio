@@ -27,8 +27,8 @@ export const CONTACT_LINKS: readonly ContactLink[] = [
   { label: 'Correo', value: 'jaramillob93@gmail.com', href: 'mailto:jaramillob93@gmail.com' },
   {
     label: 'LinkedIn',
-    value: 'linkedin.com/in/daniel-jaramillobustamante',
-    href: 'https://www.linkedin.com/in/daniel-jaramillobustamante',
+    value: 'linkedin.com/in/daniel-jaramillo-bustamante',
+    href: 'https://www.linkedin.com/in/daniel-jaramillo-bustamante',
   },
 ];
 
