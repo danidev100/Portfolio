@@ -56,7 +56,11 @@ export default defineConfig([
         { type: 'types', pattern: 'src/shared/types' },
         ...domainElements,
       ],
-      'boundaries/files': [{ category: 'domain-api', pattern: 'src/*/index.ts' }],
+      'boundaries/files': [
+        { category: 'domain-api', pattern: 'src/*/index.ts' },
+        // `scene` only has `ui` and `util`, so presentational code may use it too.
+        { category: 'ui-kit-api', pattern: 'src/scene/index.ts' },
+      ],
     },
     rules: {
       'no-restricted-imports': [
@@ -82,6 +86,10 @@ export default defineConfig([
             {
               from: { element: { types: { anyOf: ['app', 'core', 'feature'] } } },
               allow: { to: { file: { categories: 'domain-api' } } },
+            },
+            {
+              from: { element: { type: 'ui' } },
+              allow: { to: { file: { categories: 'ui-kit-api' } } },
             },
             allowFrom('app', ['app', 'core', 'types', 'ui', 'util']),
             allowFrom('core', ['core', 'types', 'ui', 'data-access', 'util']),
