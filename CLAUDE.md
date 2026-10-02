@@ -54,7 +54,12 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Dentro de un contexto 3D de CSS no se usa `layoutId` de Motion: no puede corregir rotaciones ni perspectiva y deforma el contenido. El caso de un proyecto se revela con `clip-path` desde el rectángulo de su tarjeta.
 - Duraciones, curvas y radios que Motion necesita como números están en `shared/util/motion.ts`. `MotionProvider` (en el layout raíz) aplica "reducir movimiento" a toda la app.
 - El Canvas usa `frameloop="demand"`: quien anime algo llama a `invalidate()` mientras se mueve y deja de hacerlo al llegar. En reposo no se dibuja ningún frame.
-- Todo `@/scene` se carga con `next/dynamic` y `ssr: false`; nada fuera de ese dominio importa `three` de forma estática, para que no entre en la carga inicial.
+- Todo lo que importa `three` se carga con `next/dynamic` y `ssr: false` (`DesktopScene`, `ExperienceGraph`), para que no entre en la carga inicial.
+- `scene` solo tiene `ui` y `util`, así que el código `ui` de otros dominios puede importar `@/scene`; ningún otro dominio es importable desde `ui`.
+- El grafo de la Terminal tiene su propio canvas dentro de la ventana. Sus etiquetas son botones DOM que `LabelProjector` coloca en cada frame; no se usa `Html` de drei, que crea una raíz de React por etiqueta y da errores al desmontar con React 19.
+- `SceneCanvas` mide con `offsetSize`: un canvas montado mientras su ventana se abre escalada se quedaría con el tamaño reducido.
+- La Terminal habla con `AskService` (`shared/types/ask.ts`). V1 lo simula; V2 solo cambia el servicio que se crea en `terminal/data-access/useAskStore.ts`. `zod` se instala entonces, con el cliente SSE.
+- Los componentes se suscriben al store con selectores estrechos: `TerminalGraph` solo al foco y `TerminalAsk` al texto, para que cada token no re-renderice la escena.
 - Los materiales leen los colores de los tokens CSS con `readThemeColor`; no hay hex en la escena.
 - La matemática de cámara y layout vive en `scene/util` como funciones puras con tests; lo que necesita WebGL se verifica en e2e.
 

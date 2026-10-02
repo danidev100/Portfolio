@@ -1,21 +1,18 @@
 import type { ReactNode } from 'react';
 
-const PROMPT = 'dani@fedora ~ $';
+import { TerminalAsk } from './TerminalAsk';
+import { TerminalGraph } from './TerminalGraph';
 
 export function TerminalApp(): ReactNode {
   return (
-    <div className="flex min-h-full flex-col gap-1 rounded-card bg-canvas p-4 font-mono text-sm">
-      <p>
-        <span className="text-positive">{PROMPT}</span> portfolio --about
-      </p>
-      <p className="text-muted">Frontend Tech Lead · 9+ años</p>
-      <p className="text-muted">Angular · React Native · AI-native</p>
-      <p>
-        <span className="text-positive">{PROMPT}</span> ask --help
-      </p>
-      <p className="text-ai">
-        ▸ Asistente en construcción: pronto podrás preguntar por mi experiencia.
-      </p>
+    <div className="@container h-full min-h-112">
+      {/* Side by side when the window is wide enough; stacked otherwise. */}
+      <div className="flex h-full flex-col gap-3 @3xl:flex-row">
+        <TerminalGraph />
+        <div className="@3xl:w-80 @3xl:shrink-0">
+          <TerminalAsk />
+        </div>
+      </div>
     </div>
   );
 }
