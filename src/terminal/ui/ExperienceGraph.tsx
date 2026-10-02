@@ -304,7 +304,12 @@ export function ExperienceGraph({
             if (element) labelElementsRef.current.set(node.id, element);
             else labelElementsRef.current.delete(node.id);
           }}
-          className="absolute top-0 left-0 will-change-transform"
+          className={cn(
+            'absolute top-0 left-0 will-change-transform',
+            // On a narrow stage 21 labels pile up, so only the landmarks and
+            // the nodes in focus keep theirs.
+            !NODE_TYPE_STYLES[node.type].isLandmark && !activeIds.has(node.id) && '@max-md:hidden',
+          )}
         >
           <button
             type="button"
@@ -313,9 +318,12 @@ export function ExperienceGraph({
               if (!didPanRef.current) onSelectNode(node.id);
             }}
             className={cn(
-              'pointer-events-auto -translate-x-1/2 -translate-y-full cursor-pointer rounded-full border bg-surface/90 px-2.5 py-0.5 text-xs whitespace-nowrap transition-opacity duration-300 hover:bg-surface-raised motion-reduce:transition-none',
-              NODE_TYPE_STYLES[node.type].borderClass,
-              hasFocus && !activeIds.has(node.id) && 'opacity-30',
+              // At least 24px tall: the minimum target size, however labels overlap.
+              'pointer-events-auto flex min-h-6 -translate-x-1/2 -translate-y-full cursor-pointer items-center rounded-full border bg-surface px-2.5 text-xs whitespace-nowrap transition-colors duration-300 hover:bg-surface-raised motion-reduce:transition-none',
+              // Out of focus a label recedes, but its text keeps a readable contrast.
+              hasFocus && !activeIds.has(node.id)
+                ? 'border-border text-muted'
+                : NODE_TYPE_STYLES[node.type].borderClass,
             )}
           >
             {node.label}

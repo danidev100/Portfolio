@@ -10,6 +10,8 @@ interface NodeTypeStyle {
   borderClass: string;
   /** Radius of the node's sphere, in world units. */
   size: number;
+  /** Keeps its label even where there is no room for all of them. */
+  isLandmark: boolean;
 }
 
 export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = {
@@ -19,6 +21,7 @@ export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = 
     dotClass: 'bg-foreground',
     borderClass: 'border-foreground/60',
     size: 0.32,
+    isLandmark: true,
   },
   experience: {
     name: 'Experiencia',
@@ -26,6 +29,7 @@ export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = 
     dotClass: 'bg-highlight',
     borderClass: 'border-highlight/60',
     size: 0.2,
+    isLandmark: true,
   },
   skill: {
     name: 'Habilidad',
@@ -33,6 +37,7 @@ export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = 
     dotClass: 'bg-primary',
     borderClass: 'border-primary/60',
     size: 0.13,
+    isLandmark: false,
   },
   ai: {
     name: 'IA',
@@ -40,6 +45,7 @@ export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = 
     dotClass: 'bg-ai',
     borderClass: 'border-ai/60',
     size: 0.13,
+    isLandmark: false,
   },
   achievement: {
     name: 'Logro',
@@ -47,6 +53,7 @@ export const NODE_TYPE_STYLES: Readonly<Record<GraphNodeType, NodeTypeStyle>> = 
     dotClass: 'bg-positive',
     borderClass: 'border-positive/60',
     size: 0.13,
+    isLandmark: false,
   },
 };
 
