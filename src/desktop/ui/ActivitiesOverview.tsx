@@ -17,10 +17,17 @@ export interface OverviewWindow {
 interface ActivitiesOverviewProps {
   id: string;
   windows: readonly OverviewWindow[];
+  /** The route the router is on: the card that links to it does not navigate. */
+  currentHref: string;
   onSelect: (id: AppId) => void;
 }
 
-export function ActivitiesOverview({ id, windows, onSelect }: ActivitiesOverviewProps): ReactNode {
+export function ActivitiesOverview({
+  id,
+  windows,
+  currentHref,
+  onSelect,
+}: ActivitiesOverviewProps): ReactNode {
   const headingId = useId();
 
   return (
@@ -47,7 +54,10 @@ export function ActivitiesOverview({ id, windows, onSelect }: ActivitiesOverview
             <li key={app.id}>
               <Link
                 href={app.href}
-                onClick={() => {
+                onClick={(event) => {
+                  // From an intercepted route, navigating to the current URL
+                  // empties the page.
+                  if (app.href === currentHref) event.preventDefault();
                   onSelect(app.id);
                 }}
                 className="flex flex-col items-center gap-3 rounded-card border border-border bg-surface p-6 transition-colors duration-200 hover:bg-surface-raised motion-reduce:transition-none"

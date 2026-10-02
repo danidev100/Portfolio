@@ -39,6 +39,9 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 
 - Dentro de un dominio se importa con rutas relativas. El alias `@/` es solo para cruzar dominios, y siempre por su `index.ts` (`@/desktop`); `shared` es la excepción. ESLint lo hace cumplir.
 - La URL nombra la ventana enfocada y `/` es el escritorio sin ventanas visibles. `useDesktopWindows` mantiene en sincronía el store y el router; el store es la fuente de verdad de qué está abierto.
+- **Nunca se navega a la ruta en la que ya está el router** (ni `push`, ni `replace`, ni un `Link`): desde una ruta interceptada, Next deja la página vacía. Los enlaces del dock y de Actividades hacen `preventDefault` cuando apuntan a `currentHref`.
+- El store cambia al instante y su navegación llega después. `useDesktopWindows` lleva la cuenta de las navegaciones que pidió la app (`routeLandings.ts`): si la última aterriza en una ruta que el visitante ya dejó atrás, corrige la URL en vez de arrastrar el store. Solo las rutas que la app no pidió (botón atrás) mueven el store.
+- El icono del dock alterna su ventana: la abre o restaura, y la minimiza si ya es la enfocada.
 - Las rutas de `src/app/@window` no renderizan nada: solo interceptan para que el escritorio siga montado. Entrar directo a `/projects` renderiza la página completa.
 - `desktop` no importa otros dominios: `src/app/_components/appContent.tsx` le pasa el contenido de cada app.
 - Una app nueva se registra en `desktop/util/apps.ts` y `appContent.tsx`, y necesita su página y su ruta interceptada en `src/app`.
@@ -68,7 +71,7 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - `e2e/accessibility.spec.ts` pasa axe (WCAG 2.2 AA) por cada estado: escritorio, cada ventana, caso de proyecto, Terminal con foco, Actividades y páginas directas. Una ventana o estado nuevo añade ahí su caso.
 - Única excepción a axe: `target-size` en las etiquetas del grafo, que se solapan porque su posición es el dato (como pines de un mapa). Cada etiqueta mide al menos 24 px.
 - El texto atenuado nunca usa opacidad: cambia a `text-muted`, que mantiene el contraste. En la órbita, la tarjeta frontal y sus vecinas son opacas; las demás son invisibles e `inert`.
-- Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock. Además se reasienta la ruta actual para cancelar una navegación aún en curso, que reabriría la ventana.
+- Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock.
 - En contenedores estrechos el grafo solo etiqueta los nodos `isLandmark` y los que están en foco.
 - `e2e/mobile.spec.ts` corre los flujos críticos con viewport y toque de teléfono.
 - CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Los presupuestos de `lighthouserc.json` están ajustados al baseline medido (rendimiento ≥ 0.85, LCP ≤ 3.5 s simulado en móvil).

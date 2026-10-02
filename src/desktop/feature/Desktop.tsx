@@ -37,11 +37,23 @@ interface DesktopProps {
 }
 
 export function Desktop({ appContent }: DesktopProps): ReactNode {
-  const { windows, focusedId, open, focus, minimize, close } = useDesktopWindows();
+  const { windows, focusedId, currentHref, open, focus, minimize, close } = useDesktopWindows();
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
 
-  const activate = (id: AppId): void => {
+  const select = (id: AppId): void => {
     open(id);
+    setIsOverviewOpen(false);
+  };
+
+  /**
+   * The dock icon of an app toggles its window: it opens or restores it, and
+   * minimizes it when it is already the one in focus on its own route.
+   */
+  const toggleFromDock = (id: AppId): void => {
+    const isFocusedOnItsRoute = focusedId === id && APPS[id].href === currentHref;
+
+    if (isFocusedOnItsRoute) minimize(id);
+    else open(id);
     setIsOverviewOpen(false);
   };
 
@@ -118,11 +130,16 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
         </div>
         <AnimatePresence>
           {isOverviewOpen ? (
-            <ActivitiesOverview id={OVERVIEW_ID} windows={overviewWindows} onSelect={activate} />
+            <ActivitiesOverview
+              id={OVERVIEW_ID}
+              windows={overviewWindows}
+              currentHref={currentHref}
+              onSelect={select}
+            />
           ) : null}
         </AnimatePresence>
       </main>
-      <Dock items={dockItems} onActivate={activate} />
+      <Dock items={dockItems} currentHref={currentHref} onActivate={toggleFromDock} />
     </div>
   );
 }

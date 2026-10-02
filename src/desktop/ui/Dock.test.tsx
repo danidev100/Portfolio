@@ -14,14 +14,20 @@ const buildItems = (overrides: Partial<Record<string, Partial<DockItem>>> = {}):
 
 describe('Dock', () => {
   it('links every app to its route', () => {
-    render(<Dock items={buildItems()} onActivate={jest.fn()} />);
+    render(<Dock items={buildItems()} currentHref="/" onActivate={jest.fn()} />);
 
     expect(screen.getByRole('link', { name: 'Proyectos' })).toHaveAttribute('href', '/projects');
     expect(screen.getByRole('link', { name: 'Terminal' })).toHaveAttribute('href', '/terminal');
   });
 
   it('announces which apps are running', () => {
-    render(<Dock items={buildItems({ terminal: { isRunning: true } })} onActivate={jest.fn()} />);
+    render(
+      <Dock
+        currentHref="/"
+        items={buildItems({ terminal: { isRunning: true } })}
+        onActivate={jest.fn()}
+      />,
+    );
 
     expect(screen.getByRole('link', { name: 'Terminal, abierta' })).toBeInTheDocument();
   });
@@ -29,6 +35,7 @@ describe('Dock', () => {
   it('marks the focused app as the current page', () => {
     render(
       <Dock
+        currentHref="/"
         items={buildItems({ projects: { isRunning: true, isFocused: true } })}
         onActivate={jest.fn()}
       />,
@@ -43,10 +50,46 @@ describe('Dock', () => {
   it('reports the activated app', async () => {
     const user = userEvent.setup();
     const onActivate = jest.fn();
-    render(<Dock items={buildItems()} onActivate={onActivate} />);
+    render(<Dock currentHref="/" items={buildItems()} onActivate={onActivate} />);
 
     await user.click(screen.getByRole('link', { name: 'Terminal' }));
 
     expect(onActivate).toHaveBeenCalledWith('terminal');
+  });
+
+  describe('navigating', () => {
+    /** Whether the click was left to navigate, seen before the test setup cancels it. */
+    async function clickAndSeeIfItNavigates(currentHref: string): Promise<boolean> {
+      const user = userEvent.setup();
+      let wasPrevented = false;
+      const watch = (event: MouseEvent): void => {
+        wasPrevented = event.defaultPrevented;
+      };
+      document.body.addEventListener('click', watch);
+      render(<Dock currentHref={currentHref} items={buildItems()} onActivate={jest.fn()} />);
+
+      await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+      document.body.removeEventListener('click', watch);
+
+      return !wasPrevented;
+    }
+
+    it('navigates to the route of an app from another route', async () => {
+      expect(await clickAndSeeIfItNavigates('/')).toBe(true);
+    });
+
+    it('does not navigate to the route the router is already on', async () => {
+      expect(await clickAndSeeIfItNavigates('/projects')).toBe(false);
+    });
+  });
+
+  it('takes a double click as a single activation', async () => {
+    const user = userEvent.setup();
+    const onActivate = jest.fn();
+    render(<Dock currentHref="/" items={buildItems()} onActivate={onActivate} />);
+
+    await user.dblClick(screen.getByRole('link', { name: 'Terminal' }));
+
+    expect(onActivate).toHaveBeenCalledTimes(1);
   });
 });

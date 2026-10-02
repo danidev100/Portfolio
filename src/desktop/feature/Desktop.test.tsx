@@ -4,8 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { useWindowStore } from '../data-access/useWindowStore';
 import { Desktop } from './Desktop';
 
+let mockPathname = '/';
+
 jest.mock('next/navigation', () => ({
-  usePathname: (): string => '/',
+  usePathname: (): string => mockPathname,
   useRouter: (): { push: jest.Mock; replace: jest.Mock } => ({
     push: jest.fn(),
     replace: jest.fn(),
@@ -27,6 +29,7 @@ function renderDesktop(): ReturnType<typeof userEvent.setup> {
 
 describe('Desktop', () => {
   beforeEach(() => {
+    mockPathname = '/';
     useWindowStore.setState(useWindowStore.getInitialState(), true);
   });
 
@@ -108,6 +111,32 @@ describe('Desktop', () => {
     await user.click(screen.getByRole('button', { name: 'Cerrar Terminal' }));
 
     expect(screen.getByRole('dialog', { name: 'Proyectos' })).toHaveFocus();
+  });
+
+  it('minimizes the focused app from its own dock icon', async () => {
+    mockPathname = '/projects';
+    const user = renderDesktop();
+    const dockIcon = screen.getByRole('link', { name: 'Proyectos, abierta' });
+    expect(dockIcon).toHaveAttribute('aria-current', 'page');
+
+    await user.click(dockIcon);
+
+    expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).not.toHaveAttribute(
+      'aria-current',
+    );
+  });
+
+  it('restores a minimized app from its dock icon even on its own route', async () => {
+    mockPathname = '/projects';
+    const user = renderDesktop();
+    await user.click(screen.getByRole('button', { name: 'Minimizar Proyectos' }));
+
+    await user.click(screen.getByRole('link', { name: 'Proyectos, abierta' }));
+
+    expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
   });
 
   it('lists the open windows in the activities overview', async () => {

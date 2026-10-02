@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
 import { RADIUS_PX } from '@/shared/util/motion';
@@ -19,10 +19,26 @@ export interface DockItem {
 
 interface DockProps {
   items: readonly DockItem[];
+  /** The route the router is on: the icon that links to it does not navigate. */
+  currentHref: string;
   onActivate: (id: AppId) => void;
 }
 
-export function Dock({ items, onActivate }: DockProps): ReactNode {
+export function Dock({ items, currentHref, onActivate }: DockProps): ReactNode {
+  const activate = (event: MouseEvent, app: AppDefinition): void => {
+    // From an intercepted route, navigating to the current URL empties the page.
+    if (app.href === currentHref) event.preventDefault();
+
+    // The second click of a double click would undo what the first one did.
+    if (event.detail > 1) {
+      event.preventDefault();
+
+      return;
+    }
+
+    onActivate(app.id);
+  };
+
   return (
     <nav aria-label="Dock" className="flex justify-center">
       <ul className="flex items-center gap-2 rounded-full border border-border bg-surface/90 px-3 py-2 backdrop-blur">
@@ -39,8 +55,8 @@ export function Dock({ items, onActivate }: DockProps): ReactNode {
               id={getDockItemId(app.id)}
               href={app.href}
               aria-current={isFocused ? 'page' : undefined}
-              onClick={() => {
-                onActivate(app.id);
+              onClick={(event) => {
+                activate(event, app);
               }}
               className="group relative flex flex-col items-center rounded-control"
             >

@@ -135,8 +135,21 @@ describe('useDesktopWindows', () => {
     });
   });
 
-  describe('a window closed before its navigation lands', () => {
-    it('cancels that navigation by settling on the current route', () => {
+  describe('never navigating to the route it is already on', () => {
+    it('leaves the router alone when a background window is closed', () => {
+      const { result, rerender } = renderAt('/projects');
+      mockPathname = '/terminal';
+      rerender();
+
+      act(() => {
+        result.current.close('projects');
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockReplace).not.toHaveBeenCalled();
+    });
+
+    it('leaves the router alone when a window is closed before its navigation lands', () => {
       const { result } = renderAt('/');
       act(() => {
         result.current.open('about');
@@ -146,21 +159,78 @@ describe('useDesktopWindows', () => {
         result.current.close('about');
       });
 
-      expect(mockReplace).toHaveBeenCalledWith('/');
       expect(mockPush).not.toHaveBeenCalled();
+      expect(mockReplace).not.toHaveBeenCalled();
     });
 
-    it('does the same when the window is minimized', () => {
-      const { result } = renderAt('/');
+    it('does not ask twice for a route that is already on its way', () => {
+      const { result, rerender } = renderAt('/projects');
+      mockPathname = '/terminal';
+      rerender();
+
+      act(() => {
+        result.current.focus('projects');
+        result.current.focus('projects');
+      });
+
+      expect(mockPush).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('a navigation that lands after the visitor changed their mind', () => {
+    it('does not reopen a window closed before its navigation landed', () => {
+      const { result, rerender } = renderAt('/');
       act(() => {
         result.current.open('about');
       });
-
       act(() => {
-        result.current.minimize('about');
+        result.current.close('about');
       });
 
+      mockPathname = '/about';
+      rerender();
+
+      expect(openIds()).toEqual([]);
       expect(mockReplace).toHaveBeenCalledWith('/');
+    });
+
+    it('keeps a window reopened while the navigation away from it was on its way', () => {
+      const { result, rerender } = renderAt('/projects');
+      act(() => {
+        result.current.minimize('projects');
+      });
+      act(() => {
+        result.current.open('projects');
+      });
+
+      mockPathname = '/';
+      rerender();
+
+      expect(result.current.focusedId).toBe('projects');
+      expect(mockReplace).toHaveBeenCalledWith('/projects');
+    });
+
+    it('still follows the back button once its own navigations have landed', () => {
+      const { result, rerender } = renderAt('/');
+      act(() => {
+        result.current.open('about');
+      });
+      mockPathname = '/about';
+      rerender();
+
+      mockPathname = '/';
+      rerender();
+
+      expect(result.current.focusedId).toBeNull();
+      expect(mockReplace).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('the current route', () => {
+    it('is exposed so that links to it can skip navigating', () => {
+      const { result } = renderAt('/projects');
+
+      expect(result.current.currentHref).toBe('/projects');
     });
   });
 

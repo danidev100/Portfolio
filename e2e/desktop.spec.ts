@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.describe('3d backdrop', () => {
   test('renders behind the shell, hidden from assistive technology', async ({ page }) => {
@@ -140,5 +140,83 @@ test.describe('direct entry', () => {
 
     await expect(page).toHaveURL('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Dani OS' })).toBeVisible();
+  });
+});
+
+// Navigating to the URL the router is already on, from an intercepted route,
+// leaves the page empty. These are the ways a visitor could trigger it.
+test.describe('staying on the current route', () => {
+  const expectDesktop = async (page: Page): Promise<void> => {
+    await expect(page.getByRole('navigation', { name: 'Dock' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Dani OS' })).toBeAttached();
+  };
+
+  test('the dock icon of the focused app minimizes its window', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Proyectos' }).click();
+    await expect(page).toHaveURL('/projects');
+
+    await page.getByRole('link', { name: 'Proyectos, abierta' }).click();
+
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page).toHaveURL('/');
+    await expectDesktop(page);
+    await expect(page.getByRole('link', { name: 'Proyectos, abierta' })).toBeVisible();
+  });
+
+  test('a double click on a dock icon opens the app and leaves it open', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('link', { name: 'Terminal' }).dblclick();
+
+    await expect(page).toHaveURL('/terminal');
+    await expect(page.getByRole('dialog', { name: 'Terminal' })).toBeVisible();
+    await expectDesktop(page);
+  });
+
+  test('closing a window in the background keeps the desktop and the focused window', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Contacto' }).click();
+    await expect(page).toHaveURL('/contact');
+    await page.getByRole('link', { name: 'Proyectos' }).click();
+    await expect(page).toHaveURL('/projects');
+
+    await page.getByRole('button', { name: 'Cerrar Contacto' }).click();
+
+    await expect(page.getByRole('dialog')).toHaveCount(1);
+    await expect(page.getByRole('dialog', { name: 'Proyectos' })).toBeVisible();
+    await expect(page).toHaveURL('/projects');
+    await expectDesktop(page);
+  });
+
+  test('picking the focused window in the activities overview keeps it open', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Sobre mí' }).click();
+    await expect(page).toHaveURL('/about');
+    await page.getByRole('button', { name: 'Actividades' }).click();
+
+    await page
+      .getByRole('region', { name: 'Ventanas abiertas' })
+      .getByRole('link', { name: 'Sobre mí' })
+      .click();
+
+    await expect(page.getByRole('region', { name: 'Ventanas abiertas' })).toHaveCount(0);
+    await expect(page.getByRole('dialog', { name: 'Sobre mí' })).toBeVisible();
+    await expectDesktop(page);
+  });
+
+  test('a window reopened right after being minimized stays open', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Contacto' }).click();
+    await expect(page).toHaveURL('/contact');
+
+    await page.getByRole('button', { name: 'Minimizar Contacto' }).click();
+    await page.getByRole('link', { name: 'Contacto, abierta' }).click();
+
+    await expect(page.getByRole('dialog', { name: 'Contacto' })).toBeVisible();
+    await expect(page).toHaveURL('/contact');
+    await expectDesktop(page);
   });
 });
