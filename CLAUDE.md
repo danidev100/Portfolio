@@ -63,6 +63,17 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Los materiales leen los colores de los tokens CSS con `readThemeColor`; no hay hex en la escena.
 - La matemática de cámara y layout vive en `scene/util` como funciones puras con tests; lo que necesita WebGL se verifica en e2e.
 
+## Accesibilidad y calidad
+
+- `e2e/accessibility.spec.ts` pasa axe (WCAG 2.2 AA) por cada estado: escritorio, cada ventana, caso de proyecto, Terminal con foco, Actividades y páginas directas. Una ventana o estado nuevo añade ahí su caso.
+- Única excepción a axe: `target-size` en las etiquetas del grafo, que se solapan porque su posición es el dato (como pines de un mapa). Cada etiqueta mide al menos 24 px.
+- El texto atenuado nunca usa opacidad: cambia a `text-muted`, que mantiene el contraste. En la órbita, la tarjeta frontal y sus vecinas son opacas; las demás son invisibles e `inert`.
+- Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock. Además se reasienta la ruta actual para cancelar una navegación aún en curso, que reabriría la ventana.
+- En contenedores estrechos el grafo solo etiqueta los nodos `isLandmark` y los que están en foco.
+- `e2e/mobile.spec.ts` corre los flujos críticos con viewport y toque de teléfono.
+- CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Los presupuestos de `lighthouserc.json` están ajustados al baseline medido (rendimiento ≥ 0.85, LCP ≤ 3.5 s simulado en móvil).
+- Las tres fuentes se precargan a propósito: quitar la precarga de la mono subió el FCP de 756 a 1059 ms en la medición.
+
 ## No tocar
 
 - `entradas-3d.html`: prototipo de referencia para cámara, órbita y grafo. No es código a portar.
