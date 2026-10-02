@@ -1,4 +1,4 @@
-import { getEntryPose, resolveCameraPose, type CameraView } from './cameraPose';
+import { fitPoseToAspect, getEntryPose, resolveCameraPose, type CameraView } from './cameraPose';
 import type { ScenePanel, Vec3 } from './scenePanel';
 
 const WIDE_ASPECT = 16 / 9;
@@ -121,5 +121,17 @@ describe('getEntryPose', () => {
       distance(pose.position, pose.lookAt),
     );
     expect(entry.position[1]).toBeGreaterThan(pose.position[1]);
+  });
+});
+
+describe('fitPoseToAspect', () => {
+  const pose = { position: [0, 0, 10], lookAt: [0, 0, 0] } as const;
+
+  it('keeps the pose when the screen is wide enough', () => {
+    expect(fitPoseToAspect(pose, 2, 1.5)).toEqual(pose);
+  });
+
+  it('steps back in proportion to how narrow the screen is', () => {
+    expect(fitPoseToAspect(pose, 0.75, 1.5).position).toEqual([0, 0, 20]);
   });
 });

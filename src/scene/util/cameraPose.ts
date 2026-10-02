@@ -14,6 +14,9 @@ export interface CameraView {
   aspect: number;
 }
 
+/** Vertical field of view of every scene camera. */
+export const CAMERA_FOV_DEGREES = 45;
+
 const HOME_POSE: CameraPose = { position: [0, 0.2, 8.6], lookAt: [0, 0, 0] };
 
 /** Distance from the camera to a panel of scale 1 when it is active. */
@@ -56,11 +59,22 @@ function getBasePose({ panels, activePanelId, isPulledBack }: CameraView): Camer
   return activePanel ? getPanelPose(activePanel) : HOME_POSE;
 }
 
-export function resolveCameraPose(view: CameraView): CameraPose {
-  // On screens narrower than the scene needs, the camera steps back to fit it.
-  const fitRatio = Math.max(1, getMinimumAspect(view.aspect) / view.aspect);
+/**
+ * On a screen narrower than `minimumAspect`, the aspect ratio the scene was
+ * framed for, the camera steps back until the scene fits again.
+ */
+export function fitPoseToAspect(
+  pose: CameraPose,
+  aspect: number,
+  minimumAspect: number,
+): CameraPose {
+  const fitRatio = Math.max(1, minimumAspect / aspect);
 
-  return scaleDistance(getBasePose(view), fitRatio);
+  return fitRatio === 1 ? pose : scaleDistance(pose, fitRatio);
+}
+
+export function resolveCameraPose(view: CameraView): CameraPose {
+  return fitPoseToAspect(getBasePose(view), view.aspect, getMinimumAspect(view.aspect));
 }
 
 /** Where the camera starts so that it arrives at `pose` with a dolly-in. */

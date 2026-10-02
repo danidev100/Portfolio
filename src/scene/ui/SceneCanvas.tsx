@@ -6,24 +6,34 @@ import { useState, type ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
 
+import { CAMERA_FOV_DEGREES } from '../util/cameraPose';
 import { isWebGLAvailable } from './webgl';
 
 const MIN_DPR = 1;
 /** Above this the extra pixels cost far more GPU time than they add sharpness. */
 const MAX_DPR = 1.5;
-const CAMERA = { fov: 45, near: 0.1, far: 200 } as const;
+const CAMERA = { fov: CAMERA_FOV_DEGREES, near: 0.1, far: 200 } as const;
 const GL = { antialias: true, alpha: true, powerPreference: 'high-performance' } as const;
+/**
+ * Measures the layout size instead of the size on screen. A canvas inside a
+ * window is mounted while the window is still scaling open, and would
+ * otherwise keep the smaller size it had at that moment.
+ */
+const RESIZE = { offsetSize: true } as const;
 
 interface SceneCanvasProps {
+  /** The 3D scene. */
   children: ReactNode;
+  /** DOM laid over the canvas, such as labels, that appears together with it. */
+  overlay?: ReactNode;
 }
 
 /**
- * The WebGL canvas, laid behind the DOM. It is decorative, renders only when
- * something changes, and fades in so that it never pops into view. Without
- * WebGL it renders nothing and the CSS wallpaper underneath stays as is.
+ * A WebGL canvas that fills its parent. It renders only when something
+ * changes and fades in so that it never pops into view. Without WebGL it
+ * renders nothing, and whatever is behind it stays as is.
  */
-export function SceneCanvas({ children }: SceneCanvasProps): ReactNode {
+export function SceneCanvas({ children, overlay }: SceneCanvasProps): ReactNode {
   const [canRender] = useState(isWebGLAvailable);
   const [isReady, setIsReady] = useState(false);
   const [maxDpr, setMaxDpr] = useState(MAX_DPR);
@@ -32,9 +42,8 @@ export function SceneCanvas({ children }: SceneCanvasProps): ReactNode {
 
   return (
     <div
-      aria-hidden="true"
       className={cn(
-        'pointer-events-none absolute inset-0 -z-10 transition-opacity duration-700 motion-reduce:transition-none',
+        'relative size-full transition-opacity duration-700 motion-reduce:transition-none',
         isReady ? 'opacity-100' : 'opacity-0',
       )}
     >
@@ -45,6 +54,7 @@ export function SceneCanvas({ children }: SceneCanvasProps): ReactNode {
         dpr={[MIN_DPR, maxDpr]}
         camera={CAMERA}
         gl={GL}
+        resize={RESIZE}
         onCreated={() => {
           setIsReady(true);
         }}
@@ -56,6 +66,7 @@ export function SceneCanvas({ children }: SceneCanvasProps): ReactNode {
         />
         {children}
       </Canvas>
+      {overlay}
     </div>
   );
 }

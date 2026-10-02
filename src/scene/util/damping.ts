@@ -1,7 +1,17 @@
 import type { Vec3 } from './scenePanel';
 
 /** Below this distance (in world units) a movement is no longer visible. */
-const SETTLE_EPSILON = 0.001;
+export const SETTLE_EPSILON = 0.001;
+
+/**
+ * The scene only renders when something changes, so the first frame after an
+ * idle period reports the whole idle time as its delta. This caps the jump.
+ */
+export const MAX_FRAME_DELTA_S = 0.05;
+
+export function clampFrameDelta(deltaSeconds: number): number {
+  return Math.min(deltaSeconds, MAX_FRAME_DELTA_S);
+}
 
 /**
  * Share of the remaining distance to cover this frame. Exponential, so the

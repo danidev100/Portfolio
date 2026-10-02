@@ -1,4 +1,4 @@
-import { getDampingFactor, isSettled } from './damping';
+import { clampFrameDelta, getDampingFactor, isSettled, MAX_FRAME_DELTA_S } from './damping';
 
 const LAMBDA = 3.2;
 
@@ -35,5 +35,15 @@ describe('isSettled', () => {
 
   it('is not settled while there is visible distance left', () => {
     expect(isSettled([1, 2, 3], [1, 2, 3.1])).toBe(false);
+  });
+});
+
+describe('clampFrameDelta', () => {
+  it('keeps the time of a normal frame', () => {
+    expect(clampFrameDelta(1 / 60)).toBeCloseTo(1 / 60);
+  });
+
+  it('caps the long gap of the first frame after an idle period', () => {
+    expect(clampFrameDelta(4)).toBe(MAX_FRAME_DELTA_S);
   });
 });

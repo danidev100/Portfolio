@@ -43,13 +43,18 @@ function Stage({ panels, activePanelId, isPulledBack, isMotionReduced }: StagePr
   );
 }
 
-/** The 3D layer behind the desktop: the camera flies to the active panel. */
+/**
+ * The 3D layer behind the desktop: the camera flies to the active panel. It is
+ * decorative, so it stays out of the way of pointers and assistive technology.
+ */
 export function DesktopScene(props: DesktopSceneProps): ReactNode {
   const isMotionReduced = useReducedMotion() ?? false;
 
   return (
-    <SceneCanvas>
-      <Stage {...props} isMotionReduced={isMotionReduced} />
-    </SceneCanvas>
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      <SceneCanvas>
+        <Stage {...props} isMotionReduced={isMotionReduced} />
+      </SceneCanvas>
+    </div>
   );
 }

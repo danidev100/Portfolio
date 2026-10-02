@@ -5,14 +5,12 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { Vector3 } from 'three';
 
 import { getEntryPose, type CameraPose } from '../util/cameraPose';
-import { getDampingFactor, isSettled } from '../util/damping';
+import { clampFrameDelta, getDampingFactor, isSettled } from '../util/damping';
 
 const CAMERA_DAMPING = 3.2;
 const PARALLAX_DAMPING = 4;
 /** How far the camera drifts, in world units, when the pointer reaches an edge. */
 const PARALLAX_REACH = { x: 0.18, y: 0.11 } as const;
-/** After an idle period the first frame reports a huge delta; this caps the jump. */
-const MAX_FRAME_DELTA_S = 0.05;
 const FINE_POINTER_QUERY = '(pointer: fine)';
 
 interface RigState {
@@ -73,7 +71,7 @@ export function CameraRig({ pose, isMotionReduced }: CameraRigProps): ReactNode 
   useFrame(({ camera }, delta) => {
     rigRef.current ??= createRigState(isMotionReduced ? pose : getEntryPose(pose));
     const rig = rigRef.current;
-    const deltaSeconds = Math.min(delta, MAX_FRAME_DELTA_S);
+    const deltaSeconds = clampFrameDelta(delta);
     const cameraFactor = isMotionReduced ? 1 : getDampingFactor(CAMERA_DAMPING, deltaSeconds);
     const parallaxFactor = isMotionReduced ? 1 : getDampingFactor(PARALLAX_DAMPING, deltaSeconds);
 
