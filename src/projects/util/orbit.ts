@@ -8,9 +8,6 @@ const FULL_TURN = Math.PI * 2;
 /** How long a release keeps coasting, in seconds of its speed at that moment. */
 const COAST_SECONDS = 0.25;
 
-/** The cards at the sides stay faintly visible so the ring reads as a ring. */
-const SIDE_OPACITY = 0.25;
-
 function modulo(value: number, divisor: number): number {
   return ((value % divisor) + divisor) % divisor;
 }
@@ -49,8 +46,24 @@ export function getReleaseRotation(rotation: number, velocity: number, count: nu
   return getSnapRotation(rotation + velocity * COAST_SECONDS, count);
 }
 
+/**
+ * The front card and its two neighbors are fully opaque, so their text keeps
+ * its contrast. Past a neighbor's spot a card fades out, and it is gone by the
+ * time it faces sideways.
+ */
 export function getCardOpacity(index: number, rotation: number, count: number): number {
-  const facing = Math.cos(index * getStep(count) + rotation);
+  const step = getStep(count);
+  const facing = Math.cos(index * step + rotation);
 
-  return SIDE_OPACITY + (1 - SIDE_OPACITY) * Math.max(0, facing);
+  return Math.min(1, Math.max(0, facing) / Math.cos(step));
+}
+
+/**
+ * Whether a card can be seen, and so used: the front one and its neighbors.
+ * The rest are out of sight until the ring turns.
+ */
+export function isWithinReach(index: number, frontIndex: number, count: number): boolean {
+  const distance = modulo(index - frontIndex, count);
+
+  return Math.min(distance, count - distance) <= 1;
 }

@@ -88,9 +88,11 @@ export function ProjectDetail({
             >
               {getIdeaLabel(index)}
             </p>
-            <h3 id={nameId} className="font-display text-3xl font-bold">
+            {/* Level 2 in both places a case shows: under the window title and
+                under the title of the standalone page, without skipping a level. */}
+            <h2 id={nameId} className="font-display text-3xl font-bold">
               {project.name}
-            </h3>
+            </h2>
           </div>
           <button
             ref={closeButtonRef}

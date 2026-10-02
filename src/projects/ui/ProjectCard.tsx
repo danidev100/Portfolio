@@ -12,13 +12,14 @@ const VISIBLE_STACK_ITEMS = 3;
 interface ProjectCardProps {
   project: Project;
   index: number;
-  /** Ids for the element that renders the card to name and describe itself. */
-  nameId: string;
-  summaryId: string;
 }
 
-/** Only phrasing content, so the card can live inside a button. */
-export function ProjectCard({ project, index, nameId, summaryId }: ProjectCardProps): ReactNode {
+/**
+ * Only phrasing content, so the card can live inside a button. All of its text
+ * becomes the name of that button, which keeps what is read aloud in line with
+ * what is seen.
+ */
+export function ProjectCard({ project, index }: ProjectCardProps): ReactNode {
   return (
     <span className="flex h-full flex-col text-left">
       <span
@@ -40,12 +41,8 @@ export function ProjectCard({ project, index, nameId, summaryId }: ProjectCardPr
         />
       </span>
       <span className="flex min-h-0 flex-1 flex-col gap-2 p-4">
-        <span id={nameId} className="font-display text-xl leading-tight font-bold">
-          {project.name}
-        </span>
-        <span id={summaryId} className="line-clamp-3 text-sm text-muted">
-          {project.summary}
-        </span>
+        <span className="font-display text-xl leading-tight font-bold">{project.name}</span>
+        <span className="line-clamp-3 text-sm text-muted">{project.summary}</span>
         {/* A single row: the technologies that do not fit are listed in the case. */}
         <span className="mt-auto flex gap-1.5 overflow-hidden">
           {project.stack.slice(0, VISIBLE_STACK_ITEMS).map((technology) => (

@@ -14,7 +14,7 @@ const getFrontCard = (): HTMLElement =>
   within(screen.getByRole('list', { name: 'Proyectos' })).getByRole('button', { current: true });
 
 /** The ring turns with an animation, so the front card changes a moment later. */
-const expectFrontCard = (name: string): Promise<void> =>
+const expectFrontCard = (name: RegExp): Promise<void> =>
   waitFor(() => {
     expect(getFrontCard()).toHaveAccessibleName(name);
   });
@@ -28,17 +28,28 @@ describe('ProjectsApp', () => {
     expect(cards).toHaveLength(PROJECTS.length);
   });
 
+  it('takes the cards that are out of sight out of reach', () => {
+    renderApp();
+
+    expect(screen.getByRole('button', { name: /Solar Scout/ }).closest('li')).not.toHaveAttribute(
+      'inert',
+    );
+    expect(screen.getByRole('button', { name: /MFE Atlas/ }).closest('li')).toHaveAttribute(
+      'inert',
+    );
+  });
+
   it('starts with the first project in front', async () => {
     renderApp();
 
-    await expectFrontCard('Factura Lens');
+    await expectFrontCard(/Factura Lens/);
   });
 
-  it('describes each card with its summary', () => {
+  it('names each card with everything it shows, summary included', () => {
     renderApp();
 
-    expect(screen.getByRole('button', { name: 'Solar Scout' })).toHaveAccessibleDescription(
-      'Estima el ahorro solar a partir de una factura de energía.',
+    expect(screen.getByRole('button', { name: /Solar Scout/ })).toHaveAccessibleName(
+      /Idea 02.*Estima el ahorro solar a partir de una factura de energía\..*React Native/,
     );
   });
 
@@ -47,7 +58,7 @@ describe('ProjectsApp', () => {
 
     await user.click(screen.getByRole('button', { name: 'Proyecto siguiente' }));
 
-    await expectFrontCard('Solar Scout');
+    await expectFrontCard(/Solar Scout/);
   });
 
   it('wraps to the last project when going back from the first one', async () => {
@@ -55,7 +66,7 @@ describe('ProjectsApp', () => {
 
     await user.click(screen.getByRole('button', { name: 'Proyecto anterior' }));
 
-    await expectFrontCard('Interview Forge');
+    await expectFrontCard(/Interview Forge/);
   });
 
   it('turns the orbit with the arrow keys', async () => {
@@ -64,7 +75,7 @@ describe('ProjectsApp', () => {
 
     await user.keyboard('{ArrowRight}{ArrowRight}');
 
-    await expectFrontCard('DS Copilot');
+    await expectFrontCard(/DS Copilot/);
   });
 
   it('brings a card to the front when it receives keyboard focus', async () => {
@@ -73,23 +84,23 @@ describe('ProjectsApp', () => {
 
     await user.tab();
 
-    await expectFrontCard('Solar Scout');
+    await expectFrontCard(/Solar Scout/);
   });
 
   it('opens the case of a project from its card', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
 
-    const detail = await screen.findByRole('region', { name: 'DS Copilot' });
-    expect(detail).toHaveTextContent('Equipos con una librería de componentes propia.');
-    expect(detail).toHaveTextContent('Storybook');
+    const detail = await screen.findByRole('region', { name: 'Solar Scout' });
+    expect(detail).toHaveTextContent('Empresas de energía residencial y su equipo comercial.');
+    expect(detail).toHaveTextContent('AI SDK');
   });
 
   it('moves focus into the case when it opens', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
 
     expect(await screen.findByRole('button', { name: 'Volver a la órbita' })).toHaveFocus();
   });
@@ -97,20 +108,20 @@ describe('ProjectsApp', () => {
   it('takes the orbit out of reach while a case is open', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
-    await screen.findByRole('region', { name: 'DS Copilot' });
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await screen.findByRole('region', { name: 'Solar Scout' });
 
     expect(screen.getByRole('region', { name: 'Órbita de proyectos' })).toHaveAttribute('inert');
   });
 
   it('closes the case and gives the orbit back', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
 
     await user.click(await screen.findByRole('button', { name: 'Volver a la órbita' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('region', { name: 'DS Copilot' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('region', { name: 'Solar Scout' })).not.toBeInTheDocument();
     });
     expect(screen.getByRole('region', { name: 'Órbita de proyectos' })).not.toHaveAttribute(
       'inert',
@@ -119,8 +130,8 @@ describe('ProjectsApp', () => {
 
   it('closes the case with Escape', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
-    await screen.findByRole('region', { name: 'DS Copilot' });
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await screen.findByRole('region', { name: 'Solar Scout' });
 
     await user.keyboard('{Escape}');
 
@@ -131,10 +142,10 @@ describe('ProjectsApp', () => {
 
   it('returns focus to the card when its case is closed', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: 'DS Copilot' }));
+    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
 
     await user.click(await screen.findByRole('button', { name: 'Volver a la órbita' }));
 
-    expect(screen.getByRole('button', { name: 'DS Copilot' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /Solar Scout/ })).toHaveFocus();
   });
 });

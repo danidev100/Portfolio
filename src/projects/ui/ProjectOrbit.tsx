@@ -1,9 +1,9 @@
 'use client';
 
 import { motion, useTransform, type MotionValue } from 'motion/react';
-import { useEffect, useId, useRef, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useRef, type KeyboardEvent, type ReactNode } from 'react';
 
-import { getCardOpacity, getStep } from '../util/orbit';
+import { getCardOpacity, getStep, isWithinReach } from '../util/orbit';
 import type { Project } from '../util/projects';
 import type { Box } from '../util/reveal';
 import { ProjectCard } from './ProjectCard';
@@ -35,6 +35,8 @@ interface OrbitCardProps {
   count: number;
   rotation: MotionValue<number>;
   isFront: boolean;
+  /** Out of sight cards are taken out of the tab order and the accessibility tree. */
+  isReachable: boolean;
   onFocus: () => void;
   onOpen: () => void;
   buttonRef: (element: HTMLButtonElement | null) => void;
@@ -46,16 +48,16 @@ function OrbitCard({
   count,
   rotation,
   isFront,
+  isReachable,
   onFocus,
   onOpen,
   buttonRef,
 }: OrbitCardProps): ReactNode {
-  const nameId = useId();
-  const summaryId = useId();
   const opacity = useTransform(rotation, (latest) => getCardOpacity(index, latest, count));
 
   return (
     <li
+      inert={!isReachable}
       className="absolute inset-0 backface-hidden"
       style={{
         transform: `rotateY(${String(index * getStep(count))}rad) translateZ(${RING_RADIUS})`,
@@ -65,14 +67,12 @@ function OrbitCard({
         <button
           ref={buttonRef}
           type="button"
-          aria-labelledby={nameId}
-          aria-describedby={summaryId}
           aria-current={isFront ? 'true' : undefined}
           onFocus={onFocus}
           onClick={onOpen}
           className="block size-full cursor-pointer overflow-hidden rounded-card border border-border bg-surface-raised shadow-window"
         >
-          <ProjectCard project={project} index={index} nameId={nameId} summaryId={summaryId} />
+          <ProjectCard project={project} index={index} />
         </button>
       </motion.div>
     </li>
@@ -202,6 +202,7 @@ export function ProjectOrbit({ projects, isInert, onOpen }: ProjectOrbitProps): 
                 count={count}
                 rotation={rotation}
                 isFront={index === frontIndex}
+                isReachable={isWithinReach(index, frontIndex, count)}
                 onFocus={() => {
                   void rotateToIndex(index);
                 }}

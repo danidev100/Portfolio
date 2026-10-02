@@ -6,6 +6,7 @@ import {
   getRotationToIndex,
   getSnapRotation,
   getStep,
+  isWithinReach,
 } from './orbit';
 
 const COUNT = 8;
@@ -116,16 +117,42 @@ describe('getCardOpacity', () => {
     expect(getCardOpacity(2, -2 * STEP, COUNT)).toBeCloseTo(1);
   });
 
-  it('fades the cards toward the sides', () => {
-    const front = getCardOpacity(0, 0, COUNT);
-    const neighbor = getCardOpacity(1, 0, COUNT);
-    const side = getCardOpacity(2, 0, COUNT);
-
-    expect(neighbor).toBeLessThan(front);
-    expect(side).toBeLessThan(neighbor);
+  it('keeps the neighbors of the front card fully opaque, so their text stays legible', () => {
+    expect(getCardOpacity(1, 0, COUNT)).toBeCloseTo(1);
+    expect(getCardOpacity(COUNT - 1, 0, COUNT)).toBeCloseTo(1);
   });
 
-  it('never fades a card out completely', () => {
-    expect(getCardOpacity(2, 0, COUNT)).toBeGreaterThan(0);
+  it('fades the cards beyond the neighbors', () => {
+    expect(getCardOpacity(2, 0, COUNT)).toBeLessThan(1);
+  });
+
+  it('fades a card gradually as it turns away past the neighbor position', () => {
+    const justPast = getCardOpacity(1, -0.25 * -STEP, COUNT);
+    const farther = getCardOpacity(1, -0.75 * -STEP, COUNT);
+
+    expect(justPast).toBeLessThan(1);
+    expect(farther).toBeLessThan(justPast);
+  });
+
+  it('hides the cards that face sideways or away', () => {
+    expect(getCardOpacity(2, 0, COUNT)).toBeCloseTo(0);
+    expect(getCardOpacity(4, 0, COUNT)).toBe(0);
+  });
+});
+
+describe('isWithinReach', () => {
+  it('reaches the front card and its two neighbors', () => {
+    expect(isWithinReach(0, 0, COUNT)).toBe(true);
+    expect(isWithinReach(1, 0, COUNT)).toBe(true);
+    expect(isWithinReach(COUNT - 1, 0, COUNT)).toBe(true);
+  });
+
+  it('does not reach the cards that face sideways or away', () => {
+    expect(isWithinReach(2, 0, COUNT)).toBe(false);
+    expect(isWithinReach(4, 0, COUNT)).toBe(false);
+  });
+
+  it('counts the neighbors around the end of the ring', () => {
+    expect(isWithinReach(0, COUNT - 1, COUNT)).toBe(true);
   });
 });
