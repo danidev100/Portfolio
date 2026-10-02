@@ -102,6 +102,26 @@ test.describe('desktop shell', () => {
     await page.getByRole('link', { name: 'Proyectos, abierta' }).click();
     await expect(page.getByRole('dialog', { name: 'Proyectos' })).toBeVisible();
   });
+
+  test('opens and closes a window with the keyboard alone, without losing the focus', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const dockIcon = page.getByRole('link', { name: 'Contacto' });
+
+    await dockIcon.focus();
+    await page.keyboard.press('Enter');
+    const window = page.getByRole('dialog', { name: 'Contacto' });
+    await expect(window).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: 'Minimizar Contacto' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(dockIcon).toBeFocused();
+  });
 });
 
 test.describe('direct entry', () => {

@@ -4,11 +4,15 @@ import { useWindowStore } from '../data-access/useWindowStore';
 import { useDesktopWindows, type DesktopWindows } from './useDesktopWindows';
 
 const mockPush = jest.fn();
+const mockReplace = jest.fn();
 let mockPathname = '/';
 
 jest.mock('next/navigation', () => ({
   usePathname: (): string => mockPathname,
-  useRouter: (): { push: jest.Mock } => ({ push: mockPush }),
+  useRouter: (): { push: jest.Mock; replace: jest.Mock } => ({
+    push: mockPush,
+    replace: mockReplace,
+  }),
 }));
 
 const openIds = (): string[] =>
@@ -23,6 +27,7 @@ function renderAt(pathname: string): RenderHookResult<DesktopWindows, unknown> {
 describe('useDesktopWindows', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockReplace.mockClear();
     useWindowStore.setState(useWindowStore.getInitialState(), true);
   });
 
@@ -127,6 +132,61 @@ describe('useDesktopWindows', () => {
 
       expect(openIds()).toEqual(['terminal']);
       expect(mockPush).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('a window closed before its navigation lands', () => {
+    it('cancels that navigation by settling on the current route', () => {
+      const { result } = renderAt('/');
+      act(() => {
+        result.current.open('about');
+      });
+
+      act(() => {
+        result.current.close('about');
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith('/');
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('does the same when the window is minimized', () => {
+      const { result } = renderAt('/');
+      act(() => {
+        result.current.open('about');
+      });
+
+      act(() => {
+        result.current.minimize('about');
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith('/');
+    });
+  });
+
+  describe('what is left in focus', () => {
+    it('reports the window that takes the focus after a minimize', () => {
+      const { result, rerender } = renderAt('/projects');
+      mockPathname = '/terminal';
+      rerender();
+
+      let nowFocused: string | null = 'unset';
+      act(() => {
+        nowFocused = result.current.minimize('terminal');
+      });
+
+      expect(nowFocused).toBe('projects');
+    });
+
+    it('reports that nothing is left in focus after closing the last window', () => {
+      const { result } = renderAt('/projects');
+
+      let nowFocused: string | null = 'unset';
+      act(() => {
+        nowFocused = result.current.close('projects');
+      });
+
+      expect(nowFocused).toBeNull();
     });
   });
 

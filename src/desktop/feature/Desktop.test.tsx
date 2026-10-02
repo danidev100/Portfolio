@@ -6,7 +6,10 @@ import { Desktop } from './Desktop';
 
 jest.mock('next/navigation', () => ({
   usePathname: (): string => '/',
-  useRouter: (): { push: jest.Mock } => ({ push: jest.fn() }),
+  useRouter: (): { push: jest.Mock; replace: jest.Mock } => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+  }),
 }));
 
 const APP_CONTENT = {
@@ -77,6 +80,34 @@ describe('Desktop', () => {
     expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).not.toHaveAttribute(
       'aria-current',
     );
+  });
+
+  it('returns focus to the dock when the last window is closed', async () => {
+    const user = renderDesktop();
+    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+
+    await user.click(screen.getByRole('button', { name: 'Cerrar Proyectos' }));
+
+    expect(screen.getByRole('link', { name: 'Proyectos' })).toHaveFocus();
+  });
+
+  it('returns focus to the dock when the last window is minimized', async () => {
+    const user = renderDesktop();
+    await user.click(screen.getByRole('link', { name: 'Contacto' }));
+
+    await user.click(screen.getByRole('button', { name: 'Minimizar Contacto' }));
+
+    expect(screen.getByRole('link', { name: 'Contacto, abierta' })).toHaveFocus();
+  });
+
+  it('moves focus to the window left on top when another one is closed', async () => {
+    const user = renderDesktop();
+    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+    await user.click(screen.getByRole('link', { name: 'Terminal' }));
+
+    await user.click(screen.getByRole('button', { name: 'Cerrar Terminal' }));
+
+    expect(screen.getByRole('dialog', { name: 'Proyectos' })).toHaveFocus();
   });
 
   it('lists the open windows in the activities overview', async () => {

@@ -9,7 +9,7 @@ import { DesktopGreeting } from '../ui/DesktopGreeting';
 import { Dock } from '../ui/Dock';
 import { TopBar } from '../ui/TopBar';
 import { Window } from '../ui/Window';
-import { APP_IDS, APPS, type AppId } from '../util/apps';
+import { APP_IDS, APPS, getDockItemId, type AppId } from '../util/apps';
 import { APP_SCENE_PANELS } from './appScenePanels';
 import { useDesktopWindows } from './useDesktopWindows';
 
@@ -43,6 +43,14 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
   const activate = (id: AppId): void => {
     open(id);
     setIsOverviewOpen(false);
+  };
+
+  /**
+   * When a window goes away and no other takes the focus, the focus returns to
+   * the dock icon it was launched from instead of being lost on the page.
+   */
+  const returnFocusToDock = (id: AppId, nowFocusedId: AppId | null): void => {
+    if (nowFocusedId === null) document.getElementById(getDockItemId(id))?.focus();
   };
 
   const closeOverviewOnEscape = (event: KeyboardEvent): void => {
@@ -96,10 +104,10 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
                     focus(id);
                   }}
                   onMinimize={() => {
-                    minimize(id);
+                    returnFocusToDock(id, minimize(id));
                   }}
                   onClose={() => {
-                    close(id);
+                    returnFocusToDock(id, close(id));
                   }}
                 >
                   {appContent[id]}

@@ -23,3 +23,8 @@ export const DESKTOP_HREF = '/';
 export function getAppIdByPathname(pathname: string): AppId | null {
   return APP_IDS.find((id) => APPS[id].href === pathname) ?? null;
 }
+
+/** DOM id of an app's icon in the dock, to send the focus back to it. */
+export function getDockItemId(id: AppId): string {
+  return `dock-${id}`;
+}

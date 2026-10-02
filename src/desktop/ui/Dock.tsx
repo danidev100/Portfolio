@@ -7,7 +7,7 @@ import type { ReactNode } from 'react';
 import { cn } from '@/shared/util/cn';
 import { RADIUS_PX } from '@/shared/util/motion';
 
-import type { AppDefinition, AppId } from '../util/apps';
+import { getDockItemId, type AppDefinition, type AppId } from '../util/apps';
 import { getWindowLayoutId } from '../util/windowLayout';
 import { AppIcon } from './AppIcon';
 
@@ -36,6 +36,7 @@ export function Dock({ items, onActivate }: DockProps): ReactNode {
               className="absolute inset-0 bg-surface-raised"
             />
             <Link
+              id={getDockItemId(app.id)}
               href={app.href}
               aria-current={isFocused ? 'page' : undefined}
               onClick={() => {

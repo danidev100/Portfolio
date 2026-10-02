@@ -13,8 +13,9 @@ export interface DesktopWindows {
   /** Opens right away without navigating: the link that triggers it does. */
   open: (id: AppId) => void;
   focus: (id: AppId) => void;
-  minimize: (id: AppId) => void;
-  close: (id: AppId) => void;
+  /** Both return the window left in focus, or `null` when none is visible. */
+  minimize: (id: AppId) => AppId | null;
+  close: (id: AppId) => AppId | null;
 }
 
 /**
@@ -38,11 +39,28 @@ export function useDesktopWindows(): DesktopWindows {
     else showDesktop();
   }, [pathname, openWindow, showDesktop]);
 
-  const navigateToFocusedWindow = (): void => {
+  const navigateToFocusedWindow = (): AppId | null => {
     const focusedId = getFocusedWindowId(useWindowStore.getState().windows);
     const href = focusedId ? APPS[focusedId].href : DESKTOP_HREF;
 
     if (href !== pathname) router.push(href);
+
+    return focusedId;
+  };
+
+  /**
+   * After a window goes away. When the route is already the right one, it is
+   * settled again on purpose: a window closed right after being opened still
+   * has its navigation on the way, and it would reopen the window on landing.
+   * A newer navigation, even to the current route, cancels that one.
+   */
+  const settleOnFocusedWindow = (): AppId | null => {
+    const focusedId = navigateToFocusedWindow();
+    const href = focusedId ? APPS[focusedId].href : DESKTOP_HREF;
+
+    if (href === pathname) router.replace(href);
+
+    return focusedId;
   };
 
   return {
@@ -55,11 +73,13 @@ export function useDesktopWindows(): DesktopWindows {
     },
     minimize: (id) => {
       minimizeWindow(id);
-      navigateToFocusedWindow();
+
+      return settleOnFocusedWindow();
     },
     close: (id) => {
       closeWindow(id);
-      navigateToFocusedWindow();
+
+      return settleOnFocusedWindow();
     },
   };
 }
