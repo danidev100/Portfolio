@@ -1,25 +1,83 @@
 <h1 align="center">Hi 👋, I'm Daniel Jaramillo</h1>
-<h3 align="center">A curious and commited frontend developer to help to the user to get the better experience</h3>
+<h3 align="center">AI-Native App Developer · Frontend Tech Lead</h3>
+<p align="center">Angular &amp; React Native · TypeScript · Node.js · Claude Code &amp; MCP</p>
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=danidev100" alt="danidev100" /></a> </p>
+## About me
 
-- 🌱 I’m currently learning **ThreeJS, Animations, GraphQL**
+I build web and mobile apps with AI in the loop. With 9+ years of experience architecting scalable front-ends and leading engineering teams, I now focus on **AI-native engineering**: using Claude Code, Claude Design and MCP (Model Context Protocol) environments to scope MVPs, implement features, test and review code — multiplying team output without sacrificing code quality.
 
-- 💬 Ask me about **Angular**
-
+- 🤖 Pioneered the adoption of **AI-native development workflows** in a production engineering team
+- 🧩 Designed and built a corporate **design system component library** that reached 60% adoption in production
+- 👥 Led a front-end team of **7 developers**, defining Angular architecture standards and best practices
+- 🚀 Engineered mobile **CI/CD pipelines** (TestFlight) that cut manual handoff effort by 90%
+- 🧠 Brought **50% of an organization's AI algorithms** into production web interfaces early in my career
+- 🌱 I'm currently deepening **AI SDK integration (streaming, tool-calling, agentic workflows)** and **accessibility engineering**
+- 💬 Ask me about **AI-assisted development, Angular architecture, micro-frontends and design systems**
 - 📫 How to reach me **jaramillob93@gmail.com**
-
 - ⚡ Fun fact **Passionate about cars, racers and TC2000**
 
-<h3 align="left">Connect with me:</h3>
+## Skills
+
+### AI-Native Engineering
+
+![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white)
+![Claude Design](https://img.shields.io/badge/Claude_Design-D97757?style=for-the-badge&logo=claude&logoColor=white)
+![MCP](https://img.shields.io/badge/Model_Context_Protocol-000000?style=for-the-badge&logo=modelcontextprotocol&logoColor=white)
+
+- **Claude Code (CLI)** adopted in production for daily implementation, MVP scoping and code-quality practices
+- **MCP environments** connecting the assistant to the team's component library and tooling
+- **AI-assisted workflows** for implementation, testing and code review
+- **AI SDK integration** — streaming, tool-calling and agentic workflows _(in progress)_
+
+### Frontend
+
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![RxJS](https://img.shields.io/badge/RxJS-B7178C?style=for-the-badge&logo=reactivex&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Sass](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)
+
+### Architecture & Design Systems
+
+![Nx](https://img.shields.io/badge/Nx-143055?style=for-the-badge&logo=nx&logoColor=white)
+![Native Federation](https://img.shields.io/badge/Native_Federation-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Signals](https://img.shields.io/badge/Signals-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+
+Micro-frontends · Reusable component / design system libraries · CSR &amp; SSR · Accessibility (a11y)
+
+### Backend & Cloud
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+AWS: Lambda · S3 · API Gateway · CodeCommit · RDS · SQS
+
+### Quality, Testing & CI/CD
+
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![SonarQube](https://img.shields.io/badge/SonarQube-4E9BCD?style=for-the-badge)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Lighthouse](https://img.shields.io/badge/Lighthouse-F44B21?style=for-the-badge&logo=lighthouse&logoColor=white)
+
+Husky · Unit testing · Automated quality gates
+
+## About this repo
+
+My personal portfolio site: a static page built with HTML, Tailwind CSS and vanilla JavaScript, with a dark mode toggle, a responsive navbar and a contact form. The source lives in [`developer-portfolio/assets`](developer-portfolio/assets).
+
+## Connect with me
+
 <p align="left">
-<a href="https://linkedin.com/in/daniel-jaramillo-bustamante" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="daniel-jaramillo-bustamante" height="30" width="40" /></a>
-<a href="https://fb.com/jaramillob93@gmail.com" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/facebook.svg" alt="jaramillob93@gmail.com" height="30" width="40" /></a>
+<a href="https://linkedin.com/in/daniel-jaramillobustamante" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="daniel-jaramillobustamante" height="30" width="40" /></a>
 <a href="https://instagram.com/danidev93" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="danidev93" height="30" width="40" /></a>
 </p>
-
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://angular.io" target="_blank" rel="noreferrer"> <img src="https://angular.io/assets/images/logos/angular/angular.svg" alt="angular" width="40" height="40"/> </a> <a href="https://aws.amazon.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="aws" width="40" height="40"/> </a> <a href="https://getbootstrap.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-plain-wordmark.svg" alt="bootstrap" width="40" height="40"/> </a> <a href="https://www.w3schools.com/css/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a> <a href="https://www.electronjs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/electron/electron-original.svg" alt="electron" width="40" height="40"/> </a> <a href="https://expressjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original-wordmark.svg" alt="express" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://jasmine.github.io/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/jasmine/jasmine-icon.svg" alt="jasmine" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> </a> <a href="https://jestjs.io" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/jestjsio/jestjsio-icon.svg" alt="jest" width="40" height="40"/> </a> <a href="https://karma-runner.github.io/latest/index.html" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/detain/svg-logos/780f25886640cef088af994181646db2f6b1a3f8/svg/karma.svg" alt="karma" width="40" height="40"/> </a> <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/> </a> <a href="https://www.mysql.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/> </a> <a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" width="40" height="40"/> </a> <a href="https://postman.com" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="40" height="40"/> </a> <a href="https://sass-lang.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/sass/sass-original.svg" alt="sass" width="40" height="40"/> </a> <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/> </a> <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="typescript" width="40" height="40"/> </a> </p>
 
 <p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=danidev100&show_icons=true&locale=en&layout=compact" alt="danidev100" /></p>
 
