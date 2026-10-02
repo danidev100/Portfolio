@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 3000;
-const BASE_URL = `http://localhost:${String(PORT)}`;
+const DEFAULT_PORT = '3000';
+/** `PORT=3200 CI=1 pnpm e2e` checks the production build while a dev server keeps port 3000. */
+const PORT = process.env.PORT ?? DEFAULT_PORT;
+const BASE_URL = `http://localhost:${PORT}`;
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
@@ -19,7 +21,7 @@ export default defineConfig({
     // Calls `next` directly: pnpm runs scripts in their own process group, so
     // Playwright cannot stop a `pnpm dev` server and hangs waiting for it.
     // CI runs against the production build so e2e covers what gets deployed.
-    command: isCI ? 'next build && next start' : 'next dev',
+    command: isCI ? `next build && next start --port ${PORT}` : `next dev --port ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !isCI,
   },
