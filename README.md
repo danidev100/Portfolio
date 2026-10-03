@@ -71,7 +71,7 @@ Husky · Unit testing · Automated quality gates
 ## Connect with me
 
 <p align="left">
-<a href="https://linkedin.com/in/daniel-jaramillobustamante" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="daniel-jaramillobustamante" height="30" width="40" /></a>
+<a href="https://linkedin.com/in/daniel-jaramillo-bustamante" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="daniel-jaramillo-bustamante" height="30" width="40" /></a>
 <a href="https://instagram.com/danidev93" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="danidev93" height="30" width="40" /></a>
 </p>
 
