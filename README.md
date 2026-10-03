@@ -68,10 +68,6 @@ AWS: Lambda · S3 · API Gateway · CodeCommit · RDS · SQS
 
 Husky · Unit testing · Automated quality gates
 
-## About this repo
-
-My personal portfolio site: a static page built with HTML, Tailwind CSS and vanilla JavaScript, with a dark mode toggle, a responsive navbar and a contact form. The source lives in [`developer-portfolio/assets`](developer-portfolio/assets).
-
 ## Connect with me
 
 <p align="left">
