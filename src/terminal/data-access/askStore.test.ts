@@ -154,7 +154,7 @@ describe('createAskStore', () => {
 
     expect(store.getState()).toMatchObject({
       status: 'idle',
-      question: null,
+      question: '¿Con qué se conecta Design System?',
       focusNodeIds: ['ds', 'hp', 'k60', 'a11y'],
     });
     expect(store.getState().answer).toContain('Design System se conecta con');
@@ -172,5 +172,36 @@ describe('createAskStore', () => {
       answer: '',
       focusNodeIds: [],
     });
+  });
+
+  it('has not been interacted with until something is asked or picked', async () => {
+    const asked = createAskStore(serviceThatYields(HELLO_WORLD));
+    const picked = createAskStore(serviceThatYields([]));
+    expect(asked.getState().hasInteracted).toBe(false);
+
+    await asked.getState().ask('¿Hola?');
+    picked.getState().selectNode('ds');
+
+    expect(asked.getState().hasInteracted).toBe(true);
+    expect(picked.getState().hasInteracted).toBe(true);
+  });
+
+  it('remembers the interaction after going back to the overview', async () => {
+    const store = createAskStore(serviceThatYields(HELLO_WORLD));
+    await store.getState().ask('¿Hola?');
+
+    store.getState().reset();
+
+    expect(store.getState().hasInteracted).toBe(true);
+  });
+
+  it('welcomes the visitor once per visit', () => {
+    const store = createAskStore(serviceThatYields([]));
+    expect(store.getState().hasWelcomed).toBe(false);
+
+    store.getState().markWelcomed();
+    store.getState().reset();
+
+    expect(store.getState().hasWelcomed).toBe(true);
   });
 });
