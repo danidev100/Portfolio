@@ -39,5 +39,8 @@ playwright/.cache/
 # claude code local settings
 .claude/settings.local.json
 
+# superpowers plan workspace (ledger and task briefs); scratch, never versioned
+.superpowers/
+
 # lighthouse ci
 .lighthouseci/
