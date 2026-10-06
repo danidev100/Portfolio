@@ -152,6 +152,16 @@ test.describe('direct entry', () => {
     await expect(page).toHaveURL('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Daniel Jaramillo' })).toBeVisible();
   });
+
+  test('serves the CV to download from the profile', async ({ page, request }) => {
+    await page.goto('/about');
+
+    const href = await page.getByRole('link', { name: 'Descargar CV (PDF)' }).getAttribute('href');
+    const response = await request.get(href ?? '');
+
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('application/pdf');
+  });
 });
 
 // Navigating to the URL the router is already on, from an intercepted route,
