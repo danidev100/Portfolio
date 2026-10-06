@@ -1,5 +1,7 @@
 import { devices, expect, test, type Page } from '@playwright/test';
 
+import { dockLink } from './support';
+
 const { viewport, userAgent, deviceScaleFactor, isMobile, hasTouch } = devices['Pixel 7'];
 
 test.use({ viewport, userAgent, deviceScaleFactor, isMobile, hasTouch });
@@ -9,14 +11,14 @@ const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
 
 async function openApp(page: Page, name: string): Promise<void> {
   await page.goto('/');
-  await page.getByRole('link', { name }).tap();
+  await dockLink(page, name).tap();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
 
 test.describe('on a phone', () => {
   test('a window takes the whole work area, between the top bar and the dock', async ({ page }) => {
-    await openApp(page, 'Sobre mí');
-    const window = page.getByRole('dialog', { name: 'Sobre mí' });
+    await openApp(page, 'Perfil y CV');
+    const window = page.getByRole('dialog', { name: 'Perfil y CV' });
     await expect(window.getByText('Home Power Colombia')).toBeVisible();
 
     const dockBox = await page.getByRole('navigation', { name: 'Dock' }).boundingBox();
@@ -45,7 +47,7 @@ test.describe('on a phone', () => {
   });
 
   test('the terminal answers and only labels what there is room for', async ({ page }) => {
-    await openApp(page, 'Terminal');
+    await openApp(page, 'Pregúntale a mi IA');
     const node = (name: string) =>
       page.getByRole('list', { name: 'Nodos del grafo' }).getByText(name, { exact: true });
 
@@ -61,10 +63,10 @@ test.describe('on a phone', () => {
     expect(await hasHorizontalOverflow(page)).toBe(false);
   });
 
-  test('the activities overview lists the open windows', async ({ page }) => {
+  test('the windows overview lists the open windows', async ({ page }) => {
     await openApp(page, 'Contacto');
 
-    await page.getByRole('button', { name: 'Actividades' }).tap();
+    await page.getByRole('button', { name: 'Ventanas' }).tap();
 
     await expect(
       page.getByRole('region', { name: 'Ventanas abiertas' }).getByRole('link', {

@@ -1,5 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
+import { dockLink } from './support';
+
 const answer = (page: Page): Locator => page.getByRole('status');
 
 /** An answer streams for a few seconds, and slower on a busy CI machine. */
@@ -10,7 +12,7 @@ const node = (page: Page, name: string): Locator =>
 
 async function openTerminalWindow(page: Page): Promise<void> {
   await page.goto('/');
-  await page.getByRole('link', { name: 'Terminal' }).click();
+  await dockLink(page, 'Pregúntale a mi IA').click();
   await expect(page).toHaveURL('/terminal');
   await expect(node(page, 'Dani')).toBeVisible();
 }
@@ -58,9 +60,9 @@ test.describe('terminal', () => {
     await page.getByRole('button', { name: '¿Sabes de microfrontends?' }).click();
     await expect(answer(page)).toContainText('estado compartido.', WHILE_IT_STREAMS);
 
-    await page.getByRole('button', { name: 'Minimizar Terminal' }).click();
+    await page.getByRole('button', { name: 'Minimizar Pregúntale a mi IA' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await page.getByRole('link', { name: 'Terminal, abierta' }).click();
+    await dockLink(page, 'Pregúntale a mi IA, abierta').click();
 
     await expect(answer(page)).toContainText('estado compartido.', WHILE_IT_STREAMS);
     await expect(node(page, 'Nx · Native Federation')).toHaveAttribute('aria-pressed', 'true');

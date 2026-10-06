@@ -11,7 +11,7 @@ describe('TopBar', () => {
       <TopBar isOverviewOpen={false} overviewId="overview" onToggleOverview={onToggleOverview} />,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Actividades' }));
+    await user.click(screen.getByRole('button', { name: 'Ventanas' }));
 
     expect(onToggleOverview).toHaveBeenCalledTimes(1);
   });
@@ -19,7 +19,7 @@ describe('TopBar', () => {
   it('exposes whether the overview is open', () => {
     render(<TopBar isOverviewOpen overviewId="overview" onToggleOverview={jest.fn()} />);
 
-    const button = screen.getByRole('button', { name: 'Actividades' });
+    const button = screen.getByRole('button', { name: 'Ventanas' });
 
     expect(button).toHaveAttribute('aria-expanded', 'true');
     expect(button).toHaveAttribute('aria-controls', 'overview');

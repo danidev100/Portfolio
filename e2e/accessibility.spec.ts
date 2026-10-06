@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
+import { dockLink } from './support';
+
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
 interface Violation {
@@ -45,7 +47,7 @@ async function expectNoViolations(page: Page): Promise<void> {
 
 async function openApp(page: Page, name: string): Promise<void> {
   await page.goto('/');
-  await page.getByRole('link', { name }).click();
+  await dockLink(page, name).click();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
 
@@ -57,15 +59,15 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
     await expectNoViolations(page);
   });
 
-  test('activities overview', async ({ page }) => {
-    await openApp(page, 'Sobre mí');
-    await page.getByRole('button', { name: 'Actividades' }).click();
+  test('windows overview', async ({ page }) => {
+    await openApp(page, 'Perfil y CV');
+    await page.getByRole('button', { name: 'Ventanas' }).click();
     await expect(page.getByRole('region', { name: 'Ventanas abiertas' })).toBeVisible();
 
     await expectNoViolations(page);
   });
 
-  for (const name of ['Proyectos', 'Terminal', 'Sobre mí', 'Contacto']) {
+  for (const name of ['Proyectos', 'Pregúntale a mi IA', 'Perfil y CV', 'Contacto']) {
     test(`${name} window`, async ({ page }) => {
       await openApp(page, name);
 
@@ -82,7 +84,7 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
   });
 
   test('terminal with an answer in focus', async ({ page }) => {
-    await openApp(page, 'Terminal');
+    await openApp(page, 'Pregúntale a mi IA');
     await page.getByRole('button', { name: 'Design System', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Design System se conecta con');
 

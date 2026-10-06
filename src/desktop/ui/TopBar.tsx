@@ -18,7 +18,7 @@ export function TopBar({ isOverviewOpen, overviewId, onToggleOverview }: TopBarP
         onClick={onToggleOverview}
         className="justify-self-start rounded-full px-4 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised aria-expanded:bg-surface-raised motion-reduce:transition-none"
       >
-        Actividades
+        Ventanas
       </button>
       <Clock />
       <p className="hidden justify-self-end px-4 text-muted sm:block">Daniel Jaramillo</p>

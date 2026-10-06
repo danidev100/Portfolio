@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useWindowStore } from '../data-access/useWindowStore';
@@ -27,6 +27,10 @@ function renderDesktop(): ReturnType<typeof userEvent.setup> {
   return userEvent.setup();
 }
 
+/** A link in the dock. Scoped, because the desktop greeting links to the same apps. */
+const dockLink = (name: string): HTMLElement =>
+  within(screen.getByRole('navigation', { name: 'Dock' })).getByRole('link', { name });
+
 describe('Desktop', () => {
   beforeEach(() => {
     mockPathname = '/';
@@ -43,9 +47,9 @@ describe('Desktop', () => {
   it('opens an app in a window from the dock', async () => {
     const user = renderDesktop();
 
-    await user.click(screen.getByRole('link', { name: 'Sobre mí' }));
+    await user.click(dockLink('Perfil y CV'));
 
-    expect(screen.getByRole('dialog', { name: 'Sobre mí' })).toHaveTextContent(
+    expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toHaveTextContent(
       'Contenido de sobre mí',
     );
   });
@@ -53,62 +57,57 @@ describe('Desktop', () => {
   it('keeps several windows open and focuses the last one opened', async () => {
     const user = renderDesktop();
 
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
-    await user.click(screen.getByRole('link', { name: 'Terminal' }));
+    await user.click(dockLink('Proyectos'));
+    await user.click(dockLink('Pregúntale a mi IA'));
 
     expect(screen.getAllByRole('dialog')).toHaveLength(2);
-    expect(screen.getByRole('link', { name: 'Terminal, abierta' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
+    expect(dockLink('Pregúntale a mi IA, abierta')).toHaveAttribute('aria-current', 'page');
   });
 
   // The window leaving the screen is covered in e2e: its exit morphs back into
   // the dock, which needs real layout that jsdom does not have.
   it('stops running an app when its window is closed', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+    await user.click(dockLink('Proyectos'));
 
     await user.click(screen.getByRole('button', { name: 'Cerrar Proyectos' }));
 
-    expect(screen.getByRole('link', { name: 'Proyectos' })).not.toHaveAttribute('aria-current');
+    expect(dockLink('Proyectos')).not.toHaveAttribute('aria-current');
   });
 
   it('keeps a minimized app running but out of focus', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+    await user.click(dockLink('Proyectos'));
 
     await user.click(screen.getByRole('button', { name: 'Minimizar Proyectos' }));
 
-    expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).not.toHaveAttribute(
-      'aria-current',
-    );
+    expect(dockLink('Proyectos, abierta')).not.toHaveAttribute('aria-current');
   });
 
   it('returns focus to the dock when the last window is closed', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+    await user.click(dockLink('Proyectos'));
 
     await user.click(screen.getByRole('button', { name: 'Cerrar Proyectos' }));
 
-    expect(screen.getByRole('link', { name: 'Proyectos' })).toHaveFocus();
+    expect(dockLink('Proyectos')).toHaveFocus();
   });
 
   it('returns focus to the dock when the last window is minimized', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Contacto' }));
+    await user.click(dockLink('Contacto'));
 
     await user.click(screen.getByRole('button', { name: 'Minimizar Contacto' }));
 
-    expect(screen.getByRole('link', { name: 'Contacto, abierta' })).toHaveFocus();
+    expect(dockLink('Contacto, abierta')).toHaveFocus();
   });
 
   it('moves focus to the window left on top when another one is closed', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
-    await user.click(screen.getByRole('link', { name: 'Terminal' }));
+    await user.click(dockLink('Proyectos'));
+    await user.click(dockLink('Pregúntale a mi IA'));
 
-    await user.click(screen.getByRole('button', { name: 'Cerrar Terminal' }));
+    await user.click(screen.getByRole('button', { name: 'Cerrar Pregúntale a mi IA' }));
 
     expect(screen.getByRole('dialog', { name: 'Proyectos' })).toHaveFocus();
   });
@@ -116,14 +115,12 @@ describe('Desktop', () => {
   it('minimizes the focused app from its own dock icon', async () => {
     mockPathname = '/projects';
     const user = renderDesktop();
-    const dockIcon = screen.getByRole('link', { name: 'Proyectos, abierta' });
+    const dockIcon = dockLink('Proyectos, abierta');
     expect(dockIcon).toHaveAttribute('aria-current', 'page');
 
     await user.click(dockIcon);
 
-    expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).not.toHaveAttribute(
-      'aria-current',
-    );
+    expect(dockLink('Proyectos, abierta')).not.toHaveAttribute('aria-current');
   });
 
   it('restores a minimized app from its dock icon even on its own route', async () => {
@@ -131,19 +128,16 @@ describe('Desktop', () => {
     const user = renderDesktop();
     await user.click(screen.getByRole('button', { name: 'Minimizar Proyectos' }));
 
-    await user.click(screen.getByRole('link', { name: 'Proyectos, abierta' }));
+    await user.click(dockLink('Proyectos, abierta'));
 
-    expect(screen.getByRole('link', { name: 'Proyectos, abierta' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
+    expect(dockLink('Proyectos, abierta')).toHaveAttribute('aria-current', 'page');
   });
 
   it('lists the open windows in the activities overview', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('link', { name: 'Proyectos' }));
+    await user.click(dockLink('Proyectos'));
 
-    await user.click(screen.getByRole('button', { name: 'Actividades' }));
+    await user.click(screen.getByRole('button', { name: 'Ventanas' }));
 
     const overview = screen.getByRole('region', { name: 'Ventanas abiertas' });
     expect(overview).toHaveTextContent('Proyectos');
@@ -151,7 +145,7 @@ describe('Desktop', () => {
 
   it('closes the activities overview with Escape', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('button', { name: 'Actividades' }));
+    await user.click(screen.getByRole('button', { name: 'Ventanas' }));
 
     await user.keyboard('{Escape}');
 
@@ -162,9 +156,9 @@ describe('Desktop', () => {
 
   it('closes the activities overview when an app is activated', async () => {
     const user = renderDesktop();
-    await user.click(screen.getByRole('button', { name: 'Actividades' }));
+    await user.click(screen.getByRole('button', { name: 'Ventanas' }));
 
-    await user.click(screen.getByRole('link', { name: 'Contacto' }));
+    await user.click(dockLink('Contacto'));
 
     await waitFor(() => {
       expect(screen.queryByRole('region', { name: 'Ventanas abiertas' })).not.toBeInTheDocument();

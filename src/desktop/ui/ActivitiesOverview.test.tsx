@@ -33,7 +33,9 @@ describe('ActivitiesOverview', () => {
       />,
     );
 
-    expect(screen.getByRole('link', { name: 'Terminal, minimizada' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Pregúntale a mi IA, minimizada' }),
+    ).toBeInTheDocument();
   });
 
   it('reports the selected window', async () => {
