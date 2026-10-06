@@ -1,6 +1,6 @@
 import { devices, type Page } from '@playwright/test';
 
-import { dockLink, expect, test } from './support';
+import { dockLink, expect, openDesktop, test } from './support';
 
 const { viewport, userAgent, deviceScaleFactor, isMobile, hasTouch } = devices['Pixel 7'];
 
@@ -10,7 +10,7 @@ const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
   page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
 
 async function openApp(page: Page, name: string): Promise<void> {
-  await page.goto('/');
+  await openDesktop(page);
   await dockLink(page, name).tap();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
@@ -79,7 +79,7 @@ test.describe('on a phone', () => {
     test.use({ hasSeenTour: false });
 
     test('the tour fits on the screen and points at the dock', async ({ page }) => {
-      await page.goto('/');
+      await openDesktop(page);
       const balloon = page.getByRole('dialog', { name: 'Empieza por aquí' });
       await expect(balloon).toBeVisible();
 

@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 
-import { dockLink, expect, test } from './support';
+import { dockLink, expect, openDesktop, test } from './support';
 
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -46,14 +46,14 @@ async function expectNoViolations(page: Page): Promise<void> {
 }
 
 async function openApp(page: Page, name: string): Promise<void> {
-  await page.goto('/');
+  await openDesktop(page);
   await dockLink(page, name).click();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
 
 test.describe('accessibility (WCAG 2.2 AA)', () => {
   test('desktop', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await expect(page.locator('canvas')).toBeVisible();
 
     await expectNoViolations(page);
@@ -110,7 +110,7 @@ test.describe('accessibility of the onboarding tour (WCAG 2.2 AA)', () => {
     'Habla con mi IA',
   ].entries()) {
     test(`tour step ${String(index + 1)}`, async ({ page }) => {
-      await page.goto('/');
+      await openDesktop(page);
       for (let next = 0; next < index; next += 1) {
         await page.getByRole('button', { name: 'Siguiente' }).click();
       }

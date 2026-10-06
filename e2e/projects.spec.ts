@@ -1,12 +1,12 @@
 import type { Locator, Page } from '@playwright/test';
 
-import { dockLink, expect, test } from './support';
+import { dockLink, expect, openDesktop, test } from './support';
 
 const card = (page: Page, name: string): Locator =>
   page.getByRole('list', { name: 'Proyectos' }).getByRole('button', { name });
 
 async function openProjectsWindow(page: Page): Promise<void> {
-  await page.goto('/');
+  await openDesktop(page);
   await dockLink(page, 'Proyectos').click();
   await expect(page).toHaveURL('/projects');
   await expect(card(page, 'Factura Lens')).toHaveAttribute('aria-current', 'true');

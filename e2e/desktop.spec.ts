@@ -1,20 +1,20 @@
 import type { Page } from '@playwright/test';
 
-import { dockLink, expect, test } from './support';
+import { dockLink, expect, openDesktop, test } from './support';
 
 test.describe('3d backdrop', () => {
   test('renders behind the shell, hidden from assistive technology', async ({ page }) => {
     const pageErrors: Error[] = [];
     page.on('pageerror', (error) => pageErrors.push(error));
 
-    await page.goto('/');
+    await openDesktop(page);
 
     await expect(page.locator('[aria-hidden="true"] canvas')).toBeVisible();
     expect(pageErrors).toEqual([]);
   });
 
   test('does not get in the way of the dock', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await expect(page.locator('canvas')).toBeVisible();
 
     await dockLink(page, 'Contacto').click();
@@ -25,7 +25,7 @@ test.describe('3d backdrop', () => {
 
 test.describe('desktop shell', () => {
   test('opens an app in a window with its own URL', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
 
     await dockLink(page, 'Proyectos').click();
 
@@ -35,7 +35,7 @@ test.describe('desktop shell', () => {
   });
 
   test('keeps earlier windows open and focuses the last one', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
 
     await dockLink(page, 'Proyectos').click();
     await dockLink(page, 'Pregúntale a mi IA').click();
@@ -49,7 +49,7 @@ test.describe('desktop shell', () => {
   });
 
   test('going back shows the desktop and keeps the app running', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Proyectos').click();
     await expect(page).toHaveURL('/projects');
 
@@ -63,7 +63,7 @@ test.describe('desktop shell', () => {
   test('closing a window moves the URL to the next window, then to the desktop', async ({
     page,
   }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Proyectos').click();
     await dockLink(page, 'Pregúntale a mi IA').click();
     await expect(page).toHaveURL('/terminal');
@@ -78,7 +78,7 @@ test.describe('desktop shell', () => {
   });
 
   test('lists the open windows in the activities overview', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Perfil y CV').click();
     await expect(page.getByRole('dialog', { name: 'Perfil y CV' })).toBeVisible();
 
@@ -93,7 +93,7 @@ test.describe('desktop shell', () => {
 
   test('minimizes and restores a window when motion is reduced', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Proyectos').click();
     await expect(page).toHaveURL('/projects');
 
@@ -108,7 +108,7 @@ test.describe('desktop shell', () => {
   test('opens and closes a window with the keyboard alone, without losing the focus', async ({
     page,
   }) => {
-    await page.goto('/');
+    await openDesktop(page);
     const dockIcon = dockLink(page, 'Contacto');
 
     await dockIcon.focus();
@@ -126,7 +126,7 @@ test.describe('desktop shell', () => {
   });
 
   test('opens the profile from the greeting', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
 
     await page.getByRole('link', { name: 'Ver mi perfil y CV' }).click();
 
@@ -163,7 +163,7 @@ test.describe('staying on the current route', () => {
   };
 
   test('the dock icon of the focused app minimizes its window', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Proyectos').click();
     await expect(page).toHaveURL('/projects');
 
@@ -176,7 +176,7 @@ test.describe('staying on the current route', () => {
   });
 
   test('a double click on a dock icon opens the app and leaves it open', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
 
     await dockLink(page, 'Pregúntale a mi IA').dblclick();
 
@@ -188,7 +188,7 @@ test.describe('staying on the current route', () => {
   test('closing a window in the background keeps the desktop and the focused window', async ({
     page,
   }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Contacto').click();
     await expect(page).toHaveURL('/contact');
     await dockLink(page, 'Proyectos').click();
@@ -203,7 +203,7 @@ test.describe('staying on the current route', () => {
   });
 
   test('picking the focused window in the activities overview keeps it open', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Perfil y CV').click();
     await expect(page).toHaveURL('/about');
     await page.getByRole('button', { name: 'Ventanas' }).click();
@@ -219,7 +219,7 @@ test.describe('staying on the current route', () => {
   });
 
   test('a window reopened right after being minimized stays open', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await dockLink(page, 'Contacto').click();
     await expect(page).toHaveURL('/contact');
 
