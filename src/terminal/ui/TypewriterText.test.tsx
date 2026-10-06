@@ -29,4 +29,34 @@ describe('TypewriterText', () => {
 
     expect(screen.getByText(TEXT)).toBeInTheDocument();
   });
+
+  describe('with reduced motion', () => {
+    // jsdom has no `matchMedia`: it is defined for these tests and removed after.
+    beforeEach(() => {
+      Object.defineProperty(window, 'matchMedia', {
+        configurable: true,
+        value: jest.fn().mockReturnValue({ matches: true }),
+      });
+    });
+
+    afterEach(() => {
+      Reflect.deleteProperty(window, 'matchMedia');
+    });
+
+    it('starts like the server renders it, so hydration matches', () => {
+      render(<TypewriterText text={TEXT} isTyping />);
+
+      expect(screen.queryByText(TEXT)).not.toBeInTheDocument();
+    });
+
+    it('shows the whole text at the first tick instead of typing it', () => {
+      render(<TypewriterText text={TEXT} isTyping />);
+
+      act(() => {
+        jest.advanceTimersByTime(35);
+      });
+
+      expect(screen.getByText(TEXT)).toBeInTheDocument();
+    });
+  });
 });

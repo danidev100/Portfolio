@@ -113,3 +113,23 @@ test.describe('terminal', () => {
       .toBeLessThanOrEqual(1);
   });
 });
+
+test.describe('terminal with reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' });
+
+  test('shows the welcome whole on the standalone page, without hydration errors', async ({
+    page,
+  }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') pageErrors.push(message.text());
+    });
+
+    await page.goto('/terminal');
+
+    await expect(page.getByText(/cómo trabajo\./)).toBeVisible();
+    await expect(node(page, 'Dani')).toBeVisible();
+    expect(pageErrors).toEqual([]);
+  });
+});
