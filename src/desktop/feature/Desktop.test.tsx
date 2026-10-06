@@ -1,6 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { ONBOARDING_STORAGE_KEY } from '../data-access/onboardingStorage';
 import { useWindowStore } from '../data-access/useWindowStore';
 import { Desktop } from './Desktop';
 
@@ -35,6 +36,7 @@ describe('Desktop', () => {
   beforeEach(() => {
     mockPathname = '/';
     useWindowStore.setState(useWindowStore.getInitialState(), true);
+    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, 'seen');
   });
 
   it('greets the visitor on an empty desktop', () => {
@@ -172,5 +174,63 @@ describe('Desktop', () => {
       expect(screen.queryByRole('region', { name: 'Ventanas abiertas' })).not.toBeInTheDocument();
     });
     expect(screen.getByRole('dialog', { name: 'Contacto' })).toBeInTheDocument();
+  });
+
+  describe('onboarding tour', () => {
+    const FIRST_STEP = 'Empieza por aquí';
+
+    it('greets a first visit with the tour', async () => {
+      window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+      renderDesktop();
+
+      expect(
+        await screen.findByRole('dialog', { name: FIRST_STEP }, { timeout: 2000 }),
+      ).toBeInTheDocument();
+    });
+
+    it('relaunches the tour from «Guía»', async () => {
+      const user = renderDesktop();
+
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+
+      expect(await screen.findByRole('dialog', { name: FIRST_STEP })).toBeInTheDocument();
+    });
+
+    it('closes the windows overview to make room for the tour', async () => {
+      const user = renderDesktop();
+      await user.click(screen.getByRole('button', { name: 'Ventanas' }));
+
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+
+      await waitFor(() => {
+        expect(screen.queryByRole('region', { name: 'Ventanas abiertas' })).not.toBeInTheDocument();
+      });
+    });
+
+    it('ends the tour when an app is opened from the dock', async () => {
+      const user = renderDesktop();
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+      await screen.findByRole('dialog', { name: FIRST_STEP });
+
+      await user.click(dockLink('Perfil y CV'));
+
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog', { name: FIRST_STEP })).not.toBeInTheDocument();
+      });
+      expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toBeInTheDocument();
+    });
+
+    it('opens the profile from the last step', async () => {
+      const user = renderDesktop();
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+      await screen.findByRole('dialog', { name: FIRST_STEP });
+
+      await user.click(screen.getByRole('button', { name: 'Siguiente' }));
+      await user.click(screen.getByRole('button', { name: 'Siguiente' }));
+      const lastStep = await screen.findByRole('dialog', { name: 'Habla con mi IA' });
+      await user.click(within(lastStep).getByRole('link', { name: 'Ver mi perfil y CV' }));
+
+      expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toBeInTheDocument();
+    });
   });
 });

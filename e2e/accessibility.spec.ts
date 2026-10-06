@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-import { dockLink } from './support';
+import { dockLink, expect, test } from './support';
 
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -95,6 +95,26 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
     test(`standalone page ${route}`, async ({ page }) => {
       await page.goto(route);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+      await expectNoViolations(page);
+    });
+  }
+});
+
+test.describe('accessibility of the onboarding tour (WCAG 2.2 AA)', () => {
+  test.use({ hasSeenTour: false });
+
+  for (const [index, title] of [
+    'Empieza por aquí',
+    'Una ventana por sección',
+    'Habla con mi IA',
+  ].entries()) {
+    test(`tour step ${String(index + 1)}`, async ({ page }) => {
+      await page.goto('/');
+      for (let next = 0; next < index; next += 1) {
+        await page.getByRole('button', { name: 'Siguiente' }).click();
+      }
+      await expect(page.getByRole('dialog', { name: title })).toBeVisible();
 
       await expectNoViolations(page);
     });

@@ -1,6 +1,6 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
-import { dockLink } from './support';
+import { dockLink, expect, test } from './support';
 
 const card = (page: Page, name: string): Locator =>
   page.getByRole('list', { name: 'Proyectos' }).getByRole('button', { name });

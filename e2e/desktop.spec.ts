@@ -1,6 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-import { dockLink } from './support';
+import { dockLink, expect, test } from './support';
 
 test.describe('3d backdrop', () => {
   test('renders behind the shell, hidden from assistive technology', async ({ page }) => {

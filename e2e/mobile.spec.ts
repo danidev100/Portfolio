@@ -1,6 +1,6 @@
-import { devices, expect, test, type Page } from '@playwright/test';
+import { devices, type Page } from '@playwright/test';
 
-import { dockLink } from './support';
+import { dockLink, expect, test } from './support';
 
 const { viewport, userAgent, deviceScaleFactor, isMobile, hasTouch } = devices['Pixel 7'];
 
@@ -73,5 +73,24 @@ test.describe('on a phone', () => {
         name: 'Contacto',
       }),
     ).toBeVisible();
+  });
+
+  test.describe('first visit', () => {
+    test.use({ hasSeenTour: false });
+
+    test('the tour fits on the screen and points at the dock', async ({ page }) => {
+      await page.goto('/');
+      const balloon = page.getByRole('dialog', { name: 'Empieza por aquí' });
+      await expect(balloon).toBeVisible();
+
+      const box = await balloon.boundingBox();
+      const screenWidth = page.viewportSize()?.width ?? 0;
+      const dockBox = await page.getByRole('navigation', { name: 'Dock' }).boundingBox();
+
+      expect(box?.x).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(screenWidth);
+      expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(dockBox?.y ?? 0);
+      expect(await hasHorizontalOverflow(page)).toBe(false);
+    });
   });
 });
