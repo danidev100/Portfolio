@@ -29,7 +29,7 @@ export function Clock(): ReactNode {
   const date = minute === null ? null : new Date(minute * MINUTE_MS);
 
   return (
-    <time dateTime={date?.toISOString()} className="min-w-36 text-center font-semibold">
+    <time dateTime={date?.toISOString()} className="text-center font-semibold sm:min-w-36">
       {date ? formatClock(date) : null}
     </time>
   );

@@ -22,7 +22,7 @@ export function TopBar({
         aria-expanded={isOverviewOpen}
         aria-controls={overviewId}
         onClick={onToggleOverview}
-        className="justify-self-start rounded-full px-4 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised aria-expanded:bg-surface-raised motion-reduce:transition-none"
+        className="justify-self-start rounded-full px-3 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised aria-expanded:bg-surface-raised motion-reduce:transition-none sm:px-4"
       >
         Ventanas
       </button>
@@ -32,7 +32,7 @@ export function TopBar({
         <button
           type="button"
           onClick={onOpenGuide}
-          className="rounded-full px-4 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised motion-reduce:transition-none"
+          className="rounded-full px-3 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised motion-reduce:transition-none sm:px-4"
         >
           Guía
         </button>

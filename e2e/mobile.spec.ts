@@ -94,3 +94,17 @@ test.describe('on a phone', () => {
     });
   });
 });
+
+test.describe('on the narrowest phone', () => {
+  test.use({ viewport: { width: 320, height: 640 }, hasSeenTour: false });
+
+  test('the desktop and the tour fit without scrolling sideways', async ({ page }) => {
+    await openDesktop(page);
+    await expect(page.getByRole('dialog', { name: 'Empieza por aquí' })).toBeVisible();
+
+    const guide = await page.getByRole('button', { name: 'Guía', exact: true }).boundingBox();
+
+    expect((guide?.x ?? 0) + (guide?.width ?? 0)).toBeLessThanOrEqual(320);
+    expect(await hasHorizontalOverflow(page)).toBe(false);
+  });
+});
