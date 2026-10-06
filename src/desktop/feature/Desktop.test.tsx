@@ -40,8 +40,16 @@ describe('Desktop', () => {
   it('greets the visitor on an empty desktop', () => {
     renderDesktop();
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Dani OS' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Daniel Jaramillo' })).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('opens the profile from the greeting', async () => {
+    const user = renderDesktop();
+
+    await user.click(screen.getByRole('link', { name: 'Ver mi perfil y CV' }));
+
+    expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toBeInTheDocument();
   });
 
   it('opens an app in a window from the dock', async () => {

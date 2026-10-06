@@ -2,11 +2,12 @@
 
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import type { MouseEvent, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
 import { RADIUS_PX } from '@/shared/util/motion';
 
+import { shouldActivateFromClick } from '../util/appLinks';
 import { DOCK_ID, getDockItemId, type AppDefinition, type AppId } from '../util/apps';
 import { getWindowLayoutId } from '../util/windowLayout';
 import { AppIcon } from './AppIcon';
@@ -25,20 +26,6 @@ interface DockProps {
 }
 
 export function Dock({ items, currentHref, onActivate }: DockProps): ReactNode {
-  const activate = (event: MouseEvent, app: AppDefinition): void => {
-    // From an intercepted route, navigating to the current URL empties the page.
-    if (app.href === currentHref) event.preventDefault();
-
-    // The second click of a double click would undo what the first one did.
-    if (event.detail > 1) {
-      event.preventDefault();
-
-      return;
-    }
-
-    onActivate(app.id);
-  };
-
   return (
     <nav aria-label="Dock" className="flex justify-center">
       <ul
@@ -59,7 +46,7 @@ export function Dock({ items, currentHref, onActivate }: DockProps): ReactNode {
               href={app.href}
               aria-current={isFocused ? 'page' : undefined}
               onClick={(event) => {
-                activate(event, app);
+                if (shouldActivateFromClick(event, app.href, currentHref)) onActivate(app.id);
               }}
               className="group relative flex w-16 flex-col items-center gap-1 rounded-control"
             >

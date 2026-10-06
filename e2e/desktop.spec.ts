@@ -124,6 +124,15 @@ test.describe('desktop shell', () => {
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(dockIcon).toBeFocused();
   });
+
+  test('opens the profile from the greeting', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('link', { name: 'Ver mi perfil y CV' }).click();
+
+    await expect(page).toHaveURL('/about');
+    await expect(page.getByRole('dialog', { name: 'Perfil y CV' })).toBeVisible();
+  });
 });
 
 test.describe('direct entry', () => {
@@ -141,7 +150,7 @@ test.describe('direct entry', () => {
     await page.getByRole('link', { name: 'Ir al escritorio' }).click();
 
     await expect(page).toHaveURL('/');
-    await expect(page.getByRole('heading', { level: 1, name: 'Dani OS' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Daniel Jaramillo' })).toBeVisible();
   });
 });
 
@@ -150,7 +159,7 @@ test.describe('direct entry', () => {
 test.describe('staying on the current route', () => {
   const expectDesktop = async (page: Page): Promise<void> => {
     await expect(page.getByRole('navigation', { name: 'Dock' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1, name: 'Dani OS' })).toBeAttached();
+    await expect(page.getByRole('heading', { level: 1, name: 'Daniel Jaramillo' })).toBeAttached();
   };
 
   test('the dock icon of the focused app minimizes its window', async ({ page }) => {
