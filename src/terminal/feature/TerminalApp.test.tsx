@@ -54,17 +54,59 @@ describe('TerminalApp', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     askStore.getState().reset();
+    askStore.setState({ hasInteracted: false, hasWelcomed: false });
   });
 
   afterEach(() => {
     jest.useRealTimers();
   });
 
-  it('starts on the overview, inviting to ask', async () => {
+  it('welcomes the visitor and points the graph at the chat', async () => {
     await renderApp();
+    await waitForTheAnswer();
 
-    expect(screen.getByRole('status')).toHaveTextContent('Pregunta por mi experiencia');
+    expect(
+      screen.getByText(
+        'Hola, soy la IA de Daniel. Pregúntame por mi experiencia, mis proyectos o cómo trabajo.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Pregunta en el chat y aquí verás de qué hablo')).toBeInTheDocument();
     expect(screen.queryAllByRole('button', { pressed: true })).toEqual([]);
+  });
+
+  it('does not type the welcome again when the app is opened again in the same visit', async () => {
+    const { unmount } = render(<TerminalApp />);
+    await waitForTheAnswer();
+    unmount();
+
+    render(<TerminalApp />);
+
+    expect(
+      screen.getByText(
+        'Hola, soy la IA de Daniel. Pregúntame por mi experiencia, mis proyectos o cómo trabajo.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the welcome readable when a question comes in while it is typing', async () => {
+    const user = await renderApp();
+
+    await user.click(screen.getByRole('button', { name: '¿Sabes de microfrontends?' }));
+    await waitForTheAnswer();
+
+    expect(screen.getByText(/Hola, soy la IA de Daniel\./)).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('¿Sabes de microfrontends?');
+    expect(screen.getByRole('status')).toHaveTextContent('estado compartido.');
+  });
+
+  it('hides the pointer to the chat once the visitor has used it', async () => {
+    const user = await renderApp();
+
+    await user.click(screen.getByRole('button', { name: 'Design System' }));
+
+    expect(
+      screen.queryByText('Pregunta en el chat y aquí verás de qué hablo'),
+    ).not.toBeInTheDocument();
   });
 
   it('streams the answer to a suggested question', async () => {
@@ -121,6 +163,7 @@ describe('TerminalApp', () => {
     await user.click(screen.getByRole('button', { name: 'Design System' }));
 
     expect(screen.getByRole('status')).toHaveTextContent('Design System se conecta con');
+    expect(screen.getByRole('status')).toHaveTextContent('¿Con qué se conecta Design System?');
     expect(getFocusedNodes()).toEqual([
       'Home Power · Tech Lead',
       'Design System',
@@ -136,6 +179,6 @@ describe('TerminalApp', () => {
     await user.click(screen.getByRole('button', { name: 'Vista general' }));
 
     expect(screen.queryAllByRole('button', { pressed: true })).toEqual([]);
-    expect(screen.getByRole('status')).toHaveTextContent('Pregunta por mi experiencia');
+    expect(screen.getByRole('status')).toBeEmptyDOMElement();
   });
 });

@@ -7,6 +7,7 @@ import { AskPanel } from './AskPanel';
 type AskPanelProps = ComponentProps<typeof AskPanel>;
 
 const SUGGESTIONS = ['¿Has liderado equipos?', '¿Qué haces con IA?'];
+const WELCOME = 'Hola, soy la IA de Daniel.';
 
 function renderPanel(overrides: Partial<AskPanelProps> = {}): AskPanelProps {
   const props: AskPanelProps = {
@@ -15,6 +16,8 @@ function renderPanel(overrides: Partial<AskPanelProps> = {}): AskPanelProps {
     answer: '',
     suggestions: SUGGESTIONS,
     hasFocus: false,
+    welcome: { text: WELCOME, isTyping: false },
+    autoFocusInput: false,
     onAsk: jest.fn(),
     onReset: jest.fn(),
     ...overrides,
@@ -24,32 +27,56 @@ function renderPanel(overrides: Partial<AskPanelProps> = {}): AskPanelProps {
   return props;
 }
 
-const getAnswer = (): HTMLElement => screen.getByRole('status');
+const getConversation = (): HTMLElement => screen.getByRole('status');
 
 describe('AskPanel', () => {
-  it('invites to ask before anything has been asked', () => {
+  it('is titled after what it is for, and says it is a demo', () => {
     renderPanel();
 
-    expect(getAnswer()).toHaveTextContent('Pregunta por mi experiencia');
+    expect(screen.getByRole('heading', { name: 'Pregúntale a mi IA' })).toBeInTheDocument();
+    expect(screen.getByText('Demo')).toBeInTheDocument();
+    expect(
+      screen.getByText('Respondo sobre mi experiencia, proyectos y stack a partir de mi CV.'),
+    ).toBeInTheDocument();
   });
 
-  it('shows the question and its answer', () => {
+  it('explains what «Demo» means to assistive technology', () => {
+    renderPanel();
+
+    expect(
+      screen.getByText(/Respuestas de demostración; la versión con IA real llega pronto/),
+    ).toBeInTheDocument();
+  });
+
+  it('greets the visitor', () => {
+    renderPanel();
+
+    expect(screen.getByText(WELCOME)).toBeInTheDocument();
+  });
+
+  it('shows the question and its answer as a conversation', () => {
     renderPanel({ question: '¿Qué haces con IA?', answer: 'Introduje flujos AI-native.' });
 
-    expect(getAnswer()).toHaveTextContent('¿Qué haces con IA?');
-    expect(getAnswer()).toHaveTextContent('Introduje flujos AI-native.');
+    expect(getConversation()).toHaveTextContent('¿Qué haces con IA?');
+    expect(getConversation()).toHaveTextContent('Introduje flujos AI-native.');
   });
 
   it('holds the announcement of the answer until it has finished streaming', () => {
     renderPanel({ status: 'streaming', question: '¿Hola?', answer: 'Introduje' });
 
-    expect(getAnswer()).toHaveAttribute('aria-busy', 'true');
+    expect(getConversation()).toHaveAttribute('aria-busy', 'true');
   });
 
   it('announces the answer once it is complete', () => {
     renderPanel({ status: 'idle', question: '¿Hola?', answer: 'Introduje flujos.' });
 
-    expect(getAnswer()).toHaveAttribute('aria-busy', 'false');
+    expect(getConversation()).toHaveAttribute('aria-busy', 'false');
+  });
+
+  it('labels the suggestions as something to try', () => {
+    renderPanel();
+
+    expect(screen.getByText('Prueba con:')).toBeInTheDocument();
   });
 
   it('asks a suggested question from its chip', async () => {
@@ -82,6 +109,12 @@ describe('AskPanel', () => {
     expect(onAsk).not.toHaveBeenCalled();
   });
 
+  it('puts the cursor in the field when asked to', () => {
+    renderPanel({ autoFocusInput: true });
+
+    expect(screen.getByRole('textbox', { name: 'Pregunta al portafolio' })).toHaveFocus();
+  });
+
   it('offers the way back to the overview while the graph is focused', async () => {
     const user = userEvent.setup();
     const { onReset } = renderPanel({ hasFocus: true });
@@ -95,5 +128,33 @@ describe('AskPanel', () => {
     renderPanel({ hasFocus: false });
 
     expect(screen.getByRole('button', { name: 'Vista general' })).toBeDisabled();
+  });
+
+  describe('when the conversation outgrows its space', () => {
+    const CONVERSATION_HEIGHT_PX = 480;
+
+    beforeEach(() => {
+      jest
+        .spyOn(HTMLElement.prototype, 'scrollHeight', 'get')
+        .mockReturnValue(CONVERSATION_HEIGHT_PX);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('follows the answer down, so its last words stay in view', () => {
+      renderPanel({ status: 'streaming', question: '¿Hola?', answer: 'Introduje flujos' });
+
+      expect(screen.getByRole('group', { name: 'Conversación' }).scrollTop).toBe(
+        CONVERSATION_HEIGHT_PX,
+      );
+    });
+
+    it('can be scrolled with the keyboard', () => {
+      renderPanel({ question: '¿Hola?', answer: 'Introduje flujos.' });
+
+      expect(screen.getByRole('group', { name: 'Conversación' })).toHaveAttribute('tabindex', '0');
+    });
   });
 });
