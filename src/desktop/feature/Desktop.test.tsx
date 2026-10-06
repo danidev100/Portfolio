@@ -233,6 +233,31 @@ describe('Desktop', () => {
       expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toBeInTheDocument();
     });
 
+    it('gives the focus back to «Guía» when the tour is skipped', async () => {
+      const user = renderDesktop();
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+      await screen.findByRole('dialog', { name: FIRST_STEP });
+
+      await user.click(screen.getByRole('button', { name: 'Saltar guía' }));
+
+      expect(screen.getByRole('button', { name: 'Guía' })).toHaveFocus();
+    });
+
+    it('moves the focus to the profile from the last step when it was already open', async () => {
+      const user = renderDesktop();
+      await user.click(dockLink('Perfil y CV'));
+      mockPathname = '/about';
+      await user.click(screen.getByRole('button', { name: 'Guía' }));
+      await screen.findByRole('dialog', { name: FIRST_STEP });
+
+      await user.click(screen.getByRole('button', { name: 'Siguiente' }));
+      await user.click(screen.getByRole('button', { name: 'Siguiente' }));
+      const lastStep = await screen.findByRole('dialog', { name: 'Habla con mi IA' });
+      await user.click(within(lastStep).getByRole('link', { name: 'Ver mi perfil y CV' }));
+
+      expect(screen.getByRole('dialog', { name: 'Perfil y CV' })).toHaveFocus();
+    });
+
     it('opens the profile from the last step', async () => {
       const user = renderDesktop();
       await user.click(screen.getByRole('button', { name: 'Guía' }));

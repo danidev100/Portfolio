@@ -45,7 +45,7 @@ test.describe('onboarding tour', () => {
     await expect(step(page, 'Empieza por aquí')).toHaveCount(0);
   });
 
-  test('closes with Escape and gives the focus back', async ({ page }) => {
+  test('closes with Escape', async ({ page }) => {
     await openDesktop(page);
     await expect(step(page, 'Empieza por aquí')).toBeFocused();
 
@@ -61,8 +61,19 @@ test.describe('onboarding tour once seen', () => {
   test('comes back from «Guía»', async ({ page }) => {
     await openDesktop(page);
 
-    await page.getByRole('button', { name: 'Guía' }).click();
+    await page.getByRole('button', { name: 'Guía', exact: true }).click();
 
     await expect(step(page, 'Empieza por aquí')).toBeVisible();
+  });
+
+  test('gives the focus back to «Guía» when closed with Escape', async ({ page }) => {
+    await openDesktop(page);
+    const guide = page.getByRole('button', { name: 'Guía', exact: true });
+    await guide.click();
+    await expect(step(page, 'Empieza por aquí')).toBeFocused();
+
+    await page.keyboard.press('Escape');
+
+    await expect(guide).toBeFocused();
   });
 });

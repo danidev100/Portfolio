@@ -10,7 +10,7 @@ import { Dock } from '../ui/Dock';
 import { TopBar } from '../ui/TopBar';
 import { Window } from '../ui/Window';
 import { shouldActivateFromClick } from '../util/appLinks';
-import { APP_IDS, APPS, getDockItemId, type AppId } from '../util/apps';
+import { APP_IDS, APPS, getDockItemId, getWindowId, type AppId } from '../util/apps';
 import { APP_SCENE_PANELS } from './appScenePanels';
 import { OnboardingTour } from './OnboardingTour';
 import { useDesktopWindows } from './useDesktopWindows';
@@ -161,7 +161,12 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
               label: 'Ver mi perfil y CV',
               href: APPS.about.href,
               onClick: (event) => {
-                if (shouldActivateFromClick(event, APPS.about.href, currentHref)) select('about');
+                if (!shouldActivateFromClick(event, APPS.about.href, currentHref)) return;
+
+                select('about');
+                // A window takes the focus when it becomes the focused one. This
+                // one already was, so the focus would be lost with the balloon.
+                if (focusedId === 'about') document.getElementById(getWindowId('about'))?.focus();
               },
             }}
           />
