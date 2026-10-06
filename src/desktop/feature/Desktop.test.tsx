@@ -46,6 +46,19 @@ describe('Desktop', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('keeps the greeting links out of the tab order while a window covers them', async () => {
+    const user = renderDesktop();
+    const greetingLinks = screen.getByRole('link', { name: 'Ver proyectos' }).closest('ul');
+
+    await user.click(dockLink('Proyectos'));
+    expect(greetingLinks).toHaveAttribute('inert');
+
+    await user.click(screen.getByRole('button', { name: 'Cerrar Proyectos' }));
+    await waitFor(() => {
+      expect(greetingLinks).not.toHaveAttribute('inert');
+    });
+  });
+
   it('opens the profile from the greeting', async () => {
     const user = renderDesktop();
 

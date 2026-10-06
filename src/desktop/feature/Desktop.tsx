@@ -111,7 +111,11 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
       />
       <main className="relative isolate min-h-0">
         <div inert={isOverviewOpen} className="absolute inset-0">
-          <DesktopGreeting currentHref={currentHref} onOpen={select} />
+          <DesktopGreeting
+            currentHref={currentHref}
+            isCovered={windows.some((managedWindow) => !managedWindow.isMinimized)}
+            onOpen={select}
+          />
           <AnimatePresence>
             {windows.map(({ id, isMinimized }, stackIndex) =>
               isMinimized ? null : (

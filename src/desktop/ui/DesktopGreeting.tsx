@@ -27,10 +27,16 @@ const action = cva(
 interface DesktopGreetingProps {
   /** The route the router is on: a link to it does not navigate. */
   currentHref: string;
+  /** A window is on top: the links stay in the DOM but cannot be reached behind it. */
+  isCovered: boolean;
   onOpen: (id: AppId) => void;
 }
 
-export function DesktopGreeting({ currentHref, onOpen }: DesktopGreetingProps): ReactNode {
+export function DesktopGreeting({
+  currentHref,
+  isCovered,
+  onOpen,
+}: DesktopGreetingProps): ReactNode {
   const headingId = useId();
 
   return (
@@ -45,7 +51,7 @@ export function DesktopGreeting({ currentHref, onOpen }: DesktopGreetingProps): 
       <p className="max-w-md text-sm text-muted">
         Este portafolio funciona como un escritorio: cada sección se abre en su propia ventana.
       </p>
-      <ul className="mt-3 flex flex-wrap justify-center gap-3">
+      <ul inert={isCovered} className="mt-3 flex flex-wrap justify-center gap-3">
         {GREETING_ACTIONS.map(({ appId, label }, index) => (
           <li key={appId}>
             <Link

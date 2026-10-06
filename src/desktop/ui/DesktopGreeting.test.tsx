@@ -5,14 +5,14 @@ import { DesktopGreeting } from './DesktopGreeting';
 
 describe('DesktopGreeting', () => {
   it('introduces Daniel with his role', () => {
-    render(<DesktopGreeting currentHref="/" onOpen={jest.fn()} />);
+    render(<DesktopGreeting currentHref="/" isCovered={false} onOpen={jest.fn()} />);
 
     expect(screen.getByRole('heading', { level: 1, name: 'Daniel Jaramillo' })).toBeInTheDocument();
     expect(screen.getByText('Frontend Tech Lead · AI App Developer')).toBeInTheDocument();
   });
 
   it('explains the desktop metaphor without jargon', () => {
-    render(<DesktopGreeting currentHref="/" onOpen={jest.fn()} />);
+    render(<DesktopGreeting currentHref="/" isCovered={false} onOpen={jest.fn()} />);
 
     expect(
       screen.getByText(
@@ -22,7 +22,7 @@ describe('DesktopGreeting', () => {
   });
 
   it('links to the profile first, then to the projects and the AI', () => {
-    render(<DesktopGreeting currentHref="/" onOpen={jest.fn()} />);
+    render(<DesktopGreeting currentHref="/" isCovered={false} onOpen={jest.fn()} />);
 
     const links = screen.getAllByRole('link');
 
@@ -41,10 +41,22 @@ describe('DesktopGreeting', () => {
   it('opens the app of the link that was clicked', async () => {
     const user = userEvent.setup();
     const onOpen = jest.fn();
-    render(<DesktopGreeting currentHref="/" onOpen={onOpen} />);
+    render(<DesktopGreeting currentHref="/" isCovered={false} onOpen={onOpen} />);
 
     await user.click(screen.getByRole('link', { name: 'Ver mi perfil y CV' }));
 
     expect(onOpen).toHaveBeenCalledWith('about');
+  });
+
+  it('takes its links out of reach while a window covers them', () => {
+    render(<DesktopGreeting currentHref="/about" isCovered onOpen={jest.fn()} />);
+
+    expect(screen.getByRole('list')).toHaveAttribute('inert');
+  });
+
+  it('keeps its links in reach on an empty desktop', () => {
+    render(<DesktopGreeting currentHref="/" isCovered={false} onOpen={jest.fn()} />);
+
+    expect(screen.getByRole('list')).not.toHaveAttribute('inert');
   });
 });
