@@ -79,4 +79,23 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
+
+  /* The element the onboarding tour points at. */
+  [data-tour-highlight] {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    animation: tour-highlight 1.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-tour-highlight] {
+      animation: none;
+    }
+  }
+}
+
+@keyframes tour-highlight {
+  50% {
+    outline-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+  }
 }
