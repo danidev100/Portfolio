@@ -1,4 +1,6 @@
-import { devices, expect, test, type Page } from '@playwright/test';
+import { devices, type Page } from '@playwright/test';
+
+import { dockLink, expect, openDesktop, test } from './support';
 
 const { viewport, userAgent, deviceScaleFactor, isMobile, hasTouch } = devices['Pixel 7'];
 
@@ -8,15 +10,15 @@ const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
   page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
 
 async function openApp(page: Page, name: string): Promise<void> {
-  await page.goto('/');
-  await page.getByRole('link', { name }).tap();
+  await openDesktop(page);
+  await dockLink(page, name).tap();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
 
 test.describe('on a phone', () => {
   test('a window takes the whole work area, between the top bar and the dock', async ({ page }) => {
-    await openApp(page, 'Sobre mí');
-    const window = page.getByRole('dialog', { name: 'Sobre mí' });
+    await openApp(page, 'Perfil y CV');
+    const window = page.getByRole('dialog', { name: 'Perfil y CV' });
     await expect(window.getByText('Home Power Colombia')).toBeVisible();
 
     const dockBox = await page.getByRole('navigation', { name: 'Dock' }).boundingBox();
@@ -45,7 +47,7 @@ test.describe('on a phone', () => {
   });
 
   test('the terminal answers and only labels what there is room for', async ({ page }) => {
-    await openApp(page, 'Terminal');
+    await openApp(page, 'Pregúntale a mi IA');
     const node = (name: string) =>
       page.getByRole('list', { name: 'Nodos del grafo' }).getByText(name, { exact: true });
 
@@ -61,15 +63,48 @@ test.describe('on a phone', () => {
     expect(await hasHorizontalOverflow(page)).toBe(false);
   });
 
-  test('the activities overview lists the open windows', async ({ page }) => {
+  test('the windows overview lists the open windows', async ({ page }) => {
     await openApp(page, 'Contacto');
 
-    await page.getByRole('button', { name: 'Actividades' }).tap();
+    await page.getByRole('button', { name: 'Ventanas' }).tap();
 
     await expect(
       page.getByRole('region', { name: 'Ventanas abiertas' }).getByRole('link', {
         name: 'Contacto',
       }),
     ).toBeVisible();
+  });
+
+  test.describe('first visit', () => {
+    test.use({ hasSeenTour: false });
+
+    test('the tour fits on the screen and points at the dock', async ({ page }) => {
+      await openDesktop(page);
+      const balloon = page.getByRole('dialog', { name: 'Empieza por aquí' });
+      await expect(balloon).toBeVisible();
+
+      const box = await balloon.boundingBox();
+      const screenWidth = page.viewportSize()?.width ?? 0;
+      const dockBox = await page.getByRole('navigation', { name: 'Dock' }).boundingBox();
+
+      expect(box?.x).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(screenWidth);
+      expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(dockBox?.y ?? 0);
+      expect(await hasHorizontalOverflow(page)).toBe(false);
+    });
+  });
+});
+
+test.describe('on the narrowest phone', () => {
+  test.use({ viewport: { width: 320, height: 640 }, hasSeenTour: false });
+
+  test('the desktop and the tour fit without scrolling sideways', async ({ page }) => {
+    await openDesktop(page);
+    await expect(page.getByRole('dialog', { name: 'Empieza por aquí' })).toBeVisible();
+
+    const guide = await page.getByRole('button', { name: 'Guía', exact: true }).boundingBox();
+
+    expect((guide?.x ?? 0) + (guide?.width ?? 0)).toBeLessThanOrEqual(320);
+    expect(await hasHorizontalOverflow(page)).toBe(false);
   });
 });

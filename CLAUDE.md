@@ -25,13 +25,13 @@ Portafolio personal de Daniel Jaramillo (Frontend Tech Lead, perfil AI App Devel
 
 ## Dominios
 
-| Dominio    | Responsabilidad                                               |
-| ---------- | ------------------------------------------------------------- |
-| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock |
-| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)  |
-| `terminal` | Grafo IA y respuesta simulada por streaming                   |
-| `projects` | Órbita de proyectos                                           |
-| `profile`  | Contenido de las apps Sobre mí y Contacto                     |
+| Dominio    | Responsabilidad                                                      |
+| ---------- | -------------------------------------------------------------------- |
+| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock        |
+| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)         |
+| `terminal` | «Pregúntale a mi IA»: chat con la IA simulada y grafo de experiencia |
+| `projects` | Órbita de proyectos                                                  |
+| `profile`  | Contenido de «Perfil y CV» (CV en pantalla y PDF) y Contacto         |
 
 Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` contiene solo rutas delgadas que renderizan un `feature`; `src/core` contiene tokens, fuentes y providers.
 
@@ -39,12 +39,17 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 
 - Dentro de un dominio se importa con rutas relativas. El alias `@/` es solo para cruzar dominios, y siempre por su `index.ts` (`@/desktop`); `shared` es la excepción. ESLint lo hace cumplir.
 - La URL nombra la ventana enfocada y `/` es el escritorio sin ventanas visibles. `useDesktopWindows` mantiene en sincronía el store y el router; el store es la fuente de verdad de qué está abierto.
-- **Nunca se navega a la ruta en la que ya está el router** (ni `push`, ni `replace`, ni un `Link`): desde una ruta interceptada, Next deja la página vacía. Los enlaces del dock y de Actividades hacen `preventDefault` cuando apuntan a `currentHref`.
+- **Nunca se navega a la ruta en la que ya está el router** (ni `push`, ni `replace`, ni un `Link`): desde una ruta interceptada, Next deja la página vacía. Los enlaces a apps hacen `preventDefault` cuando apuntan a `currentHref`.
 - El store cambia al instante y su navegación llega después. `useDesktopWindows` lleva la cuenta de las navegaciones que pidió la app (`routeLandings.ts`): si la última aterriza en una ruta que el visitante ya dejó atrás, corrige la URL en vez de arrastrar el store. Solo las rutas que la app no pidió (botón atrás) mueven el store.
 - El icono del dock alterna su ventana: la abre o restaura, y la minimiza si ya es la enfocada.
 - Las rutas de `src/app/@window` no renderizan nada: solo interceptan para que el escritorio siga montado. Entrar directo a `/projects` renderiza la página completa.
 - `desktop` no importa otros dominios: `src/app/_components/appContent.tsx` le pasa el contenido de cada app.
 - Una app nueva se registra en `desktop/util/apps.ts` y `appContent.tsx`, y necesita su página y su ruta interceptada en `src/app`.
+- Todo enlace que abre una app (dock, bienvenida, Ventanas, recorrido) decide su clic con `shouldActivateFromClick` (`desktop/util/appLinks.ts`).
+- Cada app tiene `title` (ventana, tooltip, Ventanas) y `shortTitle` (bajo el icono del dock); el título completo contiene al corto para cumplir «label in name».
+- El recorrido de bienvenida (`OnboardingTour`) se ancla a elementos del dock por `id`, se recuerda en `localStorage` (`dani-os:onboarding:v1`) y se relanza desde «Guía». Los e2e arrancan con él marcado como visto salvo que usen `test.use({ hasSeenTour: false })` (`e2e/support.ts`).
+- Los e2e abren el escritorio con `openDesktop(page)`, que espera a la hidratación: un clic anterior es una navegación de enlace normal y la siguiente navegación del cliente la cancela.
+- El CV publicado es `public/cv/daniel-jaramillo-bustamante-cv.pdf`; un test comprueba que existe y que su enlace de LinkedIn es el actual. El original está fuera de git.
 
 - Las dependencias se instalan en la entrega que las usa, no por adelantado.
 - Los tokens de `src/core/styles/globals.css` reemplazan las escalas por defecto de color, radio, sombra y fuente de Tailwind: solo existen los tokens semánticos.
@@ -68,7 +73,7 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 
 ## Accesibilidad y calidad
 
-- `e2e/accessibility.spec.ts` pasa axe (WCAG 2.2 AA) por cada estado: escritorio, cada ventana, caso de proyecto, Terminal con foco, Actividades y páginas directas. Una ventana o estado nuevo añade ahí su caso.
+- `e2e/accessibility.spec.ts` pasa axe (WCAG 2.2 AA) por cada estado: escritorio, cada ventana, caso de proyecto, la IA con foco, Ventanas, cada paso del recorrido y páginas directas. Una ventana o estado nuevo añade ahí su caso.
 - Única excepción a axe: `target-size` en las etiquetas del grafo, que se solapan porque su posición es el dato (como pines de un mapa). Cada etiqueta mide al menos 24 px.
 - El texto atenuado nunca usa opacidad: cambia a `text-muted`, que mantiene el contraste. En la órbita, la tarjeta frontal y sus vecinas son opacas; las demás son invisibles e `inert`.
 - Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock.

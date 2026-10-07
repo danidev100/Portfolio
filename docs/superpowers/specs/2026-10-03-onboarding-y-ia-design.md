@@ -100,7 +100,7 @@ Las URLs no cambian: `/about`, `/projects`, `/terminal` y `/contact`. Los `AppId
 
 - «Siguiente», «Anterior» (desde el paso 2) y «Saltar guía».
 - El paso 3 cierra con «Ver mi perfil y CV», que termina el recorrido y abre esa ventana, y con «Terminar».
-- Si durante el recorrido el visitante abre cualquier app (dock, bienvenida o rutas), el recorrido termina y se marca como visto.
+- Si durante el recorrido el visitante abre cualquier app desde el dock, la bienvenida o «Ventanas», el recorrido termina y se marca como visto. Una navegación del navegador (atrás o adelante) no lo cierra.
 - Escape equivale a «Saltar guía».
 
 **Presentación:**

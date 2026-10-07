@@ -10,6 +10,11 @@ export interface AskStore extends AskState {
   /** Focuses a node picked by hand, with the nodes it connects to. */
   selectNode: (nodeId: string) => void;
   reset: () => void;
+  /** The visitor has asked or picked something at least once in this visit. */
+  hasInteracted: boolean;
+  /** The welcome message has been typed once in this visit. */
+  hasWelcomed: boolean;
+  markWelcomed: () => void;
 }
 
 const SERVICE_FAILURE_MESSAGE = 'No pude responder a esa pregunta. Inténtalo de nuevo.';
@@ -31,13 +36,15 @@ export function createAskStore(service: AskService): StoreApi<AskStore> {
 
   return createStore<AskStore>()((set) => ({
     ...INITIAL_ASK_STATE,
+    hasInteracted: false,
+    hasWelcomed: false,
 
     ask: async (rawQuestion) => {
       const question = rawQuestion.trim();
       if (!question) return;
 
       const { signal } = startRequest();
-      set((state) => startAsk(state, question));
+      set((state) => ({ ...startAsk(state, question), hasInteracted: true }));
 
       try {
         for await (const event of service.ask(question, signal)) {
@@ -55,8 +62,12 @@ export function createAskStore(service: AskService): StoreApi<AskStore> {
 
     selectNode: (nodeId) => {
       startRequest();
-      const { nodeIds, text } = describeNode(nodeId);
-      set({ status: 'idle', question: null, answer: text, focusNodeIds: nodeIds });
+      const { nodeIds, text, question } = describeNode(nodeId);
+      set({ status: 'idle', question, answer: text, focusNodeIds: nodeIds, hasInteracted: true });
+    },
+
+    markWelcomed: () => {
+      set({ hasWelcomed: true });
     },
 
     reset: () => {

@@ -10,7 +10,7 @@ export default function NotFound(): ReactNode {
     <StandalonePage title="Esta página no existe">
       <p className="text-muted">
         La dirección no corresponde a ninguna app de Dani OS. Desde el escritorio puedes abrir
-        Proyectos, Terminal, Sobre mí y Contacto.
+        Proyectos, Pregúntale a mi IA, Perfil y CV y Contacto.
       </p>
     </StandalonePage>
   );

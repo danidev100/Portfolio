@@ -1,4 +1,10 @@
-import { describeNode, findRelatedNodeIds, resolveAnswer, SUGGESTED_QUESTIONS } from './askAnswers';
+import {
+  describeNode,
+  findRelatedNodeIds,
+  resolveAnswer,
+  SUGGESTED_QUESTIONS,
+  WELCOME_MESSAGE,
+} from './askAnswers';
 import { GRAPH_NODES } from './graph';
 
 describe('findRelatedNodeIds', () => {
@@ -77,9 +83,18 @@ describe('describeNode', () => {
     expect(answer.text).toBe(
       'Design System se conecta con: Home Power · Tech Lead, 60% adopción del DS, Accesibilidad.',
     );
+    expect(answer.question).toBe('¿Con qué se conecta Design System?');
   });
 
   it('has nothing to say about a node that does not exist', () => {
-    expect(describeNode('missing')).toEqual({ nodeIds: [], text: '' });
+    expect(describeNode('missing')).toEqual({ nodeIds: [], text: '', question: '' });
+  });
+});
+
+describe('WELCOME_MESSAGE', () => {
+  it('introduces the ai in the voice agreed in the spec', () => {
+    expect(WELCOME_MESSAGE).toBe(
+      'Hola, soy la IA de Daniel. Pregúntame por mi experiencia, mis proyectos o cómo trabajo.',
+    );
   });
 });

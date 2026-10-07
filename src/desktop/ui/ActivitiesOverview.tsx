@@ -6,6 +6,7 @@ import { useId, type ReactNode } from 'react';
 
 import { FADE_TRANSITION } from '@/shared/util/motion';
 
+import { shouldActivateFromClick } from '../util/appLinks';
 import type { AppDefinition, AppId } from '../util/apps';
 import { AppIcon } from './AppIcon';
 
@@ -55,10 +56,7 @@ export function ActivitiesOverview({
               <Link
                 href={app.href}
                 onClick={(event) => {
-                  // From an intercepted route, navigating to the current URL
-                  // empties the page.
-                  if (app.href === currentHref) event.preventDefault();
-                  onSelect(app.id);
+                  if (shouldActivateFromClick(event, app.href, currentHref)) onSelect(app.id);
                 }}
                 className="flex flex-col items-center gap-3 rounded-card border border-border bg-surface p-6 transition-colors duration-200 hover:bg-surface-raised motion-reduce:transition-none"
               >

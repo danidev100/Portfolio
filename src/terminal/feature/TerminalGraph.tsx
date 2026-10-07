@@ -23,6 +23,7 @@ const ExperienceGraph = dynamic(
 export function TerminalGraph(): ReactNode {
   const focusNodeIds = useAskStore((state) => state.focusNodeIds);
   const selectNode = useAskStore((state) => state.selectNode);
+  const hasInteracted = useAskStore((state) => state.hasInteracted);
 
   return (
     <section
@@ -35,6 +36,18 @@ export function TerminalGraph(): ReactNode {
         activeNodeIds={focusNodeIds}
         onSelectNode={selectNode}
       />
+      {/* Points at the chat until the visitor has used it once. */}
+      {hasInteracted ? null : (
+        <p className="pointer-events-none absolute top-3 right-3 left-3 mx-auto w-fit rounded-full border border-ai/40 bg-canvas/90 px-3 py-1.5 text-center text-xs">
+          <span aria-hidden="true" className="@3xl:hidden">
+            ↑{' '}
+          </span>
+          <span aria-hidden="true" className="hidden @3xl:inline">
+            ←{' '}
+          </span>
+          Pregunta en el chat y aquí verás de qué hablo
+        </p>
+      )}
       <GraphLegend />
     </section>
   );

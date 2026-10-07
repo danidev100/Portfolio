@@ -32,6 +32,14 @@ export const SUGGESTED_QUESTIONS: readonly string[] = SCRIPTED_ANSWERS.map(
   (scripted) => scripted.question,
 );
 
+export const WELCOME_MESSAGE =
+  'Hola, soy la IA de Daniel. Pregúntame por mi experiencia, mis proyectos o cómo trabajo.';
+
+/** A node picked by hand, told as the question the visitor would have asked. */
+export interface NodeDescription extends Answer {
+  question: string;
+}
+
 const NOTHING_RELATED =
   'No encontré nada relacionado con esa pregunta. Prueba con: equipo, IA, Angular, móvil o AWS.';
 
@@ -103,14 +111,15 @@ export function resolveAnswer(question: string): Answer {
 }
 
 /** What the graph shows and says when a node is picked by hand. */
-export function describeNode(nodeId: string): Answer {
+export function describeNode(nodeId: string): NodeDescription {
   const [label] = getLabels([nodeId]);
-  if (label === undefined) return { nodeIds: [], text: '' };
+  if (label === undefined) return { nodeIds: [], text: '', question: '' };
 
   const connectedIds = getConnectedNodeIds(nodeId, GRAPH_EDGES);
 
   return {
     nodeIds: [nodeId, ...connectedIds],
     text: `${label} se conecta con: ${getLabels(connectedIds).join(', ')}.`,
+    question: `¿Con qué se conecta ${label}?`,
   };
 }

@@ -1,5 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+
+import { dockLink, expect, openDesktop, test } from './support';
 
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -44,28 +46,28 @@ async function expectNoViolations(page: Page): Promise<void> {
 }
 
 async function openApp(page: Page, name: string): Promise<void> {
-  await page.goto('/');
-  await page.getByRole('link', { name }).click();
+  await openDesktop(page);
+  await dockLink(page, name).click();
   await expect(page.getByRole('dialog', { name })).toBeVisible();
 }
 
 test.describe('accessibility (WCAG 2.2 AA)', () => {
   test('desktop', async ({ page }) => {
-    await page.goto('/');
+    await openDesktop(page);
     await expect(page.locator('canvas')).toBeVisible();
 
     await expectNoViolations(page);
   });
 
-  test('activities overview', async ({ page }) => {
-    await openApp(page, 'Sobre mí');
-    await page.getByRole('button', { name: 'Actividades' }).click();
+  test('windows overview', async ({ page }) => {
+    await openApp(page, 'Perfil y CV');
+    await page.getByRole('button', { name: 'Ventanas' }).click();
     await expect(page.getByRole('region', { name: 'Ventanas abiertas' })).toBeVisible();
 
     await expectNoViolations(page);
   });
 
-  for (const name of ['Proyectos', 'Terminal', 'Sobre mí', 'Contacto']) {
+  for (const name of ['Proyectos', 'Pregúntale a mi IA', 'Perfil y CV', 'Contacto']) {
     test(`${name} window`, async ({ page }) => {
       await openApp(page, name);
 
@@ -82,7 +84,7 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
   });
 
   test('terminal with an answer in focus', async ({ page }) => {
-    await openApp(page, 'Terminal');
+    await openApp(page, 'Pregúntale a mi IA');
     await page.getByRole('button', { name: 'Design System', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Design System se conecta con');
 
@@ -93,6 +95,26 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
     test(`standalone page ${route}`, async ({ page }) => {
       await page.goto(route);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+      await expectNoViolations(page);
+    });
+  }
+});
+
+test.describe('accessibility of the onboarding tour (WCAG 2.2 AA)', () => {
+  test.use({ hasSeenTour: false });
+
+  for (const [index, title] of [
+    'Empieza por aquí',
+    'Una ventana por sección',
+    'Habla con mi IA',
+  ].entries()) {
+    test(`tour step ${String(index + 1)}`, async ({ page }) => {
+      await openDesktop(page);
+      for (let next = 0; next < index; next += 1) {
+        await page.getByRole('button', { name: 'Siguiente' }).click();
+      }
+      await expect(page.getByRole('dialog', { name: title })).toBeVisible();
 
       await expectNoViolations(page);
     });

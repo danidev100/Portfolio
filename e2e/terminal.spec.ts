@@ -1,4 +1,6 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+
+import { dockLink, expect, openDesktop, test } from './support';
 
 const answer = (page: Page): Locator => page.getByRole('status');
 
@@ -9,8 +11,8 @@ const node = (page: Page, name: string): Locator =>
   page.getByRole('list', { name: 'Nodos del grafo' }).getByRole('button', { name, exact: true });
 
 async function openTerminalWindow(page: Page): Promise<void> {
-  await page.goto('/');
-  await page.getByRole('link', { name: 'Terminal' }).click();
+  await openDesktop(page);
+  await dockLink(page, 'Pregúntale a mi IA').click();
   await expect(page).toHaveURL('/terminal');
   await expect(node(page, 'Dani')).toBeVisible();
 }
@@ -58,9 +60,9 @@ test.describe('terminal', () => {
     await page.getByRole('button', { name: '¿Sabes de microfrontends?' }).click();
     await expect(answer(page)).toContainText('estado compartido.', WHILE_IT_STREAMS);
 
-    await page.getByRole('button', { name: 'Minimizar Terminal' }).click();
+    await page.getByRole('button', { name: 'Minimizar Pregúntale a mi IA' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await page.getByRole('link', { name: 'Terminal, abierta' }).click();
+    await dockLink(page, 'Pregúntale a mi IA, abierta').click();
 
     await expect(answer(page)).toContainText('estado compartido.', WHILE_IT_STREAMS);
     await expect(node(page, 'Nx · Native Federation')).toHaveAttribute('aria-pressed', 'true');
@@ -73,5 +75,61 @@ test.describe('terminal', () => {
 
     await expect(answer(page)).toContainText('SonarQube y Husky.', WHILE_IT_STREAMS);
     await expect(node(page, 'Equipo de 7 devs')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('welcomes the visitor and points the graph at the chat', async ({ page }) => {
+    await openTerminalWindow(page);
+
+    await expect(
+      page.getByRole('region', { name: 'Pregúntale a mi IA' }).getByRole('heading'),
+    ).toBeVisible();
+    await expect(page.getByText(/Hola, soy la IA de Daniel/)).toBeVisible();
+    await expect(page.getByText('Pregunta en el chat y aquí verás de qué hablo')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Pregunta al portafolio' })).toBeFocused();
+  });
+
+  test('tells a picked node as a question in the chat', async ({ page }) => {
+    await openTerminalWindow(page);
+
+    await node(page, 'Design System').click();
+
+    await expect(answer(page)).toContainText('¿Con qué se conecta Design System?');
+    await expect(page.getByText('Pregunta en el chat y aquí verás de qué hablo')).toHaveCount(0);
+  });
+
+  test('keeps the end of a long answer in view', async ({ page }) => {
+    await openTerminalWindow(page);
+
+    await page.getByRole('button', { name: '¿Has liderado equipos?' }).click();
+    await expect(answer(page)).toContainText('SonarQube y Husky.', WHILE_IT_STREAMS);
+
+    const conversation = page.getByRole('group', { name: 'Conversación' });
+    await expect
+      .poll(() =>
+        conversation.evaluate(
+          (element) => element.scrollHeight - element.clientHeight - element.scrollTop,
+        ),
+      )
+      .toBeLessThanOrEqual(1);
+  });
+});
+
+test.describe('terminal with reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' });
+
+  test('shows the welcome whole on the standalone page, without hydration errors', async ({
+    page,
+  }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') pageErrors.push(message.text());
+    });
+
+    await page.goto('/terminal');
+
+    await expect(page.getByText(/cómo trabajo\./)).toBeVisible();
+    await expect(node(page, 'Dani')).toBeVisible();
+    expect(pageErrors).toEqual([]);
   });
 });

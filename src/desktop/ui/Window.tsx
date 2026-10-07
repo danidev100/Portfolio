@@ -11,7 +11,7 @@ import {
   REVEAL_TRANSITION,
 } from '@/shared/util/motion';
 
-import type { AppId } from '../util/apps';
+import { getWindowId, type AppId } from '../util/apps';
 import { getWindowLayoutId } from '../util/windowLayout';
 
 interface WindowControlProps {
@@ -82,6 +82,7 @@ export function Window({
   return (
     <motion.section
       ref={windowRef}
+      id={getWindowId(appId)}
       role="dialog"
       aria-labelledby={titleId}
       tabIndex={-1}

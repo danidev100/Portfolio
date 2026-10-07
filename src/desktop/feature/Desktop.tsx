@@ -9,9 +9,12 @@ import { DesktopGreeting } from '../ui/DesktopGreeting';
 import { Dock } from '../ui/Dock';
 import { TopBar } from '../ui/TopBar';
 import { Window } from '../ui/Window';
-import { APP_IDS, APPS, getDockItemId, type AppId } from '../util/apps';
+import { shouldActivateFromClick } from '../util/appLinks';
+import { APP_IDS, APPS, getDockItemId, getWindowId, type AppId } from '../util/apps';
 import { APP_SCENE_PANELS } from './appScenePanels';
+import { OnboardingTour } from './OnboardingTour';
 import { useDesktopWindows } from './useDesktopWindows';
+import { useOnboardingTour } from './useOnboardingTour';
 
 /**
  * Loaded after the shell is interactive and never on the server: three.js
@@ -39,8 +42,10 @@ interface DesktopProps {
 export function Desktop({ appContent }: DesktopProps): ReactNode {
   const { windows, focusedId, currentHref, open, focus, minimize, close } = useDesktopWindows();
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
+  const tour = useOnboardingTour();
 
   const select = (id: AppId): void => {
+    tour.end();
     open(id);
     setIsOverviewOpen(false);
   };
@@ -50,6 +55,7 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
    * minimizes it when it is already the one in focus on its own route.
    */
   const toggleFromDock = (id: AppId): void => {
+    tour.end();
     const isFocusedOnItsRoute = focusedId === id && APPS[id].href === currentHref;
 
     if (isFocusedOnItsRoute) minimize(id);
@@ -98,10 +104,18 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
         onToggleOverview={() => {
           setIsOverviewOpen((isOpen) => !isOpen);
         }}
+        onOpenGuide={() => {
+          setIsOverviewOpen(false);
+          tour.start();
+        }}
       />
       <main className="relative isolate min-h-0">
         <div inert={isOverviewOpen} className="absolute inset-0">
-          <DesktopGreeting />
+          <DesktopGreeting
+            currentHref={currentHref}
+            isCovered={windows.some((managedWindow) => !managedWindow.isMinimized)}
+            onOpen={select}
+          />
           <AnimatePresence>
             {windows.map(({ id, isMinimized }, stackIndex) =>
               isMinimized ? null : (
@@ -139,6 +153,25 @@ export function Desktop({ appContent }: DesktopProps): ReactNode {
           ) : null}
         </AnimatePresence>
       </main>
+      <AnimatePresence>
+        {tour.isOpen ? (
+          <OnboardingTour
+            onClose={tour.end}
+            finalAction={{
+              label: 'Ver mi perfil y CV',
+              href: APPS.about.href,
+              onClick: (event) => {
+                if (!shouldActivateFromClick(event, APPS.about.href, currentHref)) return;
+
+                select('about');
+                // A window takes the focus when it becomes the focused one. This
+                // one already was, so the focus would be lost with the balloon.
+                if (focusedId === 'about') document.getElementById(getWindowId('about'))?.focus();
+              },
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
       <Dock items={dockItems} currentHref={currentHref} onActivate={toggleFromDock} />
     </div>
   );
