@@ -31,7 +31,7 @@ describe('ProjectsApp', () => {
   it('takes the cards that are out of sight out of reach', () => {
     renderApp();
 
-    expect(screen.getByRole('button', { name: /Solar Scout/ }).closest('li')).not.toHaveAttribute(
+    expect(screen.getByRole('button', { name: /Factura Lens/ }).closest('li')).not.toHaveAttribute(
       'inert',
     );
     expect(screen.getByRole('button', { name: /MFE Atlas/ }).closest('li')).toHaveAttribute(
@@ -42,14 +42,14 @@ describe('ProjectsApp', () => {
   it('starts with the first project in front', async () => {
     renderApp();
 
-    await expectFrontCard(/Factura Lens/);
+    await expectFrontCard(/NEXA/);
   });
 
   it('names each card with everything it shows, summary included', () => {
     renderApp();
 
-    expect(screen.getByRole('button', { name: /Solar Scout/ })).toHaveAccessibleName(
-      /Idea 02.*Estima el ahorro solar a partir de una factura de energía\..*React Native/,
+    expect(screen.getByRole('button', { name: /Factura Lens/ })).toHaveAccessibleName(
+      /Idea 01.*Fotos de facturas convertidas en JSON contable validado con Zod, para PYMES\..*Angular/,
     );
   });
 
@@ -58,7 +58,7 @@ describe('ProjectsApp', () => {
 
     await user.click(screen.getByRole('button', { name: 'Proyecto siguiente' }));
 
-    await expectFrontCard(/Solar Scout/);
+    await expectFrontCard(/Factura Lens/);
   });
 
   it('wraps to the last project when going back from the first one', async () => {
@@ -75,7 +75,7 @@ describe('ProjectsApp', () => {
 
     await user.keyboard('{ArrowRight}{ArrowRight}');
 
-    await expectFrontCard(/DS Copilot/);
+    await expectFrontCard(/Solar Scout/);
   });
 
   it('brings a card to the front when it receives keyboard focus', async () => {
@@ -84,23 +84,23 @@ describe('ProjectsApp', () => {
 
     await user.tab();
 
-    await expectFrontCard(/Solar Scout/);
+    await expectFrontCard(/Factura Lens/);
   });
 
   it('opens the case of a project from its card', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
 
-    const detail = await screen.findByRole('region', { name: 'Solar Scout' });
-    expect(detail).toHaveTextContent('Empresas de energía residencial y su equipo comercial.');
-    expect(detail).toHaveTextContent('AI SDK');
+    const detail = await screen.findByRole('region', { name: 'Factura Lens' });
+    expect(detail).toHaveTextContent('PYMES y contadores que aún digitan facturas a mano.');
+    expect(detail).toHaveTextContent('BullMQ');
   });
 
   it('moves focus into the case when it opens', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
 
     expect(await screen.findByRole('button', { name: 'Volver a la órbita' })).toHaveFocus();
   });
@@ -108,20 +108,20 @@ describe('ProjectsApp', () => {
   it('takes the orbit out of reach while a case is open', async () => {
     const user = renderApp();
 
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
-    await screen.findByRole('region', { name: 'Solar Scout' });
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
+    await screen.findByRole('region', { name: 'Factura Lens' });
 
     expect(screen.getByRole('region', { name: 'Órbita de proyectos' })).toHaveAttribute('inert');
   });
 
   it('closes the case and gives the orbit back', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
 
     await user.click(await screen.findByRole('button', { name: 'Volver a la órbita' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('region', { name: 'Solar Scout' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('region', { name: 'Factura Lens' })).not.toBeInTheDocument();
     });
     expect(screen.getByRole('region', { name: 'Órbita de proyectos' })).not.toHaveAttribute(
       'inert',
@@ -130,8 +130,8 @@ describe('ProjectsApp', () => {
 
   it('closes the case with Escape', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
-    await screen.findByRole('region', { name: 'Solar Scout' });
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
+    await screen.findByRole('region', { name: 'Factura Lens' });
 
     await user.keyboard('{Escape}');
 
@@ -142,10 +142,45 @@ describe('ProjectsApp', () => {
 
   it('returns focus to the card when its case is closed', async () => {
     const user = renderApp();
-    await user.click(screen.getByRole('button', { name: /Solar Scout/ }));
+    await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
 
     await user.click(await screen.findByRole('button', { name: 'Volver a la órbita' }));
 
-    expect(screen.getByRole('button', { name: /Solar Scout/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /Factura Lens/ })).toHaveFocus();
+  });
+
+  describe('real projects among the ideas', () => {
+    it('puts the live project in front, labelled as in production', async () => {
+      renderApp();
+
+      await expectFrontCard(/En producción.*NEXA/);
+    });
+
+    it('says that real projects will be added over time', () => {
+      renderApp();
+
+      expect(screen.getByText(/iré sumando proyectos reales/)).toBeInTheDocument();
+    });
+
+    it('links to the live site from the case of a live project', async () => {
+      const user = renderApp();
+
+      await user.click(screen.getByRole('button', { name: /NEXA/ }));
+      const detail = await screen.findByRole('region', { name: 'NEXA' });
+      const link = within(detail).getByRole('link', { name: /Ver el sitio en vivo/ });
+
+      expect(link).toHaveAttribute('href', 'https://nexa-landing.onrender.com');
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAccessibleName(/se abre en una pestaña nueva/);
+    });
+
+    it('has no site to link to from the case of an idea', async () => {
+      const user = renderApp();
+
+      await user.click(screen.getByRole('button', { name: /Factura Lens/ }));
+      const detail = await screen.findByRole('region', { name: 'Factura Lens' });
+
+      expect(within(detail).queryByRole('link')).not.toBeInTheDocument();
+    });
   });
 });

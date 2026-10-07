@@ -49,6 +49,7 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Cada app tiene `title` (ventana, tooltip, Ventanas) y `shortTitle` (bajo el icono del dock); el título completo contiene al corto para cumplir «label in name».
 - El recorrido de bienvenida (`OnboardingTour`) se ancla a elementos del dock por `id`, se recuerda en `localStorage` (`dani-os:onboarding:v1`) y se relanza desde «Guía». Los e2e arrancan con él marcado como visto salvo que usen `test.use({ hasSeenTour: false })` (`e2e/support.ts`).
 - Los e2e abren el escritorio con `openDesktop(page)`, que espera a la hidratación: un clic anterior es una navegación de enlace normal y la siguiente navegación del cliente la cancela.
+- Cada proyecto tiene `status`: `live` (trabajo publicado, con `url` y etiqueta «En producción») o `idea` (etiqueta «Idea NN», numerada solo entre las ideas). Los `live` van primero en `PROJECTS`, porque la órbita abre en el primero.
 - El CV publicado es `public/cv/daniel-jaramillo-bustamante-cv.pdf`; un test comprueba que existe y que su enlace de LinkedIn es el actual. El original está fuera de git.
 
 - Las dependencias se instalan en la entrega que las usa, no por adelantado.

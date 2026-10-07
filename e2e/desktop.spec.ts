@@ -141,7 +141,7 @@ test.describe('direct entry', () => {
 
     await expect(page.getByRole('heading', { level: 1, name: 'Proyectos' })).toBeVisible();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(page.getByText('Factura Lens')).toBeVisible();
+    await expect(page.getByRole('button', { name: /En producción NEXA/ })).toBeVisible();
   });
 
   test('leads back to the desktop', async ({ page }) => {

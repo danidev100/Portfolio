@@ -4,6 +4,7 @@ import { motion, useTransform, type MotionValue } from 'motion/react';
 import { useEffect, useRef, type KeyboardEvent, type ReactNode } from 'react';
 
 import { getCardOpacity, getStep, isWithinReach } from '../util/orbit';
+import { getProjectLabel } from '../util/projectLabels';
 import type { Project } from '../util/projects';
 import type { Box } from '../util/reveal';
 import { ProjectCard } from './ProjectCard';
@@ -31,6 +32,7 @@ const NEXT_ICON_PATH = 'm10 7 5 5-5 5';
 
 interface OrbitCardProps {
   project: Project;
+  label: string;
   index: number;
   count: number;
   rotation: MotionValue<number>;
@@ -44,6 +46,7 @@ interface OrbitCardProps {
 
 function OrbitCard({
   project,
+  label,
   index,
   count,
   rotation,
@@ -72,7 +75,7 @@ function OrbitCard({
           onClick={onOpen}
           className="block size-full cursor-pointer overflow-hidden rounded-card border border-border bg-surface-raised shadow-window"
         >
-          <ProjectCard project={project} index={index} />
+          <ProjectCard project={project} label={label} index={index} />
         </button>
       </motion.div>
     </li>
@@ -198,6 +201,7 @@ export function ProjectOrbit({ projects, isInert, onOpen }: ProjectOrbitProps): 
               <OrbitCard
                 key={project.id}
                 project={project}
+                label={getProjectLabel(project, projects)}
                 index={index}
                 count={count}
                 rotation={rotation}

@@ -77,8 +77,8 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
 
   test('project case', async ({ page }) => {
     await openApp(page, 'Proyectos');
-    await page.getByRole('button', { name: /Factura Lens/ }).click();
-    await expect(page.getByRole('region', { name: 'Factura Lens' })).toBeVisible();
+    await page.getByRole('button', { name: /NEXA/ }).click();
+    await expect(page.getByRole('region', { name: 'NEXA' })).toBeVisible();
 
     await expectNoViolations(page);
   });

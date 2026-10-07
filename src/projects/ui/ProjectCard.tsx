@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/util/cn';
 
-import { getIdeaLabel } from '../util/projectLabels';
 import type { Project } from '../util/projects';
 import { getSeriesClasses } from './seriesClasses';
 
@@ -11,6 +10,8 @@ const VISIBLE_STACK_ITEMS = 3;
 
 interface ProjectCardProps {
   project: Project;
+  /** What the project is: published work or a numbered idea. */
+  label: string;
   index: number;
 }
 
@@ -19,7 +20,7 @@ interface ProjectCardProps {
  * becomes the name of that button, which keeps what is read aloud in line with
  * what is seen.
  */
-export function ProjectCard({ project, index }: ProjectCardProps): ReactNode {
+export function ProjectCard({ project, label, index }: ProjectCardProps): ReactNode {
   return (
     <span className="flex h-full flex-col text-left">
       <span
@@ -29,7 +30,7 @@ export function ProjectCard({ project, index }: ProjectCardProps): ReactNode {
         )}
       >
         <span className="font-mono text-xs font-medium tracking-wider text-on-series/75 uppercase">
-          {getIdeaLabel(index)}
+          {label}
         </span>
         <span
           aria-hidden="true"
