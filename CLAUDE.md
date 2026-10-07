@@ -79,7 +79,7 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock.
 - En contenedores estrechos el grafo solo etiqueta los nodos `isLandmark` y los que están en foco.
 - `e2e/mobile.spec.ts` corre los flujos críticos con viewport y toque de teléfono.
-- CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Los presupuestos de `lighthouserc.json` están ajustados al baseline medido (rendimiento ≥ 0.85, LCP ≤ 3.5 s simulado en móvil).
+- CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Los presupuestos de `lighthouserc.json` están ajustados a lo que mide el runner de GitHub, que no tiene GPU y dibuja WebGL por software: rendimiento ≥ 0.85 en `/projects`, ≥ 0.8 en `/` y ≥ 0.7 en `/terminal`; LCP ≤ 3.5 s simulado en móvil en las tres. En local las tres páginas pasan de 0.9.
 - Las tres fuentes se precargan a propósito: quitar la precarga de la mono subió el FCP de 756 a 1059 ms en la medición.
 
 ## No tocar
