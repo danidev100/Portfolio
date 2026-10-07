@@ -38,11 +38,11 @@ test.describe('on a phone', () => {
     await openApp(page, 'Proyectos');
 
     await page.getByRole('button', { name: 'Proyecto siguiente' }).tap();
-    const solarScout = page.getByRole('button', { name: /Solar Scout/ });
-    await expect(solarScout).toHaveAttribute('aria-current', 'true');
+    const facturaLens = page.getByRole('button', { name: /Factura Lens/ });
+    await expect(facturaLens).toHaveAttribute('aria-current', 'true');
 
-    await solarScout.tap();
-    await expect(page.getByRole('region', { name: 'Solar Scout' })).toBeVisible();
+    await facturaLens.tap();
+    await expect(page.getByRole('region', { name: 'Factura Lens' })).toBeVisible();
     expect(await hasHorizontalOverflow(page)).toBe(false);
   });
 

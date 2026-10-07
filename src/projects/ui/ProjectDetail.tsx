@@ -11,7 +11,6 @@ import {
   REVEAL_TRANSITION,
 } from '@/shared/util/motion';
 
-import { getIdeaLabel } from '../util/projectLabels';
 import type { Project } from '../util/projects';
 import { NO_INSETS, toInsetClipPath, type Box } from '../util/reveal';
 import { getSeriesClasses } from './seriesClasses';
@@ -34,6 +33,8 @@ function ProjectFact({ term, children }: ProjectFactProps): ReactNode {
 
 interface ProjectDetailProps {
   project: Project;
+  /** What the project is: published work or a numbered idea. */
+  label: string;
   index: number;
   /** Where the project's card is, as insets from the edges of this panel. */
   originInsets: Box;
@@ -47,6 +48,7 @@ interface ProjectDetailProps {
  */
 export function ProjectDetail({
   project,
+  label,
   index,
   originInsets,
   onClose,
@@ -86,7 +88,7 @@ export function ProjectDetail({
                 getSeriesClasses(index).text,
               )}
             >
-              {getIdeaLabel(index)}
+              {label}
             </p>
             {/* Level 2 in both places a case shows: under the window title and
                 under the title of the standalone page, without skipping a level. */}
@@ -104,6 +106,17 @@ export function ProjectDetail({
           </button>
         </div>
         <p className="text-lg text-muted">{project.summary}</p>
+        {project.url ? (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-opacity duration-200 hover:opacity-90 motion-reduce:transition-none"
+          >
+            Ver el sitio en vivo
+            <span className="sr-only"> (se abre en una pestaña nueva)</span>
+          </a>
+        ) : null}
         <dl className="grid gap-5 sm:grid-cols-2">
           <ProjectFact term="Para quién">{project.audience}</ProjectFact>
           <ProjectFact term="Dónde entra la IA">{project.aiRole}</ProjectFact>
