@@ -1,6 +1,7 @@
 import {
   describeNode,
   findRelatedNodeIds,
+  isScriptedQuestion,
   resolveAnswer,
   SUGGESTED_QUESTIONS,
   WELCOME_MESSAGE,
@@ -64,7 +65,9 @@ describe('resolveAnswer', () => {
     const answer = resolveAnswer('¿Qué sabes de AWS?');
 
     expect(answer.nodeIds).toEqual(['aws']);
-    expect(answer.text).toContain('AWS Lambda · S3');
+    expect(answer.text).toBe(
+      'Encontré relación con: AWS Lambda · S3. Pulsa un nodo para ver con qué se conecta.',
+    );
   });
 
   it('says so, and suggests topics, when nothing is related', () => {
@@ -72,6 +75,16 @@ describe('resolveAnswer', () => {
 
     expect(answer.nodeIds).toEqual([]);
     expect(answer.text).toContain('No encontré');
+  });
+});
+
+describe('isScriptedQuestion', () => {
+  it('recognizes a suggested question typed with other spacing, case and punctuation', () => {
+    expect(isScriptedQuestion('¿has liderado   equipos')).toBe(true);
+  });
+
+  it('does not take any other question for a suggested one', () => {
+    expect(isScriptedQuestion('¿Qué sabes de AWS?')).toBe(false);
   });
 });
 
