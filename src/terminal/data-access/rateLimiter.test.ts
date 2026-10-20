@@ -9,7 +9,7 @@ function buildLimiter(dailyLimit = 40): {
 } {
   let currentTime = START;
   const limiter = createRateLimiter({
-    perClient: { limit: 10, windowMs: TEN_MINUTES_MS },
+    perClient: { limit: 10, windowMs: TEN_MINUTES_MS, dailyLimit: 20 },
     dailyLimit,
     now: () => currentTime,
   });
@@ -63,6 +63,27 @@ describe('createRateLimiter', () => {
 
     limiter.at(Date.UTC(2026, 9, 21, 0, 0, 1));
     expect(limiter.tryConsume('3.3.3.3')).toBe(true);
+  });
+
+  it('stops a visitor at 20 questions a day, leaving the rest for others', () => {
+    const limiter = buildLimiter();
+    consume(limiter, '1.1.1.1', 10);
+    limiter.at(START + TEN_MINUTES_MS + 1);
+    consume(limiter, '1.1.1.1', 10);
+    limiter.at(START + 2 * TEN_MINUTES_MS + 2);
+
+    expect(limiter.tryConsume('1.1.1.1')).toBe(false);
+    expect(limiter.tryConsume('2.2.2.2')).toBe(true);
+  });
+
+  it('lets the visitor ask again the next day UTC', () => {
+    const limiter = buildLimiter();
+    consume(limiter, '1.1.1.1', 10);
+    limiter.at(START + TEN_MINUTES_MS + 1);
+    consume(limiter, '1.1.1.1', 10);
+
+    limiter.at(Date.UTC(2026, 9, 21, 0, 0, 1));
+    expect(limiter.tryConsume('1.1.1.1')).toBe(true);
   });
 
   it('does not spend the daily budget on questions it refuses', () => {

@@ -11,6 +11,7 @@ const DEFAULT_MODEL = 'claude-sonnet-5-5';
 
 /** Spreads the $5 a month instead of letting one visitor or one day spend it. */
 const QUESTIONS_PER_VISITOR = 10;
+const QUESTIONS_PER_VISITOR_PER_DAY = 20;
 const VISITOR_WINDOW_MS = 10 * 60 * 1000;
 const QUESTIONS_PER_DAY = 40;
 
@@ -33,7 +34,11 @@ export const POST: (request: Request) => Promise<Response> = createAskHandler({
       })
     : unavailableAskService,
   limiter: createRateLimiter({
-    perClient: { limit: QUESTIONS_PER_VISITOR, windowMs: VISITOR_WINDOW_MS },
+    perClient: {
+      limit: QUESTIONS_PER_VISITOR,
+      windowMs: VISITOR_WINDOW_MS,
+      dailyLimit: QUESTIONS_PER_VISITOR_PER_DAY,
+    },
     dailyLimit: QUESTIONS_PER_DAY,
   }),
 });

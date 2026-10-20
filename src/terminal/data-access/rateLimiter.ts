@@ -1,5 +1,6 @@
 export interface RateLimiterOptions {
-  perClient: { limit: number; windowMs: number };
+  /** `dailyLimit` keeps one visitor from spending the whole site's day. */
+  perClient: { limit: number; windowMs: number; dailyLimit: number };
   /** A soft cap on the whole site per UTC day; the hard cap is Claude Console's. */
   dailyLimit: number;
   now?: () => number;
@@ -26,6 +27,7 @@ export function createRateLimiter({
   now = Date.now,
 }: RateLimiterOptions): RateLimiter {
   const recentByClient = new Map<string, number[]>();
+  const dailyCountByClient = new Map<string, number>();
   let day = '';
   let dailyCount = 0;
 
@@ -43,9 +45,11 @@ export function createRateLimiter({
       if (today !== day) {
         day = today;
         dailyCount = 0;
+        dailyCountByClient.clear();
       }
 
-      if (dailyCount >= dailyLimit) return false;
+      const clientDailyCount = dailyCountByClient.get(clientId) ?? 0;
+      if (dailyCount >= dailyLimit || clientDailyCount >= perClient.dailyLimit) return false;
 
       const windowStart = currentTime - perClient.windowMs;
       if (recentByClient.size > MAX_TRACKED_CLIENTS) forgetExpired(windowStart);
@@ -57,6 +61,7 @@ export function createRateLimiter({
       }
 
       recentByClient.set(clientId, [...recent, currentTime]);
+      dailyCountByClient.set(clientId, clientDailyCount + 1);
       dailyCount += 1;
 
       return true;

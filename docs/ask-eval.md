@@ -13,7 +13,7 @@ Se corre a mano antes de publicar y cada vez que cambian el prompt (`src/termina
     -d '{"question":"¿Has liderado equipos?"}'
   ```
 
-El limitador permite 10 preguntas cada 10 minutos por IP: espera entre tandas o reinicia el servidor local.
+El limitador permite 10 preguntas cada 10 minutos y 20 al día por visitante (40 al día en total): espera entre tandas o reinicia el servidor local.
 
 ## Preguntas
 
