@@ -77,7 +77,7 @@ export const KNOWLEDGE_BLOCKS: readonly KnowledgeBlock[] = [
   },
   {
     nodeIds: ['dani'],
-    text: 'Contacto: correo jaramillob93@gmail.com y LinkedIn linkedin.com/in/daniel-jaramillo-bustamante. Vive en Colombia, zona horaria UTC−5. En este portafolio, la app Contacto reúne estos datos.',
+    text: 'Contacto: correo jaramillob93@gmail.com y LinkedIn linkedin.com/in/daniel-jaramillo-bustamante. En este portafolio, la app Contacto reúne estos datos.',
   },
   {
     nodeIds: ['ask', 'sdk'],

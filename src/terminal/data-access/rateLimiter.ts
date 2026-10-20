@@ -10,6 +10,9 @@ export interface RateLimiter {
   tryConsume(clientId: string): boolean;
 }
 
+/** Past this many visitors, the expired ones are swept so memory stays bounded. */
+const MAX_TRACKED_CLIENTS = 1000;
+
 const toUtcDay = (milliseconds: number): string =>
   new Date(milliseconds).toISOString().slice(0, 10);
 
@@ -26,6 +29,13 @@ export function createRateLimiter({
   let day = '';
   let dailyCount = 0;
 
+  /** Visitors who asked nothing in the window no longer need remembering. */
+  const forgetExpired = (windowStart: number): void => {
+    for (const [clientId, times] of recentByClient) {
+      if (times.every((time) => time <= windowStart)) recentByClient.delete(clientId);
+    }
+  };
+
   return {
     tryConsume(clientId) {
       const currentTime = now();
@@ -35,9 +45,13 @@ export function createRateLimiter({
         dailyCount = 0;
       }
 
+      if (dailyCount >= dailyLimit) return false;
+
       const windowStart = currentTime - perClient.windowMs;
+      if (recentByClient.size > MAX_TRACKED_CLIENTS) forgetExpired(windowStart);
+
       const recent = (recentByClient.get(clientId) ?? []).filter((time) => time > windowStart);
-      if (recent.length >= perClient.limit || dailyCount >= dailyLimit) {
+      if (recent.length >= perClient.limit) {
         recentByClient.set(clientId, recent);
         return false;
       }

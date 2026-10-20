@@ -14,13 +14,21 @@ const QUESTIONS_PER_VISITOR = 10;
 const VISITOR_WINDOW_MS = 10 * 60 * 1000;
 const QUESTIONS_PER_DAY = 40;
 
+/** A visitor waits seconds, not the SDK's minutes, before the local answer takes over. */
+const CLAUDE_TIMEOUT_MS = 30_000;
+const CLAUDE_MAX_RETRIES = 1;
+
 const apiKey = process.env.ANTHROPIC_API_KEY;
 
 /** One service and one limiter per process: Render runs a single instance. */
 export const POST: (request: Request) => Promise<Response> = createAskHandler({
   service: apiKey
     ? createClaudeAskService({
-        client: new Anthropic({ apiKey }),
+        client: new Anthropic({
+          apiKey,
+          timeout: CLAUDE_TIMEOUT_MS,
+          maxRetries: CLAUDE_MAX_RETRIES,
+        }),
         model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
       })
     : unavailableAskService,

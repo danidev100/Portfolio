@@ -103,6 +103,15 @@ describe('createAskHandler', () => {
     expect(limiter.clientIds).toEqual(['1.1.1.1', 'unknown']);
   });
 
+  it('prefers the address Cloudflare saw over the forwarded one, which a client can forge', async () => {
+    const limiter = fakeLimiter();
+    const handle = createAskHandler({ service: fakeService([{ type: 'done' }]), limiter });
+
+    await handle(ask('Hola', { 'cf-connecting-ip': '3.3.3.3', 'x-forwarded-for': '9.9.9.9' }));
+
+    expect(limiter.clientIds).toEqual(['3.3.3.3']);
+  });
+
   it('answers 503 when the AI cannot answer anything', async () => {
     const service = fakeService([], new AskUnavailableError());
     const handle = createAskHandler({ service, limiter: fakeLimiter() });

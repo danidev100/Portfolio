@@ -39,6 +39,9 @@ function buildParams(model: string, question: string): BetaMessageStreamParams {
     betas: ['server-side-fallback-2026-07-01'],
     fallbacks: 'default',
     output_config: { effort: 'low' },
+    // A chat with no tools gains nothing from thinking: it delays the first
+    // token and spends output tokens. Sonnet 5.5 turns it off this way.
+    thinking: { type: 'between_tools' },
     system: SYSTEM_PROMPT,
     messages: [
       {
@@ -67,12 +70,14 @@ async function* toAskEvents(
   stream: AsyncIterable<BetaRawMessageStreamEvent>,
 ): AsyncGenerator<AskEvent> {
   const focusedIds = new Set<string>();
-  let hasText = false;
 
   for await (const event of stream) {
     if (event.type === 'message_delta') {
-      if (event.delta.stop_reason === 'refusal' && !hasText) {
+      // With fallbacks on, a final refusal means the whole chain declined:
+      // whatever was written is not an answer to stand on its own.
+      if (event.delta.stop_reason === 'refusal') {
         yield { type: 'error', message: REFUSAL_MESSAGE };
+        return;
       }
       continue;
     }
@@ -80,7 +85,6 @@ async function* toAskEvents(
 
     const { delta } = event;
     if (delta.type === 'text_delta') {
-      hasText = true;
       yield { type: 'token', text: delta.text };
     } else if (
       delta.type === 'citations_delta' &&

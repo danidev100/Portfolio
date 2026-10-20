@@ -25,8 +25,14 @@ const SSE_HEADERS = {
   'x-accel-buffering': 'no',
 };
 
-/** Render's proxy puts the visitor first in `x-forwarded-for`. */
+/**
+ * Render sits behind Cloudflare, which sets `cf-connecting-ip` itself; the
+ * first `x-forwarded-for` entry is the fallback, but a client can forge it.
+ */
 function getClientId(request: Request): string {
+  const cloudflareAddress = request.headers.get('cf-connecting-ip')?.trim();
+  if (cloudflareAddress) return cloudflareAddress;
+
   const [firstAddress] = (request.headers.get('x-forwarded-for') ?? '').split(',');
 
   return firstAddress?.trim() || UNKNOWN_CLIENT;

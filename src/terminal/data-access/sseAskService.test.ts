@@ -88,6 +88,17 @@ describe('createSseAskService', () => {
     await expect(collect(createSseAskService({ fetch }).ask('Hola'))).rejects.toBe(abort);
   });
 
+  it('ends with an error when the connection drops before the answer is done', async () => {
+    const { fetch } = fakeFetch(() =>
+      Promise.resolve(sseResponse(encodeSseEvent({ type: 'token', text: 'Sí, ' }))),
+    );
+
+    expect(await collect(createSseAskService({ fetch }).ask('Hola'))).toEqual([
+      { type: 'token', text: 'Sí, ' },
+      { type: 'error', message: SERVICE_FAILURE_MESSAGE },
+    ]);
+  });
+
   it('ends with an error when the server sends something that is not an event', async () => {
     const { fetch } = fakeFetch(() =>
       Promise.resolve(

@@ -109,6 +109,7 @@ describe('createClaudeAskService', () => {
       betas: ['server-side-fallback-2026-07-01'],
       fallbacks: 'default',
       output_config: { effort: 'low' },
+      thinking: { type: 'between_tools' },
       system: SYSTEM_PROMPT,
       messages: [
         {
@@ -171,7 +172,18 @@ describe('createClaudeAskService', () => {
 
     const events = await collect(createClaudeAskService({ client, model: MODEL }).ask(QUESTION));
 
-    expect(events).toEqual([{ type: 'error', message: REFUSAL_MESSAGE }, { type: 'done' }]);
+    expect(events).toEqual([{ type: 'error', message: REFUSAL_MESSAGE }]);
+  });
+
+  it('ends with an error when the model refuses after writing part of the answer', async () => {
+    const { client } = fakeClient([textDelta('Sí, '), messageDelta('refusal')]);
+
+    const events = await collect(createClaudeAskService({ client, model: MODEL }).ask(QUESTION));
+
+    expect(events).toEqual([
+      { type: 'token', text: 'Sí, ' },
+      { type: 'error', message: REFUSAL_MESSAGE },
+    ]);
   });
 
   it('is unavailable when the model fails before answering anything', async () => {

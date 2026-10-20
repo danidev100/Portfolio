@@ -55,7 +55,11 @@ export function createSseAskService({
           return;
         }
         yield parsed.data;
+        if (parsed.data.type === 'done' || parsed.data.type === 'error') return;
       }
+
+      // The stream ended without saying so: the connection dropped midway.
+      yield { type: 'error', message: SERVICE_FAILURE_MESSAGE };
     },
   };
 }

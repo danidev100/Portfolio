@@ -36,6 +36,14 @@ describe('KNOWLEDGE_BLOCKS', () => {
   });
 });
 
+describe('topics the AI never answers', () => {
+  it('leaves out where Daniel lives, which the prompt refers to Contact', () => {
+    const texts = KNOWLEDGE_BLOCKS.map((block) => block.text);
+
+    expect(texts.filter((text) => /Vive en|UTC/.test(text))).toEqual([]);
+  });
+});
+
 describe('getCitedNodeIds', () => {
   it('gives the nodes of a single cited block', () => {
     expect(getCitedNodeIds(0, 1)).toEqual(KNOWLEDGE_BLOCKS[0]?.nodeIds);
