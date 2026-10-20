@@ -83,6 +83,10 @@ export const KNOWLEDGE_BLOCKS: readonly KnowledgeBlock[] = [
     nodeIds: ['ask', 'sdk'],
     text: 'Este asistente es el proyecto Ask Dani: Claude responde con citas a partir de este CV, en streaming, y el grafo de experiencia ilumina los nodos que cita.',
   },
+  {
+    nodeIds: ['dani', 'hp'],
+    text: 'Situación actual: su etapa como Frontend Tech Lead en Home Power Colombia terminó en septiembre de 2026 y hoy busca trabajo activamente.',
+  },
 ];
 
 /** Graph nodes of the cited blocks, `endBlockIndex` excluded, each one once. */

@@ -1,7 +1,7 @@
 import type { AskService } from '@/shared/types/ask';
 
-import { askEventSchema } from '../util/askEventSchema';
 import { AskUnavailableError, SERVICE_FAILURE_MESSAGE } from '../util/askErrors';
+import { isAskEvent } from '../util/isAskEvent';
 import { readSseData } from '../util/sse';
 
 export interface SseAskServiceOptions {
@@ -18,7 +18,7 @@ function parseEvent(data: string): unknown {
   try {
     return JSON.parse(data);
   } catch {
-    // Not JSON is just another malformed event, rejected by the schema below.
+    // Not JSON is just another malformed event, rejected by the check below.
     return null;
   }
 }
@@ -49,13 +49,13 @@ export function createSseAskService({
       if (!response.ok || !response.body) throw new AskUnavailableError();
 
       for await (const data of readSseData(response.body)) {
-        const parsed = askEventSchema.safeParse(parseEvent(data));
-        if (!parsed.success) {
+        const event = parseEvent(data);
+        if (!isAskEvent(event)) {
           yield { type: 'error', message: SERVICE_FAILURE_MESSAGE };
           return;
         }
-        yield parsed.data;
-        if (parsed.data.type === 'done' || parsed.data.type === 'error') return;
+        yield event;
+        if (event.type === 'done' || event.type === 'error') return;
       }
 
       // The stream ended without saying so: the connection dropped midway.

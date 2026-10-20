@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { askEventSchema } from './askEventSchema';
 import { encodeSseEvent, readSseData } from './sse';
 
 function streamOf(chunks: readonly string[]): ReadableStream<Uint8Array> {
@@ -41,24 +40,5 @@ describe('readSseData', () => {
     );
 
     expect(data).toEqual(['{"type":"done"}', '2']);
-  });
-});
-
-describe('askEventSchema', () => {
-  it('accepts every kind of event', () => {
-    const events = [
-      { type: 'focus_nodes', nodeIds: ['hp'] },
-      { type: 'token', text: 'Hola' },
-      { type: 'done' },
-      { type: 'error', message: 'Algo falló' },
-    ];
-
-    for (const event of events) expect(askEventSchema.safeParse(event).success).toBe(true);
-  });
-
-  it('rejects malformed events', () => {
-    expect(askEventSchema.safeParse({ type: 'token' }).success).toBe(false);
-    expect(askEventSchema.safeParse({ type: 'focus_nodes', nodeIds: [1] }).success).toBe(false);
-    expect(askEventSchema.safeParse({ type: 'nope' }).success).toBe(false);
   });
 });
