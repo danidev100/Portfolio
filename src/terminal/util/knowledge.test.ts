@@ -36,6 +36,14 @@ describe('KNOWLEDGE_BLOCKS', () => {
   });
 });
 
+describe('current situation', () => {
+  it('tells that Daniel left Home Power and is looking for work', () => {
+    const situation = KNOWLEDGE_BLOCKS.find((block) => block.text.includes('busca trabajo'));
+
+    expect(situation?.text).toContain('terminó en septiembre de 2026');
+  });
+});
+
 describe('topics the AI never answers', () => {
   it('leaves out where Daniel lives, which the prompt refers to Contact', () => {
     const texts = KNOWLEDGE_BLOCKS.map((block) => block.text);
