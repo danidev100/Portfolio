@@ -77,9 +77,9 @@ Parámetros: streaming; `max_tokens` bajo, suficiente para 2–4 párrafos corto
   - texto de Claude → `token`;
   - cada cita nueva → `focus_nodes` con el **conjunto acumulado** (`applyAskEvent` ya reemplaza el foco);
   - fin → `done`;
-  - fallo, rechazo o límite → `error` con un mensaje para el visitante, nunca detalles internos.
+  - fallo o rechazo a mitad del stream → `error` con un mensaje para el visitante, nunca detalles internos.
 - Si el visitante cancela (`AbortSignal` de la petición), se aborta la llamada a Claude.
-- Sin `ANTHROPIC_API_KEY`: responde con un error controlado, no se cae.
+- Sin `ANTHROPIC_API_KEY`, con el presupuesto de Console agotado o con Claude caído antes de empezar: HTTP 503 sin stream, para que el cliente pase al buscador local. No se cae.
 
 ### 4.4 Cliente
 
