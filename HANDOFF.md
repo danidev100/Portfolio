@@ -50,6 +50,7 @@ src/
    }
    ```
    V1: `SimulatedAskService` con latencia realista. V2: cliente SSE validado con Zod; la UI no cambia.
+   **V2 hecha** (2026-10-20): Claude Sonnet 5.5 por `/api/ask` con citas al CV y el buscador local como respaldo. Diseño en `docs/superpowers/specs/2026-10-20-ia-real-design.md`.
 6. **Rendimiento.** Canvas con import dinámico sin SSR, `frameloop="demand"` en reposo, DPR limitado, `PerformanceMonitor` para degradar calidad y respeto a reducir movimiento.
 7. **Móvil.** Ventanas a pantalla completa apiladas (estilo GNOME móvil) en lugar de un escritorio miniatura.
 8. **Sin shadcn.** Componentes `ui` propios con `cva` + `tailwind-merge`.
