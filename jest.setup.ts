@@ -5,7 +5,9 @@ import { MotionGlobalConfig } from 'motion/react';
 MotionGlobalConfig.skipAnimations = true;
 
 // jsdom cannot navigate: cancelling the default action keeps link clicks from
-// logging "Not implemented: navigation".
-document.addEventListener('click', (event) => {
-  if (event.target instanceof Element && event.target.closest('a')) event.preventDefault();
-});
+// logging "Not implemented: navigation". Server tests run in node, without a DOM.
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('a')) event.preventDefault();
+  });
+}
