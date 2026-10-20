@@ -8,3 +8,5 @@ export class AskUnavailableError extends Error {
     this.name = 'AskUnavailableError';
   }
 }
+
+export const SERVICE_FAILURE_MESSAGE = 'No pude responder a esa pregunta. Inténtalo de nuevo.';

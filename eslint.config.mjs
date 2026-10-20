@@ -58,6 +58,8 @@ export default defineConfig([
       ],
       'boundaries/files': [
         { category: 'domain-api', pattern: 'src/*/index.ts' },
+        // The server-only public API of a domain, for route handlers.
+        { category: 'domain-api', pattern: 'src/*/server.ts' },
         // `scene` only has `ui` and `util`, so presentational code may use it too.
         { category: 'ui-kit-api', pattern: 'src/scene/index.ts' },
       ],
