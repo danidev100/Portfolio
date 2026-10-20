@@ -3,6 +3,7 @@ import { createStore, type StoreApi } from 'zustand';
 import type { AskService } from '@/shared/types/ask';
 
 import { describeNode } from '../util/askAnswers';
+import { SERVICE_FAILURE_MESSAGE } from '../util/askErrors';
 import { applyAskEvent, INITIAL_ASK_STATE, startAsk, type AskState } from '../util/askState';
 
 export interface AskStore extends AskState {
@@ -16,8 +17,6 @@ export interface AskStore extends AskState {
   hasWelcomed: boolean;
   markWelcomed: () => void;
 }
-
-const SERVICE_FAILURE_MESSAGE = 'No pude responder a esa pregunta. Inténtalo de nuevo.';
 
 /**
  * Holds the conversation outside of the window, so it survives the window

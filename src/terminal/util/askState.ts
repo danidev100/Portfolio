@@ -5,7 +5,7 @@ export type AskStatus = 'idle' | 'thinking' | 'streaming' | 'error';
 export interface AskState {
   status: AskStatus;
   question: string | null;
-  /** The answer so far, or the error message when `status` is `error`. */
+  /** The answer so far, ending with the error message when `status` is `error`. */
   answer: string;
   focusNodeIds: readonly string[];
 }
@@ -31,6 +31,11 @@ export function applyAskEvent(state: AskState, event: AskEvent): AskState {
     case 'done':
       return { ...state, status: 'idle' };
     case 'error':
-      return { ...state, status: 'error', answer: event.message };
+      // What was already written stays: the visitor may have read it.
+      return {
+        ...state,
+        status: 'error',
+        answer: state.answer ? `${state.answer} ${event.message}` : event.message,
+      };
   }
 }

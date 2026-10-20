@@ -93,12 +93,22 @@ function getLabels(nodeIds: readonly string[]): string[] {
   });
 }
 
-/** What the simulated assistant answers. V2 replaces this with a real model. */
+const normalize = (question: string): string => toWords(question).join(' ');
+
+function findScripted(question: string): ScriptedAnswer | undefined {
+  const normalizedQuestion = normalize(question);
+
+  return SCRIPTED_ANSWERS.find((candidate) => normalize(candidate.question) === normalizedQuestion);
+}
+
+/** A suggested question, however it was typed: the script answers it, not the AI. */
+export function isScriptedQuestion(question: string): boolean {
+  return findScripted(question) !== undefined;
+}
+
+/** What the terminal answers on its own: the script, or the nodes a question names. */
 export function resolveAnswer(question: string): Answer {
-  const normalizedQuestion = toWords(question).join(' ');
-  const scripted = SCRIPTED_ANSWERS.find(
-    (candidate) => toWords(candidate.question).join(' ') === normalizedQuestion,
-  );
+  const scripted = findScripted(question);
   if (scripted) return { nodeIds: scripted.nodeIds, text: scripted.text };
 
   const nodeIds = findRelatedNodeIds(question, GRAPH_NODES);
@@ -106,7 +116,7 @@ export function resolveAnswer(question: string): Answer {
 
   return {
     nodeIds,
-    text: `Encontré relación con: ${getLabels(nodeIds).join(', ')}. Esta respuesta es simulada: la versión con IA real contestará con detalle a partir de mi CV.`,
+    text: `Encontré relación con: ${getLabels(nodeIds).join(', ')}. Pulsa un nodo para ver con qué se conecta.`,
   };
 }
 

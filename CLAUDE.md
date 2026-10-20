@@ -10,7 +10,7 @@ Portafolio personal de Daniel Jaramillo (Frontend Tech Lead, perfil AI App Devel
 - 3D: React Three Fiber + drei (Three.js directo solo si R3F no alcanza)
 - Estado: Zustand · Estilos: Tailwind v4 · Animación: Motion
 - Tests: Jest + Testing Library · Playwright
-- Backend/API: ninguno en V1 (IA simulada tras el contrato `AskService`)
+- Backend/API: un Route Handler, `POST /api/ask`, que responde con Claude (`@anthropic-ai/sdk`) por SSE
 
 ## Comandos
 
@@ -25,13 +25,13 @@ Portafolio personal de Daniel Jaramillo (Frontend Tech Lead, perfil AI App Devel
 
 ## Dominios
 
-| Dominio    | Responsabilidad                                                      |
-| ---------- | -------------------------------------------------------------------- |
-| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock        |
-| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)         |
-| `terminal` | «Pregúntale a mi IA»: chat con la IA simulada y grafo de experiencia |
-| `projects` | Órbita de proyectos                                                  |
-| `profile`  | Contenido de «Perfil y CV» (CV en pantalla y PDF) y Contacto         |
+| Dominio    | Responsabilidad                                               |
+| ---------- | ------------------------------------------------------------- |
+| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock |
+| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)  |
+| `terminal` | «Pregúntale a mi IA»: chat con Claude y grafo de experiencia  |
+| `projects` | Órbita de proyectos                                           |
+| `profile`  | Contenido de «Perfil y CV» (CV en pantalla y PDF) y Contacto  |
 
 Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` contiene solo rutas delgadas que renderizan un `feature`; `src/core` contiene tokens, fuentes y providers.
 
@@ -67,7 +67,10 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - `scene` solo tiene `ui` y `util`, así que el código `ui` de otros dominios puede importar `@/scene`; ningún otro dominio es importable desde `ui`.
 - El grafo de la Terminal tiene su propio canvas dentro de la ventana. Sus etiquetas son botones DOM que `LabelProjector` coloca en cada frame; no se usa `Html` de drei, que crea una raíz de React por etiqueta y da errores al desmontar con React 19.
 - `SceneCanvas` mide con `offsetSize`: un canvas montado mientras su ventana se abre escalada se quedaría con el tamaño reducido.
-- La Terminal habla con `AskService` (`shared/types/ask.ts`). V1 lo simula; V2 solo cambia el servicio que se crea en `terminal/data-access/useAskStore.ts`. `zod` se instala entonces, con el cliente SSE.
+- La Terminal habla con `AskService` (`shared/types/ask.ts`). En el navegador, `useAskStore.ts` crea un servicio compuesto: las preguntas sugeridas usan el guion local, el resto va a `/api/ask`, y si este responde sin stream (429, 503) contesta el buscador local con «(Modo sin conexión)». Una vez que Claude empezó a responder, la respuesta es suya.
+- `/api/ask` delega en `src/terminal/server.ts`, la API pública solo de servidor del dominio (`import 'server-only'`, categoría `domain-api` en ESLint). Allí se crean el cliente de Anthropic (`ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`) y un limitador en memoria: Render corre una sola instancia. El tope real de gasto es el límite mensual de Claude Console.
+- Lo que sabe la IA está en `terminal/util/knowledge.ts`: bloques transcritos del CV, cada uno con los nodos del grafo que encienden sus citas. Si cambia el CV, se actualizan esos bloques y `profile/util/profile.ts`. Antes de cambiar el prompt, el modelo o la base, se corre a mano `docs/ask-eval.md`.
+- Los e2e nunca llaman a Claude: `e2e/support.ts` intercepta `/api/ask` con 503, y `answerWithStream` simula una respuesta.
 - Los componentes se suscriben al store con selectores estrechos: `TerminalGraph` solo al foco y `TerminalAsk` al texto, para que cada token no re-renderice la escena.
 - Los materiales leen los colores de los tokens CSS con `readThemeColor`; no hay hex en la escena.
 - La matemática de cámara y layout vive en `scene/util` como funciones puras con tests; lo que necesita WebGL se verifica en e2e.

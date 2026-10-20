@@ -50,13 +50,22 @@ describe('applyAskEvent', () => {
     expect(state.answer).toBe('Listo');
   });
 
-  it('shows the error in place of the answer', () => {
-    const state = applyAskEvent(answering({ status: 'streaming', answer: 'A medias' }), {
+  it('keeps what was written and adds the error after it', () => {
+    const state = applyAskEvent(answering({ status: 'streaming', answer: 'A medias.' }), {
       type: 'error',
       message: 'Sin conexión',
     });
 
     expect(state.status).toBe('error');
+    expect(state.answer).toBe('A medias. Sin conexión');
+  });
+
+  it('shows the error alone when nothing was written', () => {
+    const state = applyAskEvent(answering({ status: 'thinking', answer: '' }), {
+      type: 'error',
+      message: 'Sin conexión',
+    });
+
     expect(state.answer).toBe('Sin conexión');
   });
 });

@@ -34,7 +34,7 @@ function Bubble({ from, isError = false, children }: BubbleProps): ReactNode {
 interface AskPanelProps {
   status: AskStatus;
   question: string | null;
-  /** The answer so far, or the error message when `status` is `error`. */
+  /** The answer so far, ending with the error message when `status` is `error`. */
   answer: string;
   suggestions: readonly string[];
   /** The graph is focused on some nodes, so there is an overview to go back to. */

@@ -166,6 +166,9 @@ importers:
 
   .:
     dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.135.0
+        version: 0.135.0(zod@4.6.7)
       '@react-three/drei':
         specifier: ^10.7.9
         version: 10.7.9(@react-three/fiber@9.8.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1))(@types/react@19.3.0)(@types/three@0.186.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1)
@@ -183,19 +186,25 @@ importers:
         version: 13.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       next:
         specifier: ^16.3.8
-        version: 16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.63.0)(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react:
         specifier: ^19.3.0
         version: 19.3.0
       react-dom:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       tailwind-merge:
         specifier: ^3.7.0
         version: 3.7.0
       three:
         specifier: ^0.186.1
         version: 0.186.1
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
       zustand:
         specifier: ^5.0.15
         version: 5.0.15(@types/react@19.3.0)(react@19.3.0)(use-sync-external-store@1.7.0(react@19.3.0))
@@ -293,6 +302,15 @@ packages:
   '@alloc/quick-lru@5.3.0':
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
     engines: {node: '>=10'}
+
+  '@anthropic-ai/sdk@0.135.0':
+    resolution: {integrity: sha512-WWrdL57JhU5KoynpTjt9GXK6k7ud9nPw2uw/Trn+oBXh6s0KpjhAccWZm2Qxw08ARYG1UDQj5iC+JO42j1rt/g==}
+    hasBin: true
+    peerDependencies:
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
@@ -1039,6 +1057,10 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
+  '@opentelemetry/api@1.9.1':
+    resolution: {integrity: sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q==}
+    engines: {node: '>=8.0.0'}
+
   '@parcel/watcher-android-arm64@2.6.0':
     resolution: {integrity: sha512-trgpLSCKRC/huFjXX/Smh+0sWe4+YtKfktIToiMl59ghz7z+qkH6kMvNnUbLyRs9N11t8l4svSCs1+5B3rOAhA==}
     engines: {node: '>= 10.0.0'}
@@ -1189,6 +1211,9 @@ packages:
 
   '@sinonjs/fake-timers@15.4.0':
     resolution: {integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==}
+
+  '@stablelib/base64@1.0.1':
+    resolution: {integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -2286,6 +2311,9 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
+  fast-sha256@1.3.0:
+    resolution: {integrity: sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==}
+
   fast-uri@3.1.8:
     resolution: {integrity: sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==}
 
@@ -2892,6 +2920,10 @@ packages:
 
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
+
+  json-schema-to-ts@3.1.1:
+    resolution: {integrity: sha512-+DWg8jCJG2TEnpy7kOm/7/AxaYoaRbjVB4LFZLySZlWn8exGs3A4OLJR966cVvU26N7X9TWxl+Jsw7dzAqKT6g==}
+    engines: {node: '>=16'}
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -3536,6 +3568,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
     engines: {node: '>= 0.4'}
@@ -3609,6 +3644,9 @@ packages:
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
     engines: {node: '>=10'}
+
+  standardwebhooks@1.1.1:
+    resolution: {integrity: sha512-bCbX9ZEyFkWPsRz7Bl3NuQUJohmwGSev/yhr7vhaGPlc4AfIrspIRa6cPTBuI1ItmrTDJ4d/S2hCsfe4+vQGnQ==}
 
   stats-gl@2.4.2:
     resolution: {integrity: sha512-g5O9B0hm9CvnM36+v7SFl39T7hmAlv541tU81ME8YeSb3i1CIP5/QdDeSB3A0la0bKNHpxpwxOVRo2wFTYEosQ==}
@@ -3801,6 +3839,9 @@ packages:
 
   troika-worker-utils@0.52.0:
     resolution: {integrity: sha512-W1CpvTHykaPH5brv5VHLfQo9D1OYuo0cSBEUQFFT/nBUzM8iD6Lq2/tgG/f1OelbAS1WtaTPQzE5uM49egnngw==}
+
+  ts-algebra@2.0.0:
+    resolution: {integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==}
 
   ts-api-utils@2.5.0:
     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
@@ -4022,8 +4063,8 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
@@ -4063,6 +4104,14 @@ snapshots:
   '@adobe/css-tools@4.5.0': {}
 
   '@alloc/quick-lru@5.3.0': {}
+
+  '@anthropic-ai/sdk@0.135.0(zod@4.6.7)':
+    dependencies:
+      '@opentelemetry/api': 1.9.1
+      json-schema-to-ts: 3.1.1
+      standardwebhooks: 1.1.1
+    optionalDependencies:
+      zod: 4.6.7
 
   '@asamuzakjp/css-color@3.2.0':
     dependencies:
@@ -4907,6 +4956,8 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
+  '@opentelemetry/api@1.9.1': {}
+
   '@parcel/watcher-android-arm64@2.6.0':
     optional: true
 
@@ -5042,6 +5093,8 @@ snapshots:
   '@sinonjs/fake-timers@15.4.0':
     dependencies:
       '@sinonjs/commons': 3.0.1
+
+  '@stablelib/base64@1.0.1': {}
 
   '@swc/helpers@0.5.23':
     dependencies:
@@ -6152,8 +6205,8 @@ snapshots:
       '@babel/parser': 7.29.9
       eslint: 9.39.5(jiti@2.7.0)(supports-color@8.1.1)
       hermes-parser: 0.25.1
-      zod: 4.6.5
-      zod-validation-error: 4.0.2(zod@4.6.5)
+      zod: 4.6.7
+      zod-validation-error: 4.0.2(zod@4.6.7)
     transitivePeerDependencies:
       - supports-color
 
@@ -6287,6 +6340,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-sha256@1.3.0: {}
 
   fast-uri@3.1.8: {}
 
@@ -7102,6 +7157,11 @@ snapshots:
 
   json-parse-even-better-errors@2.3.1: {}
 
+  json-schema-to-ts@3.1.1:
+    dependencies:
+      '@babel/runtime': 7.29.7
+      ts-algebra: 2.0.0
+
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -7299,7 +7359,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.63.0)(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
       '@next/env': 16.3.8
       '@swc/helpers': 0.5.23
@@ -7318,6 +7378,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.3.8
       '@next/swc-win32-arm64-msvc': 16.3.8
       '@next/swc-win32-x64-msvc': 16.3.8
+      '@opentelemetry/api': 1.9.1
       '@playwright/test': 1.63.0
       sharp: 0.35.5(@types/node@24.19.0)
     transitivePeerDependencies:
@@ -7646,6 +7707,8 @@ snapshots:
 
   semver@7.8.5: {}
 
+  server-only@0.0.1: {}
+
   set-function-length@1.2.2:
     dependencies:
       define-data-property: 1.1.4
@@ -7753,6 +7816,11 @@ snapshots:
   stack-utils@2.0.6:
     dependencies:
       escape-string-regexp: 2.0.0
+
+  standardwebhooks@1.1.1:
+    dependencies:
+      '@stablelib/base64': 1.0.1
+      fast-sha256: 1.3.0
 
   stats-gl@2.4.2(@types/three@0.186.0)(three@0.186.1):
     dependencies:
@@ -7960,6 +8028,8 @@ snapshots:
       three: 0.186.1
 
   troika-worker-utils@0.52.0: {}
+
+  ts-algebra@2.0.0: {}
 
   ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
@@ -8227,11 +8297,11 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@4.0.2(zod@4.6.5):
+  zod-validation-error@4.0.2(zod@4.6.7):
     dependencies:
-      zod: 4.6.5
+      zod: 4.6.7
 
-  zod@4.6.5: {}
+  zod@4.6.7: {}
 
   zustand@4.5.7(@types/react@19.3.0)(react@19.3.0):
     dependencies:
