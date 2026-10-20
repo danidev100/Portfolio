@@ -1,6 +1,11 @@
 import { test as base, expect, type Locator, type Page } from '@playwright/test';
 
 import { ONBOARDING_STORAGE_KEY } from '../src/desktop/data-access/onboardingStorage';
+import type { AskEvent } from '../src/shared/types/ask';
+import { encodeSseEvent } from '../src/terminal/util/sse';
+
+const ASK_ROUTE = '**/api/ask';
+const SERVICE_UNAVAILABLE = 503;
 
 interface SupportOptions {
   /**
@@ -18,9 +23,24 @@ export const test = base.extend<SupportOptions>({
         window.localStorage.setItem(key, 'seen');
       }, ONBOARDING_STORAGE_KEY);
     }
+    // Tests never reach Claude: they would spend money and depend on its answers.
+    // By default the AI is unavailable, so the terminal answers locally.
+    await page.route(ASK_ROUTE, (route) => route.fulfill({ status: SERVICE_UNAVAILABLE }));
     await provide(page);
   },
 });
+
+/** Makes the AI answer the next questions with `events`, streamed as Claude would. */
+export async function answerWithStream(page: Page, events: readonly AskEvent[]): Promise<void> {
+  await page.unroute(ASK_ROUTE);
+  await page.route(ASK_ROUTE, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/event-stream',
+      body: events.map(encodeSseEvent).join(''),
+    }),
+  );
+}
 
 export { expect };
 

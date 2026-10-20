@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 
-import { dockLink, expect, openDesktop, test } from './support';
+import { answerWithStream, dockLink, expect, openDesktop, test } from './support';
 
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -87,6 +87,20 @@ test.describe('accessibility (WCAG 2.2 AA)', () => {
     await openApp(page, 'Pregúntale a mi IA');
     await page.getByRole('button', { name: 'Design System', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Design System se conecta con');
+
+    await expectNoViolations(page);
+  });
+
+  test('terminal with a claude answer in focus', async ({ page }) => {
+    await openApp(page, 'Pregúntale a mi IA');
+    await answerWithStream(page, [
+      { type: 'focus_nodes', nodeIds: ['hp', 'k7'] },
+      { type: 'token', text: 'Lideré un equipo de 7 desarrolladores.' },
+      { type: 'done' },
+    ]);
+    await page.getByRole('textbox', { name: 'Pregunta al portafolio' }).fill('¿Cómo lideras?');
+    await page.getByRole('button', { name: 'Preguntar' }).click();
+    await expect(page.getByRole('status')).toContainText('7 desarrolladores.');
 
     await expectNoViolations(page);
   });

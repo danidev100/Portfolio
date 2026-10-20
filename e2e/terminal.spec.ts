@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 
-import { dockLink, expect, openDesktop, test } from './support';
+import { answerWithStream, dockLink, expect, openDesktop, test } from './support';
 
 const answer = (page: Page): Locator => page.getByRole('status');
 
@@ -31,14 +31,34 @@ test.describe('terminal', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('answers a question typed by the visitor', async ({ page }) => {
+  test('answers with claude and lights the cited nodes', async ({ page }) => {
+    await openTerminalWindow(page);
+    await answerWithStream(page, [
+      { type: 'focus_nodes', nodeIds: ['hp', 'k7'] },
+      { type: 'token', text: 'Sí. Lideré un equipo ' },
+      { type: 'token', text: 'de 7 desarrolladores.' },
+      { type: 'done' },
+    ]);
+
+    await page.getByRole('textbox', { name: 'Pregunta al portafolio' }).fill('¿Cómo lideras?');
+    await page.getByRole('button', { name: 'Preguntar' }).click();
+
+    await expect(answer(page)).toContainText(
+      'Sí. Lideré un equipo de 7 desarrolladores.',
+      WHILE_IT_STREAMS,
+    );
+    await expect(node(page, 'Equipo de 7 devs')).toHaveAttribute('aria-pressed', 'true');
+    await expect(node(page, 'Angular')).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('falls back to the local answer when claude is unavailable', async ({ page }) => {
     await openTerminalWindow(page);
 
     await page.getByRole('textbox', { name: 'Pregunta al portafolio' }).fill('¿Qué sabes de AWS?');
     await page.getByRole('button', { name: 'Preguntar' }).click();
 
     await expect(answer(page)).toContainText(
-      'Encontré relación con: AWS Lambda · S3',
+      '(Modo sin conexión) Encontré relación con: AWS Lambda · S3',
       WHILE_IT_STREAMS,
     );
     await expect(node(page, 'AWS Lambda · S3')).toHaveAttribute('aria-pressed', 'true');
