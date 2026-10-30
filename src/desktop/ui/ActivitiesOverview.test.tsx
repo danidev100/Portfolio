@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { APPS } from '../util/apps';
+import { APPS } from '@/shared/util/apps';
 import { ActivitiesOverview, type OverviewWindow } from './ActivitiesOverview';
 
 const OPEN_WINDOWS: OverviewWindow[] = [

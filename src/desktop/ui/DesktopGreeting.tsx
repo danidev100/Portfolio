@@ -2,8 +2,8 @@ import { cva } from 'class-variance-authority';
 import Link from 'next/link';
 import { useId, type ReactNode } from 'react';
 
-import { shouldActivateFromClick } from '../util/appLinks';
-import { APPS, type AppId } from '../util/apps';
+import { shouldActivateFromClick } from '@/shared/util/appLinks';
+import { APPS, type AppId } from '@/shared/util/apps';
 
 /** In order of importance: a recruiter comes for the profile first. */
 const GREETING_ACTIONS: readonly { appId: AppId; label: string }[] = [

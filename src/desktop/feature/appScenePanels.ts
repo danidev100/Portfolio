@@ -1,6 +1,6 @@
 import type { ScenePanel } from '@/scene';
 
-import { APP_IDS, APPS, type AppId } from '../util/apps';
+import { APP_IDS, APPS, type AppId } from '@/shared/util/apps';
 
 type PanelPlacement = Pick<ScenePanel, 'position' | 'rotationY' | 'scale'>;
 

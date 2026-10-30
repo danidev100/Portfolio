@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { DESKTOP_HREF } from '../util/apps';
+import { HOME_HREF } from '@/shared/util/apps';
 
 interface StandalonePageProps {
   title: string;
@@ -14,7 +14,7 @@ export function StandalonePage({ title, children }: StandalonePageProps): ReactN
     <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-4 p-4 sm:p-6">
       <header className="flex items-center justify-between rounded-full border border-border bg-surface p-1.5 text-sm">
         <Link
-          href={DESKTOP_HREF}
+          href={HOME_HREF}
           className="rounded-full px-4 py-1.5 font-semibold transition-colors duration-200 hover:bg-surface-raised motion-reduce:transition-none"
         >
           Ir al escritorio

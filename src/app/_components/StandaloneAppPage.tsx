@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { APPS, StandalonePage, type AppId } from '@/desktop';
+import { StandalonePage } from '@/desktop';
+import { APPS, type AppId } from '@/shared/util/apps';
 
 import { APP_CONTENT } from './appContent';
 
