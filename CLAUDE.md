@@ -25,13 +25,13 @@ Portafolio personal de Daniel Jaramillo (Frontend Tech Lead, perfil AI App Devel
 
 ## Dominios
 
-| Dominio    | Responsabilidad                                               |
-| ---------- | ------------------------------------------------------------- |
-| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock |
-| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)  |
-| `terminal` | «Pregúntale a mi IA»: chat con Claude y grafo de experiencia  |
-| `projects` | Órbita de proyectos                                           |
-| `profile`  | Contenido de «Perfil y CV» (CV en pantalla y PDF) y Contacto  |
+| Dominio    | Responsabilidad                                                    |
+| ---------- | ------------------------------------------------------------------ |
+| `desktop`  | Shell Dani OS: window manager, ventanas, barra superior, dock      |
+| `scene`    | Canvas único, CameraRig y primitivas 3D (solo `ui` y `util`)       |
+| `terminal` | «Pregúntale a mi IA»: chat con Claude y grafo de experiencia       |
+| `projects` | Órbita de proyectos                                                |
+| `profile`  | Contenido de «Perfil y CV» (CV en pantalla y PDF) y Contacto       |
 | `phone`    | Shell de teléfono: inicio, dock, Guía y apps con navegación nativa |
 
 Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` contiene solo rutas delgadas que renderizan un `feature`; `src/core` contiene tokens, fuentes y providers.
@@ -49,13 +49,14 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - Todo enlace que abre una app (dock, bienvenida, Ventanas, recorrido, inicio y Guía del teléfono) decide su clic con `shouldActivateFromClick` (`shared/util/appLinks.ts`).
 - Cada app tiene `title` (ventana, tooltip, Ventanas) y `shortTitle` (bajo el icono del dock); el título completo contiene al corto para cumplir «label in name».
 - El recorrido de bienvenida (`OnboardingTour`) se ancla a elementos del dock por `id`, se recuerda en `localStorage` (`dani-os:onboarding:v1`) y se relanza desde «Guía». Los e2e arrancan con él marcado como visto salvo que usen `test.use({ hasSeenTour: false })` (`e2e/support.ts`).
-- Los e2e abren el escritorio con `openDesktop(page)`, que espera a la hidratación: un clic anterior es una navegación de enlace normal y la siguiente navegación del cliente la cancela. El teléfono se abre con `openPhone(page, path)`, que espera a `data-hydrated`. Los specs `phone*.spec.ts` corren solo en el proyecto `iphone` de Playwright (Chromium con UA y pantalla de iPhone 15).
+- Los e2e abren el escritorio con `openDesktop(page)`, que espera a la hidratación: un clic anterior es una navegación de enlace normal y la siguiente navegación del cliente la cancela. El teléfono se abre con `openPhone(page, path)`, que espera a `data-hydrated`. Los specs `phone*.spec.ts` corren solo en los proyectos `iphone` (Chromium con UA y pantalla de iPhone 15) y `android` (Pixel 7) de Playwright.
 - Cada proyecto tiene `status`: `live` (trabajo publicado, con `url` y etiqueta «En producción») o `idea` (etiqueta «Idea NN», numerada solo entre las ideas). Los `live` van primero en `PROJECTS`, porque la órbita abre en el primero.
 - El CV publicado es `public/cv/daniel-jaramillo-bustamante-cv.pdf`; un test comprueba que existe y que su enlace de LinkedIn es el actual. El original está fuera de git.
 
 - **Teléfono** (spec `docs/superpowers/specs/2026-10-29-dani-os-movil-design.md`):
-  - Las páginas deciden la interfaz en el servidor con `getDeviceProfile` (`userAgent()` + `?device=ios|desktop`), así que son dinámicas. Decidir en el cliente haría parpadear el escritorio antes del teléfono.
-  - Solo los sabores de `PHONE_FLAVORS` llegan al teléfono (hoy `ios`); Android, tablets e iPadOS reciben el escritorio.
+  - Las páginas deciden la interfaz en el servidor con `getDeviceProfile` (`userAgent()` + `?device=ios|android|desktop`), así que son dinámicas. Decidir en el cliente haría parpadear el escritorio antes del teléfono.
+  - Solo los sabores de `PHONE_FLAVORS` (`ios`, `android`) llegan al teléfono; un móvil que no es iOS recibe `android`. Tablets, iPadOS y bots (`isBot`) reciben el escritorio.
+  - Lo que cambia solo de aspecto entre sabores usa las variantes `ios:` y `android:` (`globals.css`, sobre `data-flavor`), que llegan también al contenido de otros dominios. Lo que cambia de estructura (orden del inicio, barra de la app) va por la prop `flavor`, nunca con `order` de CSS, para que el foco siga el orden visual.
   - `phone` no importa otros dominios: `src/app/_components/phoneAppContent.tsx` le pasa contenido simple, sin WebGL ni CSS 3D (`ProjectsPhoneApp`, `TerminalPhoneApp`, `AboutApp`, `ContactApp`).
   - La URL es el estado del teléfono: no hay store. «Inicio» hace `router.back()` si la app abierta se lanzó desde el inicio; si no, navega a `/`.
   - El detalle de proyecto en el teléfono se empuja con `?project=<id>` vía `history.pushState`, para que el gesto atrás lo cierre.
@@ -92,8 +93,8 @@ Los dominios viven en `src/<dominio>/{feature,ui,data-access,util}`. `src/app` c
 - El texto atenuado nunca usa opacidad: cambia a `text-muted`, que mantiene el contraste. En la órbita, la tarjeta frontal y sus vecinas son opacas; las demás son invisibles e `inert`.
 - Al cerrar o minimizar una ventana sin otra visible, el foco vuelve a su icono del dock.
 - En contenedores estrechos el grafo solo etiqueta los nodos `isLandmark` y los que están en foco.
-- `e2e/mobile.spec.ts` corre los flujos críticos del escritorio en un Pixel 7 (Android aún recibe el escritorio). `e2e/phone.spec.ts` y `e2e/phone-accessibility.spec.ts` cubren el teléfono, con una prueba de 20 ciclos por app sin errores en consola.
-- CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Los presupuestos de `lighthouserc.json` están ajustados a lo que mide el runner de GitHub, que no tiene GPU y dibuja WebGL por software: rendimiento ≥ 0.85 en `/projects`, ≥ 0.8 en `/` y ≥ 0.7 en `/terminal`; LCP ≤ 3.5 s simulado en móvil en las tres. En local las tres páginas pasan de 0.9.
+- `e2e/phone.spec.ts` y `e2e/phone-accessibility.spec.ts` cubren el teléfono en iPhone y Pixel, con una prueba de 20 ciclos por app sin errores en consola, a 320 px y en horizontal. `e2e/phone-android.spec.ts` comprueba con estilos reales el aspecto de Android.
+- CI (`.github/workflows/ci.yml`): `quality` → `e2e` y `lighthouse` en paralelo. Lighthouse corre en dos pasadas: el UA móvil de Lighthouse es un Android, así que mide el teléfono. `lighthouserc.desktop.json` (preset de escritorio) mantiene los presupuestos del escritorio, ajustados al runner de GitHub, que no tiene GPU y dibuja WebGL por software: rendimiento ≥ 0.85 en `/projects`, ≥ 0.8 en `/` y ≥ 0.7 en `/terminal`; LCP ≤ 3.5 s. `lighthouserc.mobile.json` mide el teléfono: rendimiento ≥ 0.9 y LCP ≤ 3.5 s en las tres (el LCP espera a las fuentes; se ajusta en la entrega 4).
 - Las tres fuentes se precargan a propósito: quitar la precarga de la mono subió el FCP de 756 a 1059 ms en la medición.
 
 ## No tocar
