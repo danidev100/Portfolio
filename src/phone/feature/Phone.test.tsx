@@ -104,4 +104,26 @@ describe('Phone', () => {
     expect(await clickAndSeeIfItNavigates(screen.getByRole('link', { name: 'Inicio' }))).toBe(true);
     expect(mockBack).not.toHaveBeenCalled();
   });
+
+  it('takes a double tap on «Inicio» as a single trip home', async () => {
+    const user = userEvent.setup();
+    const { goTo } = renderPhone('/');
+    await user.click(
+      within(screen.getByRole('navigation', { name: 'Dock' })).getByRole('link', {
+        name: 'Proyectos',
+      }),
+    );
+    goTo('/projects');
+    let wasLastClickPrevented = false;
+    const watch = (event: MouseEvent): void => {
+      wasLastClickPrevented = event.defaultPrevented;
+    };
+    document.body.addEventListener('click', watch);
+
+    await user.dblClick(screen.getByRole('link', { name: 'Inicio' }));
+    document.body.removeEventListener('click', watch);
+
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(wasLastClickPrevented).toBe(true);
+  });
 });

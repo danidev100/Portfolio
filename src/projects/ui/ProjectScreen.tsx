@@ -16,20 +16,29 @@ interface ProjectScreenProps {
  */
 export function ProjectScreen({ project, label, onBack }: ProjectScreenProps): ReactNode {
   const nameId = useId();
-  const backButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
+  // Modal, so the list and the app's bar beneath it are inert: neither the
+  // keyboard nor a screen reader can reach what the project covers.
   useEffect(() => {
-    backButtonRef.current?.focus({ preventScroll: true });
+    dialogRef.current?.showModal();
   }, []);
 
   return (
-    <section
+    <dialog
+      ref={dialogRef}
       aria-labelledby={nameId}
-      className="fixed inset-0 z-20 flex flex-col overflow-y-auto bg-canvas px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      onCancel={(event) => {
+        // Escape goes back through the history, like the back button.
+        event.preventDefault();
+        onBack();
+      }}
+      className="m-0 flex h-dvh max-h-none w-full max-w-none flex-col overflow-y-auto bg-canvas px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground"
     >
       <div className="flex h-11 shrink-0 items-center">
         <button
-          ref={backButtonRef}
+          // A modal dialog moves the focus into itself; this names where it lands.
+          autoFocus
           type="button"
           onClick={onBack}
           className="-ml-2 flex min-h-11 items-center gap-1 rounded-full px-2 text-primary"
@@ -58,6 +67,6 @@ export function ProjectScreen({ project, label, onBack }: ProjectScreenProps): R
         </div>
         <ProjectFacts project={project} />
       </div>
-    </section>
+    </dialog>
   );
 }

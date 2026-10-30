@@ -31,7 +31,10 @@ function ProjectGroup({ title, projects, allProjects, onOpen }: ProjectGroupProp
             <button
               id={getProjectRowId(project.id)}
               type="button"
-              onClick={() => {
+              onClick={(event) => {
+                // A double tap would push the project into the history twice.
+                if (event.detail > 1) return;
+
                 onOpen(project.id);
               }}
               className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-200 active:bg-surface-raised motion-reduce:transition-none"

@@ -5,16 +5,6 @@ import { APPS } from '@/shared/util/apps';
 
 import { GuideSheet } from './GuideSheet';
 
-// jsdom has <dialog> but not its modal methods.
-beforeAll(() => {
-  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement): void {
-    this.setAttribute('open', '');
-  };
-  HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement): void {
-    this.removeAttribute('open');
-  };
-});
-
 function renderGuide(): { onClose: jest.Mock; onOpenApp: jest.Mock } {
   const onClose = jest.fn();
   const onOpenApp = jest.fn();

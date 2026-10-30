@@ -64,10 +64,18 @@ describe('ProjectsPhoneApp', () => {
     expect(pushState).toHaveBeenCalledWith(null, '', '?project=nexa');
   });
 
+  it('pushes a double-tapped project once', async () => {
+    const { user } = renderApp();
+
+    await user.dblClick(screen.getByRole('button', { name: /NEXA/ }));
+
+    expect(pushState).toHaveBeenCalledTimes(1);
+  });
+
   it('shows the project named in the url', () => {
     renderApp('project=nexa');
 
-    const detail = screen.getByRole('region', { name: 'NEXA' });
+    const detail = screen.getByRole('dialog', { name: 'NEXA' });
 
     expect(within(detail).getByRole('link', { name: /Ver el sitio en vivo/ })).toHaveAttribute(
       'href',

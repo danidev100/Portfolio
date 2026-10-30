@@ -37,6 +37,8 @@ export function ProjectsPhoneApp(): ReactNode {
   }, [openProject]);
 
   const open = (id: string): void => {
+    if (id === openId) return;
+
     hasPushedRef.current = true;
     const query = new URLSearchParams({ [PROJECT_PARAM]: id });
     window.history.pushState(null, '', `?${query.toString()}`);

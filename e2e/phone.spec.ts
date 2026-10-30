@@ -12,6 +12,9 @@ const PHONE_APPS = [
 /** Rounds of opening and closing each app in the smoke run. */
 const SMOKE_CYCLES = 20;
 
+/** Enough presses of Tab to walk past everything in a project and wrap around. */
+const FOCUS_PRESSES = 4;
+
 const dock = (page: Page): Locator => page.getByRole('navigation', { name: 'Dock' });
 
 async function openFromDock(page: Page, title: string): Promise<void> {
@@ -66,18 +69,31 @@ test.describe('on an iphone', () => {
 
     await page.getByRole('button', { name: /NEXA/ }).tap();
     await expect(page).toHaveURL('/projects?project=nexa');
-    await expect(page.getByRole('region', { name: 'NEXA' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'NEXA' })).toBeVisible();
 
     await page.goBack();
     await expect(page).toHaveURL('/projects');
-    await expect(page.getByRole('region', { name: 'NEXA' })).toBeHidden();
+    await expect(page.getByRole('dialog', { name: 'NEXA' })).toBeHidden();
     await expect(page.getByRole('button', { name: /Factura Lens/ })).toBeVisible();
+  });
+
+  test('a project keeps the focus off the list it covers', async ({ page }) => {
+    await openPhone(page);
+    await openFromDock(page, 'Proyectos');
+    await page.getByRole('button', { name: /NEXA/ }).tap();
+    await expect(page.getByRole('button', { name: 'Proyectos' })).toBeFocused();
+
+    for (let press = 0; press < FOCUS_PRESSES; press += 1) {
+      await page.keyboard.press('Tab');
+      await expect(page.getByRole('link', { name: 'Inicio' })).not.toBeFocused();
+      await expect(page.getByRole('button', { name: /Factura Lens/ })).not.toBeFocused();
+    }
   });
 
   test('a direct link opens a project', async ({ page }) => {
     await openPhone(page, '/projects?project=nexa');
 
-    await expect(page.getByRole('region', { name: 'NEXA' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'NEXA' })).toBeVisible();
   });
 
   test('the AI answers on the phone', async ({ page }) => {

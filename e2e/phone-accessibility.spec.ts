@@ -29,7 +29,7 @@ test.describe('accessibility of the phone (WCAG 2.2 AA)', () => {
   test('project detail', async ({ page }) => {
     await openApp(page, 'Proyectos');
     await page.getByRole('button', { name: /NEXA/ }).tap();
-    await expect(page.getByRole('region', { name: 'NEXA' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'NEXA' })).toBeVisible();
 
     await expectNoViolations(page);
   });

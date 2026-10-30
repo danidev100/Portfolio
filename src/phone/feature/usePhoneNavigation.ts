@@ -32,6 +32,12 @@ export function usePhoneNavigation(): PhoneNavigation {
       openedFromHomeRef.current = id;
     },
     goHome: (event) => {
+      // The second tap of a double tap would push home over the trip back.
+      if (event.detail > 1) {
+        event.preventDefault();
+
+        return;
+      }
       // Moved to another app from inside this one: home is not the entry before.
       if (openAppId === null || openedFromHomeRef.current !== openAppId) return;
 
