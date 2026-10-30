@@ -61,6 +61,14 @@
   --font-mono: var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, monospace;
 }
 
+/*
+ * The phone's flavor, from the `data-flavor` that `Phone` renders. Where only
+ * the look changes, `android:` reaches the content of other domains (the
+ * project list) without a prop; where the structure changes, `phone` takes one.
+ */
+@custom-variant ios (&:where([data-flavor='ios'] *));
+@custom-variant android (&:where([data-flavor='android'] *));
+
 @utility bg-wallpaper {
   background-image: radial-gradient(
     120% 90% at 50% 10%,

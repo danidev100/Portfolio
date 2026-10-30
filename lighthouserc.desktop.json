@@ -8,7 +8,10 @@
         "http://localhost:3000/projects",
         "http://localhost:3000/terminal"
       ],
-      "numberOfRuns": 3
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop"
+      }
     },
     "assert": {
       "assertMatrix": [

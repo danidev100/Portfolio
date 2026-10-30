@@ -84,6 +84,16 @@ describe('ProjectsPhoneApp', () => {
     expect(within(detail).getByRole('button', { name: 'Proyectos' })).toBeInTheDocument();
   });
 
+  // No test browser emulates safe-area insets: the classes are what can be checked.
+  it('keeps a project clear of the side safe areas when turned sideways', () => {
+    renderApp('project=nexa');
+
+    const { className } = screen.getByRole('dialog', { name: 'NEXA' });
+
+    expect(className).toMatch(/\bpl-\[[^\]]*env\(safe-area-inset-left\)/);
+    expect(className).toMatch(/\bpr-\[[^\]]*env\(safe-area-inset-right\)/);
+  });
+
   it('ignores an unknown project', () => {
     renderApp('project=foo');
 

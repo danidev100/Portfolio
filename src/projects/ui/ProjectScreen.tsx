@@ -33,7 +33,7 @@ export function ProjectScreen({ project, label, onBack }: ProjectScreenProps): R
         event.preventDefault();
         onBack();
       }}
-      className="m-0 flex h-dvh max-h-none w-full max-w-none flex-col overflow-y-auto bg-canvas px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground"
+      className="m-0 flex h-dvh max-h-none w-full max-w-none flex-col overflow-y-auto bg-canvas pt-[env(safe-area-inset-top)] pr-[max(--spacing(4),env(safe-area-inset-right))] pb-[env(safe-area-inset-bottom)] pl-[max(--spacing(4),env(safe-area-inset-left))] text-foreground"
     >
       <div className="flex h-11 shrink-0 items-center">
         <button
@@ -41,12 +41,12 @@ export function ProjectScreen({ project, label, onBack }: ProjectScreenProps): R
           autoFocus
           type="button"
           onClick={onBack}
-          className="-ml-2 flex min-h-11 items-center gap-1 rounded-full px-2 text-primary"
+          className="-ml-2 flex min-h-11 items-center gap-1 rounded-full px-2 text-primary android:size-12 android:justify-center android:px-0 android:text-foreground"
         >
           <svg
             aria-hidden="true"
             viewBox="0 0 12 20"
-            className="h-5 w-3"
+            className="h-5 w-3 android:hidden"
             fill="none"
             stroke="currentColor"
             strokeWidth="2.5"
@@ -55,7 +55,20 @@ export function ProjectScreen({ project, label, onBack }: ProjectScreenProps): R
           >
             <path d="M10 2 2 10l8 8" />
           </svg>
-          Proyectos
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="hidden size-6 android:block"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          {/* Android shows only the arrow; the name stays for screen readers. */}
+          <span className="android:sr-only">Proyectos</span>
         </button>
       </div>
       <div className="flex flex-col gap-5 pb-6">

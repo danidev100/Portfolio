@@ -22,12 +22,16 @@ function ProjectGroup({ title, projects, allProjects, onOpen }: ProjectGroupProp
 
   return (
     <section aria-labelledby={titleId} className="flex flex-col gap-2">
-      <h2 id={titleId} className="px-4 text-sm font-medium tracking-wide text-muted uppercase">
+      <h2
+        id={titleId}
+        className="px-4 text-sm font-medium tracking-wide text-muted uppercase android:font-semibold android:tracking-normal android:text-primary android:normal-case"
+      >
         {title}
       </h2>
-      <ul className="divide-y divide-border overflow-hidden rounded-card bg-surface">
+      {/* iOS groups the rows on one surface; android separates them into cards. */}
+      <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card bg-surface android:gap-1 android:divide-y-0 android:bg-transparent">
         {projects.map((project) => (
-          <li key={project.id}>
+          <li key={project.id} className="android:rounded-card android:bg-surface">
             <button
               id={getProjectRowId(project.id)}
               type="button"
@@ -37,7 +41,7 @@ function ProjectGroup({ title, projects, allProjects, onOpen }: ProjectGroupProp
 
                 onOpen(project.id);
               }}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-200 active:bg-surface-raised motion-reduce:transition-none"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-200 active:bg-surface-raised motion-reduce:transition-none android:rounded-card"
             >
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="font-semibold">{project.name}</span>

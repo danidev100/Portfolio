@@ -15,6 +15,9 @@ const SMOKE_CYCLES = 20;
 /** Enough presses of Tab to walk past everything in a project and wrap around. */
 const FOCUS_PRESSES = 4;
 
+/** The flavor each phone project should get from its user agent. */
+const FLAVOR_BY_PROJECT: Readonly<Record<string, string>> = { iphone: 'ios', android: 'android' };
+
 const dock = (page: Page): Locator => page.getByRole('navigation', { name: 'Dock' });
 
 async function openFromDock(page: Page, title: string): Promise<void> {
@@ -22,7 +25,16 @@ async function openFromDock(page: Page, title: string): Promise<void> {
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
 }
 
-test.describe('on an iphone', () => {
+test.describe('on a phone', () => {
+  test("the phone speaks the visitor's system", async ({ page }) => {
+    await openPhone(page);
+
+    await expect(page.locator('[data-flavor]')).toHaveAttribute(
+      'data-flavor',
+      FLAVOR_BY_PROJECT[test.info().project.name] ?? '',
+    );
+  });
+
   test('the home screen docks the apps without any canvas', async ({ page }) => {
     await openPhone(page);
 
@@ -153,5 +165,41 @@ test.describe('on an iphone', () => {
 
     expect(errors).toEqual([]);
     await expect(page.locator('canvas')).toHaveCount(0);
+  });
+});
+
+// The screens scroll inside their `main`, which would hide a sideways scroll
+// from the document: each of them is measured too.
+const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
+  page.evaluate(() =>
+    [document.documentElement, ...document.querySelectorAll('main')].some(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  );
+
+test.describe('on the narrowest phone', () => {
+  test.use({ viewport: { width: 320, height: 640 } });
+
+  test('the home screen and every app fit without scrolling sideways', async ({ page }) => {
+    await openPhone(page);
+    expect(await hasHorizontalOverflow(page)).toBe(false);
+
+    for (const app of PHONE_APPS) {
+      await openFromDock(page, app.title);
+      expect(await hasHorizontalOverflow(page)).toBe(false);
+
+      await page.getByRole('link', { name: 'Inicio' }).tap();
+      await expect(dock(page)).toBeVisible();
+    }
+  });
+});
+
+test.describe('on a phone turned sideways', () => {
+  test.use({ viewport: { width: 915, height: 412 } });
+
+  test('the dock is still within reach', async ({ page }) => {
+    await openPhone(page);
+
+    await openFromDock(page, 'Contacto');
   });
 });

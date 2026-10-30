@@ -54,10 +54,16 @@ jobs:
             test-results
           retention-days: 7
 
-  # Performance and accessibility budgets from lighthouserc.json.
+  # Performance and accessibility budgets, in two passes: Lighthouse's mobile
+  # user agent is an Android phone, so it measures the phone shell, and the
+  # desktop preset keeps the desktop (WebGL, orbit, graph) under budget too.
   lighthouse:
     needs: quality
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pass: [desktop, mobile]
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -67,4 +73,4 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm dlx @lhci/cli@0.15.1 autorun
+      - run: pnpm dlx @lhci/cli@0.15.1 autorun --config=./lighthouserc.${{ matrix.pass }}.json

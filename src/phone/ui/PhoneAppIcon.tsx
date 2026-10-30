@@ -5,17 +5,21 @@ import { AppGlyph, type AppGlyphId } from '@/shared/ui/AppGlyph';
 
 import type { LauncherTone } from '../util/home';
 
-const tile = cva('flex size-15 shrink-0 items-center justify-center rounded-control', {
-  variants: {
-    tone: {
-      primary: 'bg-primary text-on-primary',
-      ai: 'bg-ai text-on-ai',
-      highlight: 'bg-highlight text-on-highlight',
-      positive: 'bg-positive text-on-positive',
-      neutral: 'bg-surface-raised text-foreground',
-    } satisfies Record<LauncherTone, string>,
+// Android draws a circle on the raised surface with the stroke in the app's tone.
+const tile = cva(
+  'flex size-15 shrink-0 items-center justify-center rounded-control android:rounded-full android:bg-surface-raised',
+  {
+    variants: {
+      tone: {
+        primary: 'bg-primary text-on-primary android:text-primary',
+        ai: 'bg-ai text-on-ai android:text-ai',
+        highlight: 'bg-highlight text-on-highlight android:text-highlight',
+        positive: 'bg-positive text-on-positive android:text-positive',
+        neutral: 'bg-surface-raised text-foreground',
+      } satisfies Record<LauncherTone, string>,
+    },
   },
-});
+);
 
 interface PhoneAppIconProps {
   glyph: AppGlyphId;

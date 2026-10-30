@@ -16,11 +16,11 @@ export type SearchParams = Record<string, string | string[] | undefined>;
 export async function getDeviceProfile(
   searchParams: Promise<SearchParams>,
 ): Promise<DeviceProfile> {
-  const { device, os } = userAgent({ headers: await headers() });
+  const { device, os, isBot } = userAgent({ headers: await headers() });
   const override = (await searchParams)[DEVICE_PARAM];
 
   return resolveDeviceProfile(
-    { deviceType: device.type, osName: os.name },
+    { deviceType: device.type, osName: os.name, isBot },
     Array.isArray(override) ? override[0] : override,
   );
 }
