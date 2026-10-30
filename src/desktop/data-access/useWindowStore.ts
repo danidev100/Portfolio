@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { AppId } from '../util/apps';
+import type { AppId } from '@/shared/util/apps';
 import {
   closeWindow,
   focusWindow,

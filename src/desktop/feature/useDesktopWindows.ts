@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 import { useWindowStore } from '../data-access/useWindowStore';
-import { APPS, DESKTOP_HREF, getAppIdByPathname, type AppId } from '../util/apps';
+import { APPS, HOME_HREF, getAppIdByPathname, type AppId } from '@/shared/util/apps';
 import { settleLanding } from '../util/routeLandings';
 import { getFocusedWindowId, type WindowStack } from '../util/windowManager';
 
@@ -28,7 +28,7 @@ export interface DesktopWindows {
 function getFocusedHref(): string {
   const focusedId = getFocusedWindowId(useWindowStore.getState().windows);
 
-  return focusedId ? APPS[focusedId].href : DESKTOP_HREF;
+  return focusedId ? APPS[focusedId].href : HOME_HREF;
 }
 
 /**
@@ -84,7 +84,7 @@ export function useDesktopWindows(): DesktopWindows {
    */
   const navigateToFocusedWindow = (): AppId | null => {
     const focusedId = getFocusedWindowId(useWindowStore.getState().windows);
-    const href = focusedId ? APPS[focusedId].href : DESKTOP_HREF;
+    const href = focusedId ? APPS[focusedId].href : HOME_HREF;
     const headingTo = outstandingRef.current.at(-1) ?? pathname;
 
     if (href !== headingTo && href !== pathname) {

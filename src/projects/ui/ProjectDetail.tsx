@@ -13,23 +13,10 @@ import {
 
 import type { Project } from '../util/projects';
 import { NO_INSETS, toInsetClipPath, type Box } from '../util/reveal';
+import { ProjectFacts } from './ProjectFacts';
 import { getSeriesClasses } from './seriesClasses';
 
 const FULLY_REVEALED = toInsetClipPath(NO_INSETS, RADIUS_PX.card);
-
-interface ProjectFactProps {
-  term: string;
-  children: ReactNode;
-}
-
-function ProjectFact({ term, children }: ProjectFactProps): ReactNode {
-  return (
-    <div className="flex flex-col gap-1">
-      <dt className="font-mono text-xs tracking-wider text-muted uppercase">{term}</dt>
-      <dd>{children}</dd>
-    </div>
-  );
-}
 
 interface ProjectDetailProps {
   project: Project;
@@ -105,32 +92,7 @@ export function ProjectDetail({
             Volver a la órbita
           </button>
         </div>
-        <p className="text-lg text-muted">{project.summary}</p>
-        {project.url ? (
-          <a
-            href={project.url}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-opacity duration-200 hover:opacity-90 motion-reduce:transition-none"
-          >
-            Ver el sitio en vivo
-            <span className="sr-only"> (se abre en una pestaña nueva)</span>
-          </a>
-        ) : null}
-        <dl className="grid gap-5 sm:grid-cols-2">
-          <ProjectFact term="Para quién">{project.audience}</ProjectFact>
-          <ProjectFact term="Dónde entra la IA">{project.aiRole}</ProjectFact>
-          <ProjectFact term="Por qué importa">{project.value}</ProjectFact>
-          <ProjectFact term="Stack">
-            <ul className="flex flex-wrap gap-1.5">
-              {project.stack.map((technology) => (
-                <li key={technology} className="rounded-full bg-border px-3 py-1 text-sm">
-                  {technology}
-                </li>
-              ))}
-            </ul>
-          </ProjectFact>
-        </dl>
+        <ProjectFacts project={project} />
       </motion.div>
     </motion.section>
   );

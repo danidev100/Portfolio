@@ -7,8 +7,9 @@ import type { ReactNode } from 'react';
 import { cn } from '@/shared/util/cn';
 import { RADIUS_PX } from '@/shared/util/motion';
 
-import { shouldActivateFromClick } from '../util/appLinks';
-import { DOCK_ID, getDockItemId, type AppDefinition, type AppId } from '../util/apps';
+import { shouldActivateFromClick } from '@/shared/util/appLinks';
+import { type AppDefinition, type AppId } from '@/shared/util/apps';
+import { DOCK_ID, getDockItemId } from '../util/domIds';
 import { getWindowLayoutId } from '../util/windowLayout';
 import { AppIcon } from './AppIcon';
 

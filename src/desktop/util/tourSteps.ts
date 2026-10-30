@@ -1,4 +1,4 @@
-import { DOCK_ID, getDockItemId } from './apps';
+import { DOCK_ID, getDockItemId } from './domIds';
 
 export interface TourStep {
   id: string;

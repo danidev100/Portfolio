@@ -1,4 +1,4 @@
-import type { AppId } from './apps';
+import type { AppId } from '@/shared/util/apps';
 
 export interface ManagedWindow {
   id: AppId;

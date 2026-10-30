@@ -6,8 +6,8 @@ import { useId, type ReactNode } from 'react';
 
 import { FADE_TRANSITION } from '@/shared/util/motion';
 
-import { shouldActivateFromClick } from '../util/appLinks';
-import type { AppDefinition, AppId } from '../util/apps';
+import { shouldActivateFromClick } from '@/shared/util/appLinks';
+import type { AppDefinition, AppId } from '@/shared/util/apps';
 import { AppIcon } from './AppIcon';
 
 export interface OverviewWindow {

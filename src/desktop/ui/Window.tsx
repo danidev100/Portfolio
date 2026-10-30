@@ -11,7 +11,8 @@ import {
   REVEAL_TRANSITION,
 } from '@/shared/util/motion';
 
-import { getWindowId, type AppId } from '../util/apps';
+import { type AppId } from '@/shared/util/apps';
+import { getWindowId } from '../util/domIds';
 import { getWindowLayoutId } from '../util/windowLayout';
 
 interface WindowControlProps {

@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { APPS, DOCK_ID } from '../util/apps';
+import { APPS } from '@/shared/util/apps';
+import { DOCK_ID } from '../util/domIds';
 import { Dock, type DockItem } from './Dock';
 
 const buildItems = (overrides: Partial<Record<string, Partial<DockItem>>> = {}): DockItem[] =>

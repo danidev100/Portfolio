@@ -1,4 +1,4 @@
-import { DOCK_ID, getDockItemId } from './apps';
+import { DOCK_ID, getDockItemId } from './domIds';
 import { getNextStepIndex, getPreviousStepIndex, TOUR_STEPS } from './tourSteps';
 
 describe('TOUR_STEPS', () => {
