@@ -9,6 +9,9 @@ const PHONE_APPS = [
   { title: 'Contacto', href: '/contact' },
 ] as const;
 
+/** Rounds of opening and closing each app in the smoke run. */
+const SMOKE_CYCLES = 20;
+
 const dock = (page: Page): Locator => page.getByRole('navigation', { name: 'Dock' });
 
 async function openFromDock(page: Page, title: string): Promise<void> {
@@ -114,5 +117,25 @@ test.describe('on an iphone', () => {
 
     await expect(page).toHaveURL('/terminal');
     await expect(page.getByRole('dialog', { name: 'Guía' })).toBeHidden();
+  });
+
+  test('opening and closing every app 20 times logs no errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
+    await openPhone(page);
+
+    for (const app of PHONE_APPS) {
+      for (let cycle = 0; cycle < SMOKE_CYCLES; cycle += 1) {
+        await openFromDock(page, app.title);
+        await page.getByRole('link', { name: 'Inicio' }).tap();
+        await expect(dock(page)).toBeVisible();
+      }
+    }
+
+    expect(errors).toEqual([]);
+    await expect(page.locator('canvas')).toHaveCount(0);
   });
 });
