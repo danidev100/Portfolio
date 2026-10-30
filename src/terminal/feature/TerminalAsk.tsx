@@ -13,8 +13,13 @@ function hasFinePointer(): boolean {
   return typeof window.matchMedia === 'function' && window.matchMedia(FINE_POINTER_QUERY).matches;
 }
 
+interface TerminalAskProps {
+  /** The graph sits beside the chat, so the chat offers to go back to its overview. */
+  hasGraph: boolean;
+}
+
 /** The conversation: where the visitor asks and the answer streams in. */
-export function TerminalAsk(): ReactNode {
+export function TerminalAsk({ hasGraph }: TerminalAskProps): ReactNode {
   const status = useAskStore((state) => state.status);
   const question = useAskStore((state) => state.question);
   const answer = useAskStore((state) => state.answer);
@@ -44,6 +49,7 @@ export function TerminalAsk(): ReactNode {
       answer={answer}
       suggestions={SUGGESTED_QUESTIONS}
       hasFocus={hasFocus}
+      hasOverview={hasGraph}
       welcome={{ text: WELCOME_MESSAGE, isTyping: isTypingWelcome }}
       autoFocusInput={autoFocusInput}
       onAsk={(nextQuestion) => {

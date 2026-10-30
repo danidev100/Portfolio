@@ -9,7 +9,7 @@ export function TerminalApp(): ReactNode {
       {/* The chat comes first, left or on top: it is what the app is for. */}
       <div className="flex h-full flex-col gap-3 @3xl:flex-row">
         <div className="@3xl:w-96 @3xl:shrink-0">
-          <TerminalAsk />
+          <TerminalAsk hasGraph />
         </div>
         <TerminalGraph />
       </div>

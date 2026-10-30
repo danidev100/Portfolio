@@ -39,6 +39,8 @@ interface AskPanelProps {
   suggestions: readonly string[];
   /** The graph is focused on some nodes, so there is an overview to go back to. */
   hasFocus: boolean;
+  /** There is a graph with an overview to go back to; the phone has none. */
+  hasOverview: boolean;
   welcome: { text: string; isTyping: boolean };
   /** Puts the cursor in the field on mount: only where it will not pop up a keyboard. */
   autoFocusInput: boolean;
@@ -53,6 +55,7 @@ export function AskPanel({
   answer,
   suggestions,
   hasFocus,
+  hasOverview,
   welcome,
   autoFocusInput,
   onAsk,
@@ -143,20 +146,22 @@ export function AskPanel({
               </button>
             </li>
           ))}
-          {/* Always there, so the chips do not shift when the focus comes and goes. */}
-          <li>
-            <button
-              type="button"
-              onClick={onReset}
-              disabled={!hasFocus}
-              className={cn(
-                CHIP_CLASSES,
-                'border-border text-muted disabled:opacity-40 disabled:hover:border-border',
-              )}
-            >
-              Vista general
-            </button>
-          </li>
+          {/* Always there with a graph, so the chips do not shift when the focus comes and goes. */}
+          {hasOverview ? (
+            <li>
+              <button
+                type="button"
+                onClick={onReset}
+                disabled={!hasFocus}
+                className={cn(
+                  CHIP_CLASSES,
+                  'border-border text-muted disabled:opacity-40 disabled:hover:border-border',
+                )}
+              >
+                Vista general
+              </button>
+            </li>
+          ) : null}
         </ul>
       </div>
       <form

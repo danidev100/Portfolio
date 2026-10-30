@@ -16,6 +16,7 @@ function renderPanel(overrides: Partial<AskPanelProps> = {}): AskPanelProps {
     answer: '',
     suggestions: SUGGESTIONS,
     hasFocus: false,
+    hasOverview: true,
     welcome: { text: WELCOME, isTyping: false },
     autoFocusInput: false,
     onAsk: jest.fn(),
@@ -30,6 +31,12 @@ function renderPanel(overrides: Partial<AskPanelProps> = {}): AskPanelProps {
 const getConversation = (): HTMLElement => screen.getByRole('status');
 
 describe('AskPanel', () => {
+  it('leaves out the overview chip without a graph', () => {
+    renderPanel({ hasOverview: false });
+
+    expect(screen.queryByRole('button', { name: 'Vista general' })).not.toBeInTheDocument();
+  });
+
   it('is titled after what it is for, and says it is a demo', () => {
     renderPanel();
 
