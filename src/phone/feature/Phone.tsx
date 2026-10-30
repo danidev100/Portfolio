@@ -31,7 +31,7 @@ export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
       className="h-dvh overscroll-none bg-wallpaper pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
     >
       {openAppId ? (
-        <AppScreen title={APPS[openAppId].title} onHome={goHome}>
+        <AppScreen flavor={flavor} title={APPS[openAppId].title} onHome={goHome}>
           {appContent[openAppId]}
         </AppScreen>
       ) : (
