@@ -27,6 +27,7 @@ export default defineConfig({
       use: { ...devices['iPhone 15'], browserName: 'chromium' },
       testMatch: PHONE_SPECS,
     },
+    { name: 'android', use: { ...devices['Pixel 7'] }, testMatch: PHONE_SPECS },
   ],
   webServer: {
     // Calls `next` directly: pnpm runs scripts in their own process group, so

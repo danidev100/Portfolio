@@ -15,6 +15,9 @@ const SMOKE_CYCLES = 20;
 /** Enough presses of Tab to walk past everything in a project and wrap around. */
 const FOCUS_PRESSES = 4;
 
+/** The flavor each phone project should get from its user agent. */
+const FLAVOR_BY_PROJECT: Readonly<Record<string, string>> = { iphone: 'ios', android: 'android' };
+
 const dock = (page: Page): Locator => page.getByRole('navigation', { name: 'Dock' });
 
 async function openFromDock(page: Page, title: string): Promise<void> {
@@ -22,7 +25,16 @@ async function openFromDock(page: Page, title: string): Promise<void> {
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
 }
 
-test.describe('on an iphone', () => {
+test.describe('on a phone', () => {
+  test("the phone speaks the visitor's system", async ({ page }) => {
+    await openPhone(page);
+
+    await expect(page.locator('[data-flavor]')).toHaveAttribute(
+      'data-flavor',
+      FLAVOR_BY_PROJECT[test.info().project.name] ?? '',
+    );
+  });
+
   test('the home screen docks the apps without any canvas', async ({ page }) => {
     await openPhone(page);
 
