@@ -167,3 +167,33 @@ test.describe('on a phone', () => {
     await expect(page.locator('canvas')).toHaveCount(0);
   });
 });
+
+const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
+  page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+
+test.describe('on the narrowest phone', () => {
+  test.use({ viewport: { width: 320, height: 640 } });
+
+  test('the home screen and every app fit without scrolling sideways', async ({ page }) => {
+    await openPhone(page);
+    expect(await hasHorizontalOverflow(page)).toBe(false);
+
+    for (const app of PHONE_APPS) {
+      await openFromDock(page, app.title);
+      expect(await hasHorizontalOverflow(page)).toBe(false);
+
+      await page.getByRole('link', { name: 'Inicio' }).tap();
+      await expect(dock(page)).toBeVisible();
+    }
+  });
+});
+
+test.describe('on a phone turned sideways', () => {
+  test.use({ viewport: { width: 915, height: 412 } });
+
+  test('the dock is still within reach', async ({ page }) => {
+    await openPhone(page);
+
+    await openFromDock(page, 'Contacto');
+  });
+});

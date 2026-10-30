@@ -37,6 +37,7 @@ export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
       ) : (
         <>
           <HomeScreen
+            flavor={flavor}
             currentHref={currentHref}
             onOpenApp={markOpenedFromHome}
             grid={
