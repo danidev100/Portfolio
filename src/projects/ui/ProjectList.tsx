@@ -41,7 +41,7 @@ function ProjectGroup({ title, projects, allProjects, onOpen }: ProjectGroupProp
 
                 onOpen(project.id);
               }}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-200 active:bg-surface-raised motion-reduce:transition-none"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-200 active:bg-surface-raised motion-reduce:transition-none android:rounded-card"
             >
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="font-semibold">{project.name}</span>

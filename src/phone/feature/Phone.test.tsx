@@ -51,6 +51,16 @@ describe('Phone', () => {
     mockBack.mockClear();
   });
 
+  // No test browser emulates safe-area insets: the classes are what can be checked.
+  it('keeps the screen clear of the side safe areas when turned sideways', () => {
+    renderPhone('/');
+
+    expect(screen.getByRole('main').parentElement).toHaveClass(
+      'pl-[env(safe-area-inset-left)]',
+      'pr-[env(safe-area-inset-right)]',
+    );
+  });
+
   it('shows the home screen on /', () => {
     renderPhone('/');
 

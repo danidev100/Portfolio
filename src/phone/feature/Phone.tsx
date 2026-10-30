@@ -28,7 +28,7 @@ export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
     <div
       data-flavor={flavor}
       data-hydrated={isHydrated}
-      className="h-dvh overscroll-none bg-wallpaper pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      className="h-dvh overscroll-none bg-wallpaper pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)]"
     >
       {openAppId ? (
         <AppScreen flavor={flavor} title={APPS[openAppId].title} onHome={goHome}>

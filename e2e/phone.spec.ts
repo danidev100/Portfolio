@@ -168,8 +168,14 @@ test.describe('on a phone', () => {
   });
 });
 
+// The screens scroll inside their `main`, which would hide a sideways scroll
+// from the document: each of them is measured too.
 const hasHorizontalOverflow = (page: Page): Promise<boolean> =>
-  page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  page.evaluate(() =>
+    [document.documentElement, ...document.querySelectorAll('main')].some(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  );
 
 test.describe('on the narrowest phone', () => {
   test.use({ viewport: { width: 320, height: 640 } });
