@@ -7,6 +7,6 @@ import { StandaloneAppPage } from '../_components/StandaloneAppPage';
 
 export const metadata: Metadata = { title: APPS.contact.title };
 
-export default function ContactPage(): ReactNode {
-  return <StandaloneAppPage appId="contact" />;
+export default function ContactPage({ searchParams }: PageProps<'/contact'>): ReactNode {
+  return <StandaloneAppPage appId="contact" searchParams={searchParams} />;
 }

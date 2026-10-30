@@ -1,0 +1,39 @@
+'use client';
+
+import type { ReactNode } from 'react';
+
+import { APPS, type AppId } from '@/shared/util/apps';
+import type { PhoneFlavor } from '@/shared/util/deviceProfile';
+
+import { AppScreen } from '../ui/AppScreen';
+import { HomeScreen } from '../ui/HomeScreen';
+import { useIsHydrated } from './useIsHydrated';
+import { usePhoneNavigation } from './usePhoneNavigation';
+
+interface PhoneProps {
+  flavor: PhoneFlavor;
+  /** Rendered by the app layer so the phone does not depend on other domains. */
+  appContent: Readonly<Record<AppId, ReactNode>>;
+}
+
+/** Dani OS on a phone: a home screen and one app at a time, named by the URL. */
+export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
+  const { openAppId, currentHref, markOpenedFromHome, goHome } = usePhoneNavigation();
+  const isHydrated = useIsHydrated();
+
+  return (
+    <div
+      data-flavor={flavor}
+      data-hydrated={isHydrated}
+      className="h-dvh overscroll-none bg-wallpaper pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+    >
+      {openAppId ? (
+        <AppScreen title={APPS[openAppId].title} onHome={goHome}>
+          {appContent[openAppId]}
+        </AppScreen>
+      ) : (
+        <HomeScreen currentHref={currentHref} onOpenApp={markOpenedFromHome} />
+      )}
+    </div>
+  );
+}

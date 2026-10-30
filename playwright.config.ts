@@ -5,6 +5,8 @@ const DEFAULT_PORT = '3000';
 const PORT = process.env.PORT ?? DEFAULT_PORT;
 const BASE_URL = `http://localhost:${PORT}`;
 const isCI = Boolean(process.env.CI);
+/** Specs of the phone shell, which only a phone gets. */
+const PHONE_SPECS = /phone.*\.spec\.ts/;
 
 export default defineConfig({
   testDir: './e2e',
@@ -16,7 +18,16 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] }, testIgnore: PHONE_SPECS },
+    {
+      // CI only installs Chromium: this checks the iPhone's user agent, screen
+      // and touch, not WebKit itself.
+      name: 'iphone',
+      use: { ...devices['iPhone 15'], browserName: 'chromium' },
+      testMatch: PHONE_SPECS,
+    },
+  ],
   webServer: {
     // Calls `next` directly: pnpm runs scripts in their own process group, so
     // Playwright cannot stop a `pnpm dev` server and hangs waiting for it.

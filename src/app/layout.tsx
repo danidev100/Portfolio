@@ -24,6 +24,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
+  // Lets the phone shell reach under the notch and the home indicator, padded by safe areas.
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children, window }: LayoutProps<'/'>): ReactNode {

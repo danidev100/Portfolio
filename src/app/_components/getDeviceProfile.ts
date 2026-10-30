@@ -7,7 +7,7 @@ import {
   type DeviceProfile,
 } from '@/shared/util/deviceProfile';
 
-type SearchParams = Record<string, string | string[] | undefined>;
+export type SearchParams = Record<string, string | string[] | undefined>;
 
 /**
  * Decided on the server so the first HTML is already the right shell: deciding

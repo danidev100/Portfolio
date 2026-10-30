@@ -58,3 +58,12 @@ export async function openDesktop(page: Page): Promise<void> {
   await page.goto('/');
   await expect(page.locator('time[datetime]')).toBeVisible();
 }
+
+/**
+ * Opens the phone at `path` and waits until it is interactive, for the same
+ * reason as `openDesktop`. The phone marks itself once it has hydrated.
+ */
+export async function openPhone(page: Page, path = '/'): Promise<void> {
+  await page.goto(path);
+  await expect(page.locator('[data-hydrated="true"]')).toBeVisible();
+}
