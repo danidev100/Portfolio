@@ -90,4 +90,29 @@ test.describe('on an iphone', () => {
 
     await expect(page.getByRole('status')).toContainText('7 desarrolladores.');
   });
+
+  test('the guide opens over the home screen and Escape closes it', async ({ page }) => {
+    await openPhone(page);
+    const guideButton = page.getByRole('button', { name: 'Guía' });
+
+    await guideButton.tap();
+    await expect(page.getByRole('dialog', { name: 'Guía' })).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Guía' })).toBeHidden();
+    await expect(guideButton).toBeFocused();
+  });
+
+  test('the guide opens the chosen app', async ({ page }) => {
+    await openPhone(page);
+
+    await page.getByRole('button', { name: 'Guía' }).tap();
+    await page
+      .getByRole('dialog', { name: 'Guía' })
+      .getByRole('link', { name: /Pregúntale a mi IA/ })
+      .tap();
+
+    await expect(page).toHaveURL('/terminal');
+    await expect(page.getByRole('dialog', { name: 'Guía' })).toBeHidden();
+  });
 });

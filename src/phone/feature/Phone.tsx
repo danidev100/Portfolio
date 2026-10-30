@@ -1,12 +1,14 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { APPS, type AppId } from '@/shared/util/apps';
 import type { PhoneFlavor } from '@/shared/util/deviceProfile';
 
 import { AppScreen } from '../ui/AppScreen';
+import { GuideSheet } from '../ui/GuideSheet';
 import { HomeScreen } from '../ui/HomeScreen';
+import { PhoneAppIcon } from '../ui/PhoneAppIcon';
 import { useIsHydrated } from './useIsHydrated';
 import { usePhoneNavigation } from './usePhoneNavigation';
 
@@ -20,6 +22,7 @@ interface PhoneProps {
 export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
   const { openAppId, currentHref, markOpenedFromHome, goHome } = usePhoneNavigation();
   const isHydrated = useIsHydrated();
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   return (
     <div
@@ -32,7 +35,33 @@ export function Phone({ flavor, appContent }: PhoneProps): ReactNode {
           {appContent[openAppId]}
         </AppScreen>
       ) : (
-        <HomeScreen currentHref={currentHref} onOpenApp={markOpenedFromHome} />
+        <>
+          <HomeScreen
+            currentHref={currentHref}
+            onOpenApp={markOpenedFromHome}
+            grid={
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setIsGuideOpen(true);
+                }}
+                className="flex flex-col items-center gap-1.5 justify-self-center rounded-control"
+              >
+                <PhoneAppIcon glyph="guide" tone="neutral" />
+                <span className="text-xs font-medium">Guía</span>
+              </button>
+            }
+          />
+          <GuideSheet
+            isOpen={isGuideOpen}
+            currentHref={currentHref}
+            onClose={() => {
+              setIsGuideOpen(false);
+            }}
+            onOpenApp={markOpenedFromHome}
+          />
+        </>
       )}
     </div>
   );
